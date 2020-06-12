@@ -4,10 +4,10 @@ import javax.swing.JTable;
 
 public final class TableCellData<K, T extends JTable> {
 
-    public final int row;
-    public final int column;
-    public final K value;
-    public final T table;
+    private final int row;
+    private final int column;
+    private final K value;
+    private final T table;
 
     public TableCellData(int row, int column, K value, T table) {
         super();
@@ -15,5 +15,21 @@ public final class TableCellData<K, T extends JTable> {
         this.column = column;
         this.value = value;
         this.table = table;
+    }
+
+    public int getRow() {
+        return row;
+    }
+
+    public int getColumn() {
+        return column;
+    }
+
+    public K getValue() {
+        return value;
+    }
+
+    public T getTable() {
+        return table;
     }
 }
