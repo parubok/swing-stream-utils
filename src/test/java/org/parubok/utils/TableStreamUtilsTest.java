@@ -47,7 +47,7 @@ class TableStreamUtilsTest {
             model.setValueAt("c0", 0, 0);
             model.setValueAt("c1", 0, 1);
             JTable table = new JTable(model);
-            Assertions.assertEquals(Arrays.asList("c0", "c1"), TableStreamUtils.asStream(table)
+            Assertions.assertIterableEquals(Arrays.asList("c0", "c1"), TableStreamUtils.asStream(table)
                     .map(TableCellData::getValue)
                     .collect(Collectors.toList()));
         });
