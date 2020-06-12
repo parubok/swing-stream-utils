@@ -16,6 +16,8 @@ public class TableStreamUtils {
     }
 
     /**
+     * This method assumes that the table does not change its number of rows and columns during the iteration.
+     *
      * @param table Table which cells to iterate. Not null.
      * @param <T>   Type of the table.
      * @return Cell iterator for the provided table.
@@ -63,6 +65,8 @@ public class TableStreamUtils {
     }
 
     /**
+     * This method assumes that the table does not change its number of rows and columns during the streaming.
+     *
      * @param table Table which cells will be streamed. Not null.
      * @param <T>   Type of the table.
      * @return Stream of {@link TableCellData} for the provided table.
