@@ -3,6 +3,8 @@ Utils for iterating over JTable cells via Java 8 streams.
 
 Example 1 (count how many times cell value "London" appears in the selected cells of column 3):
 ```java
+import org.parubok.swing.utils.table.TableStreamUtils;
+
 JTable table = ...;
 long count = TableStreamUtils.asStream(table)
   .filter(TableCellData::isSelected)
