@@ -7,6 +7,7 @@ JTable table = ...;
 long count = TableStreamUtils.asStream(table)
   .filter(TableCellData::isSelected)
   .filter(cellData -> cellData.getColumn() == 3)
-  .filter(cellData -> "London".equals(cellData.getValue()))
+  .map(TableCellData::getValue)
+  .filter(value -> "London".equals(value))
   .count();
 ```
