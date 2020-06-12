@@ -8,6 +8,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.stream.Collectors;
 
@@ -41,7 +42,7 @@ class TableStreamUtilsTest {
     }
 
     @Test
-    void asStream_1() throws Exception {
+    void asStream_getValue() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             TableModel model = new DefaultTableModel(1, 2);
             model.setValueAt("c0", 0, 0);
@@ -86,7 +87,7 @@ class TableStreamUtilsTest {
     }
 
     @Test
-    void asStream_4() throws Exception {
+    void asStream_getRow() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             final int rows = 2;
             final int columns = 3;
@@ -99,7 +100,7 @@ class TableStreamUtilsTest {
     }
 
     @Test
-    void asStream_5() throws Exception {
+    void asStream_getColumn() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             final int rows = 2;
             final int columns = 3;
@@ -110,4 +111,15 @@ class TableStreamUtilsTest {
                     .collect(Collectors.toList()));
         });
     }
+
+    @Test
+    void asStream_empty() throws Exception {
+        SwingUtilities.invokeAndWait(() -> {
+            TableModel model = new DefaultTableModel(0, 0);
+            JTable table = new JTable(model);
+            Assertions.assertIterableEquals(Collections.emptyList(), TableStreamUtils.asStream(table)
+                    .collect(Collectors.toList()));
+        });
+    }
+
 }
