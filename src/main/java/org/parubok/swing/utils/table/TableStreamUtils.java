@@ -21,7 +21,7 @@ public class TableStreamUtils {
      * @return Cell iterator for the provided table.
      * @throws IllegalArgumentException If the table is null.
      */
-    public static <T extends JTable> Iterable<TableCellData<Object, T>> asIterable(T table) {
+    public static <T extends JTable> Iterable<TableCellData<T>> asIterable(T table) {
         if (table == null) {
             throw new IllegalArgumentException("table is null");
         }
@@ -33,7 +33,7 @@ public class TableStreamUtils {
                 return Collections.emptyIterator();
             }
 
-            return new Iterator<TableCellData<Object, T>>() {
+            return new Iterator<TableCellData<T>>() {
 
                 private int row = 0;
                 private int column = 0;
@@ -45,9 +45,9 @@ public class TableStreamUtils {
                 }
 
                 @Override
-                public TableCellData<Object, T> next() {
+                public TableCellData<T> next() {
                     Object value = table.getValueAt(row, column);
-                    TableCellData<Object, T> cellData = new TableCellData<>(row, column, value, table);
+                    TableCellData<T> cellData = new TableCellData<>(row, column, value, table);
                     if (column < lastColumn) {
                         column++;
                     } else if (row < lastRow) {
@@ -68,7 +68,7 @@ public class TableStreamUtils {
      * @return Stream of {@link TableCellData} for the provided table.
      * @see #asIterable(JTable)
      */
-    public static <T extends JTable> Stream<TableCellData<Object, T>> asStream(T table) {
+    public static <T extends JTable> Stream<TableCellData<T>> asStream(T table) {
         return StreamSupport.stream(asIterable(table).spliterator(), false);
     }
 }

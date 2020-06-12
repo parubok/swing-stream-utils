@@ -5,17 +5,16 @@ import javax.swing.JTable;
 /**
  * Represents table cell and its data.
  *
- * @param <K> Type of the cell data.
  * @param <T> Type of the table.
  */
-public final class TableCellData<K, T extends JTable> {
+public final class TableCellData<T extends JTable> {
 
     private final int row;
     private final int column;
-    private final K value;
+    private final Object value;
     private final T table;
 
-    public TableCellData(int row, int column, K value, T table) {
+    public TableCellData(int row, int column, Object value, T table) {
         this.row = row;
         this.column = column;
         this.value = value;
@@ -30,7 +29,7 @@ public final class TableCellData<K, T extends JTable> {
         return column;
     }
 
-    public K getValue() {
+    public Object getValue() {
         return value;
     }
 
