@@ -69,4 +69,45 @@ class TableStreamUtilsTest {
                     .sum());
         });
     }
+
+    @Test
+    void asStream_3() throws Exception {
+        SwingUtilities.invokeAndWait(() -> {
+            final int rows = 2;
+            final int columns = 3;
+            TableModel model = new DefaultTableModel(rows, columns);
+            JTable table = new JTable(model);
+            Assertions.assertEquals(6, TableStreamUtils.asStream(table)
+                    .peek(d -> Assertions.assertSame(table, d.getTable()))
+                    .peek(d -> Assertions.assertFalse(d.isSelected()))
+                    .peek(d -> Assertions.assertTrue(d.isEditable()))
+                    .count());
+        });
+    }
+
+    @Test
+    void asStream_4() throws Exception {
+        SwingUtilities.invokeAndWait(() -> {
+            final int rows = 2;
+            final int columns = 3;
+            TableModel model = new DefaultTableModel(rows, columns);
+            JTable table = new JTable(model);
+            Assertions.assertIterableEquals(Arrays.asList(0, 0, 0, 1, 1, 1), TableStreamUtils.asStream(table)
+                    .map(d -> d.getRow())
+                    .collect(Collectors.toList()));
+        });
+    }
+
+    @Test
+    void asStream_5() throws Exception {
+        SwingUtilities.invokeAndWait(() -> {
+            final int rows = 2;
+            final int columns = 3;
+            TableModel model = new DefaultTableModel(rows, columns);
+            JTable table = new JTable(model);
+            Assertions.assertIterableEquals(Arrays.asList(0, 1, 2, 0, 1, 2), TableStreamUtils.asStream(table)
+                    .map(d -> d.getColumn())
+                    .collect(Collectors.toList()));
+        });
+    }
 }

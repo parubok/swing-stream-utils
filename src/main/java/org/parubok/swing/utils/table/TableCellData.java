@@ -3,7 +3,7 @@ package org.parubok.swing.utils.table;
 import javax.swing.JTable;
 
 /**
- * Represents table cell and its data.
+ * Represents a table cell and its attributes.
  *
  * @param <T> Type of the table.
  */
@@ -13,12 +13,16 @@ public final class TableCellData<T extends JTable> {
     private final int column;
     private final Object value;
     private final T table;
+    private final boolean selected;
+    private final boolean editable;
 
     public TableCellData(int row, int column, Object value, T table) {
         this.row = row;
         this.column = column;
         this.value = value;
         this.table = table;
+        this.selected = table.isCellSelected(row, column);
+        this.editable = table.isCellEditable(row, column);
     }
 
     public int getRow() {
@@ -35,5 +39,13 @@ public final class TableCellData<T extends JTable> {
 
     public T getTable() {
         return table;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public boolean isEditable() {
+        return editable;
     }
 }
