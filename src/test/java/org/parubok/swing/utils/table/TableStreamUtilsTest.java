@@ -52,4 +52,21 @@ class TableStreamUtilsTest {
                     .collect(Collectors.toList()));
         });
     }
+
+    @Test
+    void asStream_2() throws Exception {
+        SwingUtilities.invokeAndWait(() -> {
+            final int rows = 5;
+            final int columns = 3;
+            TableModel model = new DefaultTableModel(rows, columns);
+            for (int i = 0; i < rows; i++) {
+                model.setValueAt(Integer.valueOf(i), i, 1);
+            }
+            JTable table = new JTable(model);
+            Assertions.assertEquals(10, TableStreamUtils.asStream(table)
+                    .filter(d -> d.getColumn() == 1)
+                    .mapToInt(d -> (Integer) d.getValue())
+                    .sum());
+        });
+    }
 }
