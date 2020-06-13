@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 /**
- * Utils to work with {@link JTable} and related classes via streams.
+ * Utils to iterate over cells of {@link JTable}.
  * Must be invoked on EDT.
  */
 public class TableStreamUtils {
@@ -16,7 +16,7 @@ public class TableStreamUtils {
     }
 
     /**
-     * This method assumes that the table does not change its number of rows and columns during the iteration.
+     * Note: This method assumes that the table does not change its number of rows and columns during the iteration.
      *
      * @param table Table which cells to iterate. Not null.
      * @param <T>   Type of the table.
@@ -65,7 +65,7 @@ public class TableStreamUtils {
     }
 
     /**
-     * This method assumes that the table does not change its number of rows and columns during the streaming.
+     * Note: This method assumes that the table does not change its number of rows and columns during the streaming.
      *
      * @param table Table which cells will be streamed. Not null.
      * @param <T>   Type of the table.
