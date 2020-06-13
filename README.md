@@ -3,7 +3,7 @@ Utils for iterating over JTable cells via Java 8 streams.
 
 The iteration order is from left to right, from top to bottom.
 
-Example 1 (count how many times cell value "London" appears in the selected cells of column 3):
+Example (count how many times cell value "London" appears in the selected cells of column 3):
 ```java
 import org.parubok.swing.utils.table.TableStreamUtils;
 
