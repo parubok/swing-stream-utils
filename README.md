@@ -5,7 +5,7 @@ The iteration order is from left to right, from top to bottom.
 
 Example (count how many times cell value "London" appears in the selected cells of column 3):
 ```java
-import org.parubok.swing.utils.table.TableStreamUtils;
+import org.swingk.utils.table.TableStreamUtils;
 
 JTable table = ...;
 long count = TableStreamUtils.asStream(table)

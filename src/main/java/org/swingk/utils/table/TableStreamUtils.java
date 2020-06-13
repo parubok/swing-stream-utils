@@ -1,4 +1,4 @@
-package org.parubok.swing.utils.table;
+package org.swingk.utils.table;
 
 import javax.swing.JTable;
 import java.util.Collections;

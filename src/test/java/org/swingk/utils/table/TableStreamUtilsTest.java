@@ -1,4 +1,4 @@
-package org.parubok.swing.utils.table;
+package org.swingk.utils.table;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
