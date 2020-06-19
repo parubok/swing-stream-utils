@@ -124,7 +124,7 @@ class TableStreamUtilsTest {
     }
 
     @Test
-    void concurrent_modification() throws Exception {
+    void concurrent_modification_rows() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             DefaultTableModel model = new DefaultTableModel(3, 2);
             JTable table = new JTable(model);
@@ -132,7 +132,9 @@ class TableStreamUtilsTest {
             Iterator<TableCellData<JTable>> iterator = iterable.iterator();
             iterator.next();
             model.addRow(new Object[] { "d1", "d2" });
-            Assertions.assertThrows(ConcurrentModificationException.class, () -> iterator.next());
+            ConcurrentModificationException ex = Assertions.assertThrows(ConcurrentModificationException.class,
+                    () -> iterator.next());
+            Assertions.assertEquals("Expected row count: 3, actual row count: 4.", ex.getMessage());
         });
     }
 }

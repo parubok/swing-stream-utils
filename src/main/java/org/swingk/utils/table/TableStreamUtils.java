@@ -47,11 +47,11 @@ public class TableStreamUtils {
                     int tableColumnCount = table.getColumnCount();
                     if (lastRow != (tableRowCount - 1)) {
                         throw new ConcurrentModificationException("Expected row count: " + (lastRow + 1)
-                                + ", actual row count: " + tableRowCount);
+                                + ", actual row count: " + tableRowCount + ".");
                     }
                     if (lastColumn != (tableColumnCount - 1)) {
                         throw new ConcurrentModificationException("Expected column count: " + (lastColumn + 1)
-                                + ", actual column count: " + tableColumnCount);
+                                + ", actual column count: " + tableColumnCount + ".");
                     }
                 }
 
