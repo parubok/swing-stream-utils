@@ -2,6 +2,7 @@ package org.swingk.utils.table;
 
 import javax.swing.JTable;
 import java.util.Collections;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -41,6 +42,19 @@ public class TableStreamUtils {
                 private int column = 0;
                 private boolean hasMoreCells = true;
 
+                private void checkForConcurrentModification() {
+                    int tableRowCount = table.getRowCount();
+                    int tableColumnCount = table.getColumnCount();
+                    if (lastRow != (tableRowCount - 1)) {
+                        throw new ConcurrentModificationException("Expected row count: " + (lastRow + 1)
+                                + ", actual row count: " + tableRowCount);
+                    }
+                    if (lastColumn != (tableColumnCount - 1)) {
+                        throw new ConcurrentModificationException("Expected column count: " + (lastColumn + 1)
+                                + ", actual column count: " + tableColumnCount);
+                    }
+                }
+
                 @Override
                 public boolean hasNext() {
                     return hasMoreCells;
@@ -48,6 +62,7 @@ public class TableStreamUtils {
 
                 @Override
                 public TableCellData<T> next() {
+                    checkForConcurrentModification();
                     Object value = table.getValueAt(row, column);
                     TableCellData<T> cellData = new TableCellData<>(row, column, value, table);
                     if (column < lastColumn) {

@@ -9,6 +9,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.stream.Collectors;
 
@@ -122,4 +123,16 @@ class TableStreamUtilsTest {
         });
     }
 
+    @Test
+    void concurrent_modification() throws Exception {
+        SwingUtilities.invokeAndWait(() -> {
+            DefaultTableModel model = new DefaultTableModel(3, 2);
+            JTable table = new JTable(model);
+            Iterable<TableCellData<JTable>> iterable = TableStreamUtils.asIterable(table);
+            Iterator<TableCellData<JTable>> iterator = iterable.iterator();
+            iterator.next();
+            model.addRow(new Object[] { "d1", "d2" });
+            Assertions.assertThrows(ConcurrentModificationException.class, () -> iterator.next());
+        });
+    }
 }
