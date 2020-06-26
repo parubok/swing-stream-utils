@@ -4,6 +4,7 @@ import javax.swing.JTable;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -25,9 +26,7 @@ public class TableStreamUtils {
      * @throws IllegalArgumentException If the table is null.
      */
     public static <T extends JTable> Iterable<TableCellData<T>> asIterable(T table) {
-        if (table == null) {
-            throw new IllegalArgumentException("table is null");
-        }
+        Objects.requireNonNull(table, "table");
         return () -> {
             final int lastRow = table.getRowCount() - 1;
             final int lastColumn = table.getColumnCount() - 1;
