@@ -144,8 +144,7 @@ class TableStreamUtilsTest {
     void toJTable_1() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             List<String> values = Arrays.asList("valA", "valB", "valC");
-            JTable table = values.stream()
-                    .collect(TableStreamUtils.toJTable("col1", Function.identity()));
+            JTable table = values.stream().collect(TableStreamUtils.toJTable(new Column<>("col1")));
             Assertions.assertEquals(values.size(), table.getRowCount());
             Assertions.assertEquals(1, table.getColumnCount());
             Assertions.assertEquals("col1", table.getColumnName(0));

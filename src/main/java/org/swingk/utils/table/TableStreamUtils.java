@@ -101,21 +101,27 @@ public class TableStreamUtils {
         return StreamSupport.stream(asIterable(table).spliterator(), false);
     }
 
-    public static <T> Collector<T, DefaultTableModel, JTable> toJTable(String columnNameA, Function<T, Object> columnValuesA) {
-        return toJTable(JTable.class, columnNameA, columnValuesA);
+    public static <T> Collector<T, DefaultTableModel, JTable> toJTable(Column... columns) {
+        return toJTable(JTable.class, columns);
     }
 
-    public static <T, K extends JTable> Collector<T, DefaultTableModel, K> toJTable(Class<K> tableClass, String columnNameA, Function<T, Object> columnValuesA) {
+    public static <T, K extends JTable> Collector<T, DefaultTableModel, K> toJTable(Class<K> tableClass, Column... columns) {
         return new Collector<T, DefaultTableModel, K>() {
 
             @Override
             public Supplier<DefaultTableModel> supplier() {
-                return () -> new DefaultTableModel(0, 1);
+                return () -> new DefaultTableModel(0, columns.length);
             }
 
             @Override
             public BiConsumer<DefaultTableModel, T> accumulator() {
-                return (model, val) -> model.addRow(new Object[]{columnValuesA.apply(val)});
+                return (model, val) -> {
+                    Object[] rowData = new Object[columns.length];
+                    for (int i = 0; i < rowData.length; i++) {
+                        rowData[i] = columns[i].getValuesProducer().apply(val);
+                    }
+                    model.addRow(rowData);
+                };
             }
 
             @Override
@@ -124,7 +130,7 @@ public class TableStreamUtils {
                     Vector newData = new Vector(m1.getRowCount() + m2.getRowCount());
                     newData.addAll(m1.getDataVector());
                     newData.addAll(m2.getDataVector());
-                    DefaultTableModel combinedModel = new DefaultTableModel(0, m1.getColumnCount());
+                    DefaultTableModel combinedModel = new DefaultTableModel(0, columns.length);
                     combinedModel.setDataVector(newData, null);
                     return combinedModel;
                 };
@@ -136,13 +142,20 @@ public class TableStreamUtils {
                     final AtomicReference<K> tableRef = new AtomicReference<>();
                     try {
                         Runnable finisherTask = () -> {
-                            model.setColumnIdentifiers(new Object[]{columnNameA});
+                            Object[] columnNames = new Object[columns.length];
+                            for (int i = 0; i < columnNames.length; i++) {
+                                columnNames[i] = columns[i].getName();
+                            }
+                            model.setColumnIdentifiers(columnNames);
                             try {
                                 tableRef.set(tableClass.newInstance());
                             } catch (InstantiationException | IllegalAccessException e) {
                                 throw new RuntimeException(e);
                             }
                             tableRef.get().setModel(model);
+                            for (int i = 0; i < columns.length; i++) {
+                                tableRef.get().getColumnModel().getColumn(i).setPreferredWidth(columns[i].getPreferredWidth());
+                            }
                         };
                         if (SwingUtilities.isEventDispatchThread()) {
                             finisherTask.run();
