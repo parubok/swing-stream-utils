@@ -11,6 +11,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
+import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 class TableStreamUtilsTest {
@@ -135,6 +137,21 @@ class TableStreamUtilsTest {
             ConcurrentModificationException ex = Assertions.assertThrows(ConcurrentModificationException.class,
                     () -> iterator.next());
             Assertions.assertEquals("Expected row count: 3, actual row count: 4.", ex.getMessage());
+        });
+    }
+
+    @Test
+    void toJTable_1() throws Exception {
+        SwingUtilities.invokeAndWait(() -> {
+            List<String> values = Arrays.asList("valA", "valB", "valC");
+            JTable table = values.stream()
+                    .collect(TableStreamUtils.toJTable("col1", Function.identity()));
+            Assertions.assertEquals(values.size(), table.getRowCount());
+            Assertions.assertEquals(1, table.getColumnCount());
+            Assertions.assertEquals("col1", table.getColumnName(0));
+            for (int i = 0; i < values.size(); i++) {
+                Assertions.assertEquals(values.get(i), table.getValueAt(i, 0));
+            }
         });
     }
 }

@@ -1,10 +1,21 @@
 package org.swingk.utils.table;
 
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableModel;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.Set;
+import java.util.Vector;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiConsumer;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collector;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -88,5 +99,69 @@ public class TableStreamUtils {
      */
     public static <T extends JTable> Stream<TableCellData<T>> asStream(T table) {
         return StreamSupport.stream(asIterable(table).spliterator(), false);
+    }
+
+    public static <T> Collector<T, DefaultTableModel, JTable> toJTable(String columnNameA, Function<T, Object> columnValuesA) {
+        return toJTable(JTable.class, columnNameA, columnValuesA);
+    }
+
+    public static <T, K extends JTable> Collector<T, DefaultTableModel, K> toJTable(Class<K> tableClass, String columnNameA, Function<T, Object> columnValuesA) {
+        return new Collector<T, DefaultTableModel, K>() {
+
+            @Override
+            public Supplier<DefaultTableModel> supplier() {
+                return () -> new DefaultTableModel(0, 1);
+            }
+
+            @Override
+            public BiConsumer<DefaultTableModel, T> accumulator() {
+                return (model, val) -> model.addRow(new Object[]{columnValuesA.apply(val)});
+            }
+
+            @Override
+            public BinaryOperator<DefaultTableModel> combiner() {
+                return (m1, m2) -> {
+                    Vector newData = new Vector(m1.getRowCount() + m2.getRowCount());
+                    newData.addAll(m1.getDataVector());
+                    newData.addAll(m2.getDataVector());
+                    DefaultTableModel combinedModel = new DefaultTableModel(0, m1.getColumnCount());
+                    combinedModel.setDataVector(newData, null);
+                    return combinedModel;
+                };
+            }
+
+            @Override
+            public Function<DefaultTableModel, K> finisher() {
+                return model -> {
+                    final AtomicReference<K> tableRef = new AtomicReference<>();
+                    try {
+                        Runnable finisherTask = () -> {
+                            model.setColumnIdentifiers(new Object[]{columnNameA});
+                            try {
+                                tableRef.set(tableClass.newInstance());
+                            } catch (InstantiationException | IllegalAccessException e) {
+                                throw new RuntimeException(e);
+                            }
+                            tableRef.get().setModel(model);
+                        };
+                        if (SwingUtilities.isEventDispatchThread()) {
+                            finisherTask.run();
+                        } else {
+                            SwingUtilities.invokeAndWait(finisherTask);
+                        }
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    } catch (InvocationTargetException e) {
+                        throw new RuntimeException(e.getCause());
+                    }
+                    return tableRef.get();
+                };
+            }
+
+            @Override
+            public Set<Characteristics> characteristics() {
+                return Collections.emptySet();
+            }
+        };
     }
 }
