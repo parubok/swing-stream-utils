@@ -3,6 +3,7 @@ package org.swingk.utils.table;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
@@ -148,7 +149,7 @@ public class TableStreamUtils {
                     final AtomicReference<K> tableRef = new AtomicReference<>();
                     try {
                         Runnable finisherTask = () -> {
-                            Object[] columnNames = new Object[columns.length];
+                            String[] columnNames = new String[columns.length];
                             for (int i = 0; i < columnNames.length; i++) {
                                 columnNames[i] = columns[i].getName();
                             }
@@ -156,7 +157,8 @@ public class TableStreamUtils {
                             K table = Objects.requireNonNull(tableSupplier.get(), "table");
                             table.setModel(model);
                             for (int i = 0; i < columns.length; i++) {
-                                table.getColumnModel().getColumn(i).setPreferredWidth(columns[i].getPreferredWidth());
+                                TableColumn tableColumn = table.getColumnModel().getColumn(i);
+                                tableColumn.setPreferredWidth(columns[i].getPreferredWidth());
                             }
                             tableRef.set(table);
                         };
