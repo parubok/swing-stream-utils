@@ -155,7 +155,7 @@ class TableStreamUtilsTest {
     }
 
     @Test
-    void toJTable_2() throws Exception {
+    void toJTable_parallelStream() throws Exception {
         List<Integer> values = IntStream.range(0, 100_000).mapToObj(Integer::new).collect(Collectors.toList());
         JTable table = values.parallelStream().collect(TableStreamUtils.toJTable(new Column<>("col1")));
         SwingUtilities.invokeAndWait(() -> {
@@ -166,5 +166,11 @@ class TableStreamUtilsTest {
                 Assertions.assertEquals(values.get(i), table.getValueAt(i, 0));
             }
         });
+    }
+
+    @Test
+    void toJTable_no_columns() {
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> Arrays.asList("value").stream().collect(TableStreamUtils.toJTable()));
     }
 }
