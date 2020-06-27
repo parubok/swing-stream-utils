@@ -24,5 +24,6 @@ import static org.swingk.utils.table.TableStreamUtils.toJTable;
 
 List<File> files = ...;
 JTable table = files.stream()
-                .collect(toJTable(new Column<>("Name", 100, File::getName), new Column<>("Size", 50, File::length));
+                .collect(toJTable(new Column<>("Name", 100, File::getName), 
+                                    new Column<>("Size", 50, File::length));
 ```
