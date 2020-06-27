@@ -6,6 +6,7 @@ import java.util.function.Function;
 /**
  * {@link javax.swing.JTable} column descriptor for {@link TableStreamUtils#toJTable} collectors.
  * @param <K> Type of stream elements.
+ * @see javax.swing.table.TableColumn
  */
 public class Column<K> {
 
@@ -17,17 +18,17 @@ public class Column<K> {
 
     /**
      * @param name Name of the column. Not null.
-     * @param preferredWidth Preferred width of the column in pixels. See {@link #DEFAULT_PREFERRED_WIDTH}.
      * @param valueProducer Producer of values for the column. May be called on not EDT thread (e.g. with parallel stream).
+     * @param preferredWidth Preferred width of the column in pixels. See {@link #DEFAULT_PREFERRED_WIDTH}.
      */
-    public Column(String name, int preferredWidth, Function<K, ? extends Object> valueProducer) {
+    public Column(String name, Function<K, ? extends Object> valueProducer, int preferredWidth) {
         this.name = Objects.requireNonNull(name);
-        this.preferredWidth = preferredWidth;
         this.valueProducer = Objects.requireNonNull(valueProducer);
+        this.preferredWidth = preferredWidth;
     }
 
     public Column(String name, Function<K, ? extends Object> valueProducer) {
-        this(name, DEFAULT_PREFERRED_WIDTH, valueProducer);
+        this(name, valueProducer, DEFAULT_PREFERRED_WIDTH);
     }
 
     public Column(String name) {

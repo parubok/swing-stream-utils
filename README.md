@@ -27,6 +27,6 @@ import static org.swingk.utils.table.TableStreamUtils.toJTable;
 List<File> files = ...;
 FileTable table; // FileTable is a subclass of JTable
 table = files.parallelStream()
-             .collect(toJTable(FileTable::new, new Column<>("Name", 100, File::getName), 
-                                                new Column<>("Size", 70, File::length));
+             .collect(toJTable(FileTable::new, new Column<>("Name", File::getName, 100), 
+                                                new Column<>("Size", File::length, 70));
 ```
