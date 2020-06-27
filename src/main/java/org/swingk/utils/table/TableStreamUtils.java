@@ -144,7 +144,7 @@ public class TableStreamUtils {
                 return (model, val) -> {
                     Object[] rowData = new Object[columns.length];
                     for (int i = 0; i < rowData.length; i++) {
-                        rowData[i] = columns[i].getValuesProducer().apply(val);
+                        rowData[i] = columns[i].getValueProducer().apply(val);
                     }
                     model.addRow(rowData);
                 };
