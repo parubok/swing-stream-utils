@@ -15,16 +15,23 @@ public class Column<K> {
     private final String name;
     private final int preferredWidth;
     private final Function<K, ? extends Object> valueProducer;
+    private final Class<?> columnClass;
 
     /**
      * @param name Name of the column. Not null.
      * @param valueProducer Producer of values for the column. May be called on not EDT thread (e.g. with parallel stream).
      * @param preferredWidth Preferred width of the column in pixels. See {@link #DEFAULT_PREFERRED_WIDTH}.
+     * @param columnClass Class which will be returned from {@link javax.swing.table.TableModel#getColumnClass(int)} for this column. Not null.
      */
-    public Column(String name, Function<K, ? extends Object> valueProducer, int preferredWidth) {
+    public Column(String name, Function<K, ? extends Object> valueProducer, int preferredWidth, Class<?> columnClass) {
         this.name = Objects.requireNonNull(name);
         this.valueProducer = Objects.requireNonNull(valueProducer);
         this.preferredWidth = preferredWidth;
+        this.columnClass = Objects.requireNonNull(columnClass);
+    }
+
+    public Column(String name, Function<K, ? extends Object> valueProducer, int preferredWidth) {
+        this(name, valueProducer, preferredWidth, Object.class);
     }
 
     public Column(String name, Function<K, ? extends Object> valueProducer) {
@@ -45,5 +52,9 @@ public class Column<K> {
 
     public Function<K, ? extends Object> getValueProducer() {
         return valueProducer;
+    }
+
+    public Class<?> getColumnClass() {
+        return columnClass;
     }
 }

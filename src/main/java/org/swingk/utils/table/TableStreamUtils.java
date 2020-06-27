@@ -2,7 +2,6 @@ package org.swingk.utils.table;
 
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
@@ -105,15 +104,18 @@ public class TableStreamUtils {
     /**
      * @see #toJTable(Supplier, Column[])
      */
-    public static <T> Collector<T, DefaultTableModel, JTable> toJTable(Column<T>... columns) {
+    public static <T> Collector<T, TableModelK, JTable> toJTable(Column<T>... columns) {
         return toJTable(JTable::new, columns);
     }
 
     /**
      * Collector for Java 8 streams to produce {@link JTable} (an element from the stream produces a single table row).
      * <p>
-     * <b>Note:</b> The collector ensures that the table component is created/accessed on EDT even if the streaming is
+     * <b>Note 1:</b> The collector ensures that the table component is created/accessed on EDT even if the streaming is
      * performed on a different thread (e.g. parallel stream).
+     * </p>
+     * <p>
+     * <b>Note 2:</b> Model of the resulting {@link JTable} is instance of {@link TableModelK}.
      * </p>
      *
      * @param tableSupplier Creates a concrete instance of {@link JTable} for the collector. Called on EDT.
@@ -121,20 +123,20 @@ public class TableStreamUtils {
      * @param <T> Type of stream elements.
      * @return The new table.
      */
-    public static <T, K extends JTable> Collector<T, DefaultTableModel, K> toJTable(Supplier<K> tableSupplier, Column<T>... columns) {
+    public static <T, K extends JTable> Collector<T, TableModelK, K> toJTable(Supplier<K> tableSupplier, Column<T>... columns) {
         Objects.requireNonNull(tableSupplier);
         if (columns.length == 0) {
             throw new IllegalArgumentException("Columns must be specified.");
         }
-        return new Collector<T, DefaultTableModel, K>() {
+        return new Collector<T, TableModelK, K>() {
 
             @Override
-            public Supplier<DefaultTableModel> supplier() {
-                return () -> new DefaultTableModel(0, columns.length);
+            public Supplier<TableModelK> supplier() {
+                return () -> new TableModelK(0, columns.length);
             }
 
             @Override
-            public BiConsumer<DefaultTableModel, T> accumulator() {
+            public BiConsumer<TableModelK, T> accumulator() {
                 return (model, val) -> {
                     Object[] rowData = new Object[columns.length];
                     for (int i = 0; i < rowData.length; i++) {
@@ -145,11 +147,11 @@ public class TableStreamUtils {
             }
 
             @Override
-            public BinaryOperator<DefaultTableModel> combiner() {
+            public BinaryOperator<TableModelK> combiner() {
                 return (m1, m2) -> {
                     final int r1 = m1.getRowCount();
                     final int r2 = m1.getRowCount();
-                    DefaultTableModel combinedModel = new DefaultTableModel(r1 + r2, m1.getColumnCount());
+                    TableModelK combinedModel = new TableModelK(r1 + r2, m1.getColumnCount());
                     for (int i = 0; i < combinedModel.getRowCount(); i++) {
                         for (int j = 0; j < combinedModel.getColumnCount(); j++) {
                             combinedModel.setValueAt(i < r1 ? m1.getValueAt(i, j) : m2.getValueAt(i - r1, j), i, j);
@@ -160,7 +162,7 @@ public class TableStreamUtils {
             }
 
             @Override
-            public Function<DefaultTableModel, K> finisher() {
+            public Function<TableModelK, K> finisher() {
                 return model -> {
                     final AtomicReference<K> tableRef = new AtomicReference<>();
                     try {
@@ -168,6 +170,7 @@ public class TableStreamUtils {
                             Vector<String> columnNames = new Vector(columns.length);
                             for (int i = 0; i < columns.length; i++) {
                                 columnNames.add(columns[i].getName());
+                                model.setColumnClass(i, columns[i].getColumnClass());
                             }
                             model.setColumnIdentifiers(columnNames);
                             K table = Objects.requireNonNull(tableSupplier.get(), "table");
