@@ -7,6 +7,9 @@ import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
@@ -151,6 +154,26 @@ class TableStreamUtilsTest {
             for (int i = 0; i < values.size(); i++) {
                 Assertions.assertEquals(values.get(i), table.getValueAt(i, 0));
             }
+        });
+    }
+
+    @Test
+    void toJTable_2() throws Exception {
+        SwingUtilities.invokeAndWait(() -> {
+            List<Rectangle> values = Arrays.asList(new Rectangle(0, 0, 2, 5), new Rectangle(1, 1, 3, 6));
+            JTable table = values.stream()
+                    .collect(TableStreamUtils.toJTable(new Column<>("Location", r -> r.getLocation(), 20, Point.class),
+                                                        new Column<>("Size", r -> r.getSize(), 30, Dimension.class)));
+            Assertions.assertEquals(values.size(), table.getRowCount());
+            Assertions.assertEquals(2, table.getColumnCount());
+            Assertions.assertEquals("Location", table.getColumnName(0));
+            Assertions.assertEquals("Size", table.getColumnName(1));
+            Assertions.assertEquals(Point.class, table.getColumnClass(0));
+            Assertions.assertEquals(Dimension.class, table.getColumnClass(1));
+            Assertions.assertEquals(new Point(0, 0), table.getValueAt(0, 0));
+            Assertions.assertEquals(new Point(1, 1), table.getValueAt(1, 0));
+            Assertions.assertEquals(new Dimension(2, 5), table.getValueAt(0, 1));
+            Assertions.assertEquals(new Dimension(3, 6), table.getValueAt(1, 1));
         });
     }
 
