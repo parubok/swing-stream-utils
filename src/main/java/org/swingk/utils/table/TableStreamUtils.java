@@ -145,15 +145,17 @@ public class TableStreamUtils {
                                 columnNames[i] = columns[i].getName();
                             }
                             model.setColumnIdentifiers(columnNames);
+                            K table;
                             try {
-                                tableRef.set(tableClass.newInstance());
+                                table = tableClass.newInstance();
                             } catch (InstantiationException | IllegalAccessException e) {
                                 throw new RuntimeException("Unable to instantiate table", e);
                             }
-                            tableRef.get().setModel(model);
+                            table.setModel(model);
                             for (int i = 0; i < columns.length; i++) {
-                                tableRef.get().getColumnModel().getColumn(i).setPreferredWidth(columns[i].getPreferredWidth());
+                                table.getColumnModel().getColumn(i).setPreferredWidth(columns[i].getPreferredWidth());
                             }
+                            tableRef.set(table);
                         };
                         // Swing components must be created/accessed on EDT:
                         if (SwingUtilities.isEventDispatchThread()) {
