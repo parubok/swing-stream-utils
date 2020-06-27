@@ -101,11 +101,15 @@ public class TableStreamUtils {
         return StreamSupport.stream(asIterable(table).spliterator(), false);
     }
 
-    public static <T> Collector<T, DefaultTableModel, JTable> toJTable(Column... columns) {
-        return toJTable(JTable.class, columns);
+    public static <T> Collector<T, DefaultTableModel, JTable> toJTable(Column<T>... columns) {
+        return toJTable(JTable::new, columns);
     }
 
-    public static <T, K extends JTable> Collector<T, DefaultTableModel, K> toJTable(Class<K> tableClass, Column... columns) {
+    public static <T, K extends JTable> Collector<T, DefaultTableModel, K> toJTable(Supplier<K> tableSupplier, Column<T>... columns) {
+        Objects.requireNonNull(tableSupplier);
+        if (columns.length == 0) {
+            throw new IllegalArgumentException("Columns must be specified.");
+        }
         return new Collector<T, DefaultTableModel, K>() {
 
             @Override
@@ -145,12 +149,7 @@ public class TableStreamUtils {
                                 columnNames[i] = columns[i].getName();
                             }
                             model.setColumnIdentifiers(columnNames);
-                            K table;
-                            try {
-                                table = tableClass.newInstance();
-                            } catch (InstantiationException | IllegalAccessException e) {
-                                throw new RuntimeException("Unable to instantiate table", e);
-                            }
+                            K table = Objects.requireNonNull(tableSupplier.get(), "table");
                             table.setModel(model);
                             for (int i = 0; i < columns.length; i++) {
                                 table.getColumnModel().getColumn(i).setPreferredWidth(columns[i].getPreferredWidth());
