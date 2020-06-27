@@ -130,9 +130,7 @@ public class TableStreamUtils {
                     Vector newData = new Vector(m1.getRowCount() + m2.getRowCount());
                     newData.addAll(m1.getDataVector());
                     newData.addAll(m2.getDataVector());
-                    DefaultTableModel combinedModel = new DefaultTableModel(0, columns.length);
-                    combinedModel.setDataVector(newData, null);
-                    return combinedModel;
+                    return new DefaultTableModel(newData, null);
                 };
             }
 
@@ -150,13 +148,14 @@ public class TableStreamUtils {
                             try {
                                 tableRef.set(tableClass.newInstance());
                             } catch (InstantiationException | IllegalAccessException e) {
-                                throw new RuntimeException(e);
+                                throw new RuntimeException("Unable to instantiate table", e);
                             }
                             tableRef.get().setModel(model);
                             for (int i = 0; i < columns.length; i++) {
                                 tableRef.get().getColumnModel().getColumn(i).setPreferredWidth(columns[i].getPreferredWidth());
                             }
                         };
+                        // Swing components must be created/accessed on EDT:
                         if (SwingUtilities.isEventDispatchThread()) {
                             finisherTask.run();
                         } else {
