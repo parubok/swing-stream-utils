@@ -29,7 +29,7 @@ public class TableStreamUtils {
     }
 
     /**
-     * Note: This method assumes that the table does not change its number of rows and columns during the iteration.
+     * Note: The iteration order is from left to right, from top to bottom.
      *
      * @param table Table which cells to iterate. Not null.
      * @param <T>   Type of the table.
@@ -90,7 +90,7 @@ public class TableStreamUtils {
     }
 
     /**
-     * Note: This method assumes that the table does not change its number of rows and columns during the streaming.
+     * Note: The table traversal order is from left to right, from top to bottom.
      *
      * @param table Table which cells will be streamed. Not null.
      * @param <T>   Type of the table.
@@ -101,10 +101,31 @@ public class TableStreamUtils {
         return StreamSupport.stream(asIterable(table).spliterator(), false);
     }
 
+    /**
+     * Collector for Java 8 streams to create {@link JTable} from elements of the stream.
+     * <p>
+     * <b>Note:</b> All access to the table component is performed on EDT.
+     * </p>
+     *
+     * @param columns The table column descriptors.
+     * @param <T> Type of stream elements.
+     * @return The new table.
+     */
     public static <T> Collector<T, DefaultTableModel, JTable> toJTable(Column<T>... columns) {
         return toJTable(JTable::new, columns);
     }
 
+    /**
+     * Collector for Java 8 streams to create {@link JTable} from elements of the stream.
+     * <p>
+     * <b>Note:</b> All access to the table component is performed on EDT.
+     * </p>
+     *
+     * @param tableSupplier Creates a concrete instance of {@link JTable} for the collector.
+     * @param columns The table column descriptors.
+     * @param <T> Type of stream elements.
+     * @return The new table.
+     */
     public static <T, K extends JTable> Collector<T, DefaultTableModel, K> toJTable(Supplier<K> tableSupplier, Column<T>... columns) {
         Objects.requireNonNull(tableSupplier);
         if (columns.length == 0) {
