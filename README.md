@@ -15,7 +15,7 @@ long count = TableStreamUtils.asStream(table)
   .count();
 ```
 
-Example 2 (create `JTable` with 'Name' and 'Size' columns from a list of `File` objects):
+Example 2 (create table with 'Name' and 'Size' columns from a list of `File` objects):
 ```java
 import java.io.File;
 import java.util.List;
@@ -25,8 +25,8 @@ import org.swingk.utils.table.Column;
 import static org.swingk.utils.table.TableStreamUtils.toJTable;
 
 List<File> files = ...;
-FileTable table; // FileTable is a subclass of JTable
-table = files.parallelStream()
+/* FileTable is a subclass of JTable */
+FileTable table = files.parallelStream()
              .collect(toJTable(FileTable::new, new Column<>("Name", File::getName, 100), 
                                                 new Column<>("Size", File::length, 70));
 ```
