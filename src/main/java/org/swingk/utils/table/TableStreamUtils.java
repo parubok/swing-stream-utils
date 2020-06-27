@@ -119,10 +119,10 @@ public class TableStreamUtils {
     /**
      * Collector for Java 8 streams to create {@link JTable} from elements of the stream.
      * <p>
-     * <b>Note:</b> All access to the table component is performed on EDT.
+     * <b>Note:</b> The collector ensures that the table component is created/accessed on EDT even if the streaming is performed on a different thread.
      * </p>
      *
-     * @param tableSupplier Creates a concrete instance of {@link JTable} for the collector.
+     * @param tableSupplier Creates a concrete instance of {@link JTable} for the collector. Called on EDT.
      * @param columns The table column descriptors.
      * @param <T> Type of stream elements.
      * @return The new table.
