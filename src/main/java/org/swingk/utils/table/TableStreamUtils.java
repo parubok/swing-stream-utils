@@ -9,7 +9,6 @@ import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
-import java.util.Vector;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
@@ -131,10 +130,15 @@ public class TableStreamUtils {
             @Override
             public BinaryOperator<DefaultTableModel> combiner() {
                 return (m1, m2) -> {
-                    Vector newData = new Vector(m1.getRowCount() + m2.getRowCount());
-                    newData.addAll(m1.getDataVector());
-                    newData.addAll(m2.getDataVector());
-                    return new DefaultTableModel(newData, null);
+                    final int r1 = m1.getRowCount();
+                    final int r2 = m1.getRowCount();
+                    DefaultTableModel combinedModel = new DefaultTableModel(r1 + r2, m1.getColumnCount());
+                    for (int i = 0; i < combinedModel.getRowCount(); i++) {
+                        for (int j = 0; j < combinedModel.getColumnCount(); j++) {
+                            combinedModel.setValueAt(i < r1 ? m1.getValueAt(i, j) : m2.getValueAt(i - r1, j), i, j);
+                        }
+                    }
+                    return combinedModel;
                 };
             }
 

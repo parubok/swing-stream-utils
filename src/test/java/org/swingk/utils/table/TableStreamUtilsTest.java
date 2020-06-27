@@ -13,6 +13,7 @@ import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 class TableStreamUtilsTest {
 
@@ -144,6 +145,20 @@ class TableStreamUtilsTest {
         SwingUtilities.invokeAndWait(() -> {
             List<String> values = Arrays.asList("valA", "valB", "valC");
             JTable table = values.stream().collect(TableStreamUtils.toJTable(new Column<>("col1")));
+            Assertions.assertEquals(values.size(), table.getRowCount());
+            Assertions.assertEquals(1, table.getColumnCount());
+            Assertions.assertEquals("col1", table.getColumnName(0));
+            for (int i = 0; i < values.size(); i++) {
+                Assertions.assertEquals(values.get(i), table.getValueAt(i, 0));
+            }
+        });
+    }
+
+    @Test
+    void toJTable_2() throws Exception {
+        List<Integer> values = IntStream.range(0, 100_000).mapToObj(Integer::new).collect(Collectors.toList());
+        JTable table = values.parallelStream().collect(TableStreamUtils.toJTable(new Column<>("col1")));
+        SwingUtilities.invokeAndWait(() -> {
             Assertions.assertEquals(values.size(), table.getRowCount());
             Assertions.assertEquals(1, table.getColumnCount());
             Assertions.assertEquals("col1", table.getColumnName(0));
