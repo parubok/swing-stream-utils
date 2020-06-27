@@ -10,6 +10,7 @@ import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
+import java.util.Vector;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
@@ -170,9 +171,9 @@ public class TableStreamUtils {
                     final AtomicReference<K> tableRef = new AtomicReference<>();
                     try {
                         Runnable finisherTask = () -> {
-                            String[] columnNames = new String[columns.length];
-                            for (int i = 0; i < columnNames.length; i++) {
-                                columnNames[i] = columns[i].getName();
+                            Vector<String> columnNames = new Vector(columns.length);
+                            for (int i = 0; i < columns.length; i++) {
+                                columnNames.add(columns[i].getName());
                             }
                             model.setColumnIdentifiers(columnNames);
                             K table = Objects.requireNonNull(tableSupplier.get(), "table");

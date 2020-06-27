@@ -20,6 +20,8 @@ Example 2 (create `JTable` with 'Name' and 'Size' columns from a list of `File` 
 import java.io.File;
 import java.util.List;
 
+import org.swingk.utils.table.Column;
+
 import static org.swingk.utils.table.TableStreamUtils.toJTable;
 
 List<File> files = ...;
