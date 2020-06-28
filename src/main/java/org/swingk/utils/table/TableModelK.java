@@ -21,6 +21,10 @@ public class TableModelK extends DefaultTableModel {
     }
 
     public void setColumnClass(int columnIndex, Class<?> columnClass) {
+        if (columnIndex < 0 || columnIndex >= getColumnCount()) {
+            throw new IllegalArgumentException("Invalid column index " + columnIndex + ". Valid range: [0, "
+                    + (getColumnCount() - 1) + "].");
+        }
         columnClasses.put(columnIndex, columnClass);
     }
 }
