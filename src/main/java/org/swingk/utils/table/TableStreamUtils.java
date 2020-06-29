@@ -148,13 +148,14 @@ public class TableStreamUtils {
 
             @Override
             public BinaryOperator<TableModelK> combiner() {
-                return (m1, m2) -> {
-                    final int r1 = m1.getRowCount();
-                    final int r2 = m1.getRowCount();
-                    TableModelK combinedModel = new TableModelK(r1 + r2, m1.getColumnCount());
+                return (model1, model2) -> {
+                    final int r1 = model1.getRowCount();
+                    final int r2 = model2.getRowCount();
+                    TableModelK combinedModel = new TableModelK(r1 + r2, model1.getColumnCount());
                     for (int i = 0; i < combinedModel.getRowCount(); i++) {
                         for (int j = 0; j < combinedModel.getColumnCount(); j++) {
-                            combinedModel.setValueAt(i < r1 ? m1.getValueAt(i, j) : m2.getValueAt(i - r1, j), i, j);
+                            Object value = i < r1 ? model1.getValueAt(i, j) : model2.getValueAt(i - r1, j);
+                            combinedModel.setValueAt(value, i, j);
                         }
                     }
                     return combinedModel;
