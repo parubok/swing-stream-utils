@@ -187,6 +187,7 @@ class TableStreamUtilsTest {
             Assertions.assertEquals("col1", table.getColumnName(0));
             for (int i = 0; i < values.size(); i++) {
                 Assertions.assertEquals(values.get(i), table.getValueAt(i, 0));
+                Assertions.assertEquals(values.get(i), ((TableModelK) table.getModel()).getRowObject(i));
             }
         });
     }

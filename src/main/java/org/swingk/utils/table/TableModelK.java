@@ -3,7 +3,7 @@ package org.swingk.utils.table;
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
 
-final class TableModelK extends AbstractTableModel {
+public final class TableModelK extends AbstractTableModel {
     private final List<List<Object>> data;
     private final int columnCount;
     private final List<Class<?>> columnClasses;
@@ -18,6 +18,10 @@ final class TableModelK extends AbstractTableModel {
         this.columnClasses = columnClasses;
         this.columnNames = columnNames;
         this.columnsEditable = columnsEditable;
+    }
+
+    public Object getRowObject(int rowIndex) {
+        return data.get(rowIndex).get(columnCount);
     }
 
     @Override

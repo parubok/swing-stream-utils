@@ -140,10 +140,11 @@ public class TableStreamUtils {
             @Override
             public BiConsumer<List<List<Object>>, T> accumulator() {
                 return (list, val) -> {
-                    List<Object> rowList = new ArrayList<>(columns.length);
+                    List<Object> rowList = new ArrayList<>(columns.length + 1);
                     for (int i = 0; i < columns.length; i++) {
                         rowList.add(columns[i].getValueProducer().apply(val));
                     }
+                    rowList.add(val);
                     list.add(rowList);
                 };
             }
@@ -169,7 +170,8 @@ public class TableStreamUtils {
                         columnClasses.add(columns[i].getColumnClass());
                         editable[i] = columns[i].isEditable();
                     }
-                    TableModelK model = new TableModelK(list, columns.length, columnClasses, columnNames, editable);
+                    TableModelK model = new TableModelK(list, columns.length, columnClasses, columnNames,
+                            editable);
                     final AtomicReference<K> tableRef = new AtomicReference<>();
                     try {
                         Runnable finisherTask = () -> {
