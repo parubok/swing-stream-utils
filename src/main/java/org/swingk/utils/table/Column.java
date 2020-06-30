@@ -23,6 +23,7 @@ public class Column<K> {
      * @param valueProducer Producer of values for the column. May be called on non-EDT thread (e.g. with parallel stream).
      * @param preferredWidth Preferred width of the column in pixels. See {@link #DEFAULT_PREFERRED_WIDTH}.
      * @param columnClass Class which will be returned from {@link javax.swing.table.TableModel#getColumnClass(int)} for this column. Not null.
+     * @param editable True if cells of this column should be editable.
      */
     public Column(String name, Function<K, ? extends Object> valueProducer, int preferredWidth, Class<?> columnClass,
                   boolean editable) {
