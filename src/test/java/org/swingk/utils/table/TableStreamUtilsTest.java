@@ -212,9 +212,9 @@ class TableStreamUtilsTest {
         for (int i = 0; i < repeats; i++) {
             long t0 = System.currentTimeMillis();
             JTable table = (parallel ? values.parallelStream() : values.stream()).collect(TableStreamUtils.toJTable(
-                    new Column<>("col1", v -> String.format("Value: %d", v)),
-                    new Column<>("col2", v -> Integer.toHexString(Integer.parseInt(Integer.toString(v + v)))),
-                    new Column<>("col3", v -> Arrays.toString(Integer.toString(v + v).getBytes()))));
+                    new Column<>("COL1", v -> String.format("Value: %d", v)),
+                    new Column<>("COL2", v -> Integer.toHexString(Integer.parseInt(Integer.toString(v + v)))),
+                    new Column<>("COL3", v -> Arrays.toString(Integer.toString(v + v).getBytes()))));
             long t = System.currentTimeMillis() - t0;
             totalTime += t;
             Assertions.assertEquals(c, table.getRowCount());
