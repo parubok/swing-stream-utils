@@ -1,30 +1,58 @@
 package org.swingk.utils.table;
 
-import javax.swing.table.DefaultTableModel;
-import java.util.HashMap;
-import java.util.Map;
+import javax.swing.table.AbstractTableModel;
+import java.util.List;
 
-/**
- * Subclass of {@link DefaultTableModel} with support of column classes.
- */
-public class TableModelK extends DefaultTableModel {
+final class TableModelK extends AbstractTableModel {
+    private final List<List<Object>> data;
+    private final int columnCount;
+    private final List<Class<?>> columnClasses;
+    private final List<String> columnNames;
+    private final boolean[] columnsEditable;
 
-    private final Map<Integer, Class<?>> columnClasses = new HashMap<>();
+    TableModelK(List<List<Object>> data, int columnCount, List<Class<?>> columnClasses, List<String> columnNames,
+                boolean[] columnsEditable) {
+        super();
+        this.data = data;
+        this.columnCount = columnCount;
+        this.columnClasses = columnClasses;
+        this.columnNames = columnNames;
+        this.columnsEditable = columnsEditable;
+    }
 
-    public TableModelK(int rowCount, int columnCount) {
-        super(rowCount, columnCount);
+    @Override
+    public int getRowCount() {
+        return data.size();
+    }
+
+    @Override
+    public int getColumnCount() {
+        return columnCount;
+    }
+
+    @Override
+    public String getColumnName(int columnIndex) {
+        return columnNames.get(columnIndex);
     }
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-        return columnClasses.getOrDefault(columnIndex, Object.class);
+        return columnClasses.get(columnIndex);
     }
 
-    public void setColumnClass(int columnIndex, Class<?> columnClass) {
-        if (columnIndex < 0 || columnIndex >= getColumnCount()) {
-            throw new IllegalArgumentException("Invalid column index " + columnIndex + ". Valid range: [0, "
-                    + (getColumnCount() - 1) + "].");
-        }
-        columnClasses.put(columnIndex, columnClass);
+    @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+        return columnsEditable[columnIndex];
+    }
+
+    @Override
+    public Object getValueAt(int rowIndex, int columnIndex) {
+        return data.get(rowIndex).get(columnIndex);
+    }
+
+    @Override
+    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+        data.get(rowIndex).set(columnIndex, aValue);
+        fireTableCellUpdated(rowIndex, columnIndex);
     }
 }

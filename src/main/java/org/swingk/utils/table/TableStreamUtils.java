@@ -4,12 +4,13 @@ import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableColumn;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.Vector;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
@@ -104,7 +105,7 @@ public class TableStreamUtils {
     /**
      * @see #toJTable(Supplier, Column[])
      */
-    public static <T> Collector<T, TableModelK, JTable> toJTable(Column<T>... columns) {
+    public static <T> Collector<T, List<List<Object>>, JTable> toJTable(Column<T>... columns) {
         return toJTable(JTable::new, columns);
     }
 
@@ -123,57 +124,55 @@ public class TableStreamUtils {
      * @param <T> Type of stream elements.
      * @return The new table.
      */
-    public static <T, K extends JTable> Collector<T, TableModelK, K> toJTable(Supplier<K> tableSupplier, Column<T>... columns) {
+    public static <T, K extends JTable> Collector<T, List<List<Object>>, K> toJTable(Supplier<K> tableSupplier,
+                                                                                     Column<T>... columns) {
         Objects.requireNonNull(tableSupplier);
         if (columns.length == 0) {
             throw new IllegalArgumentException("Columns must be specified.");
         }
-        return new Collector<T, TableModelK, K>() {
+        return new Collector<T, List<List<Object>>, K>() {
 
             @Override
-            public Supplier<TableModelK> supplier() {
-                return () -> new TableModelK(0, columns.length);
+            public Supplier<List<List<Object>>> supplier() {
+                return ArrayList::new;
             }
 
             @Override
-            public BiConsumer<TableModelK, T> accumulator() {
-                return (model, val) -> {
-                    Object[] rowData = new Object[columns.length];
-                    for (int i = 0; i < rowData.length; i++) {
-                        rowData[i] = columns[i].getValueProducer().apply(val);
+            public BiConsumer<List<List<Object>>, T> accumulator() {
+                return (list, val) -> {
+                    List<Object> rowList = new ArrayList<>(columns.length);
+                    for (int i = 0; i < columns.length; i++) {
+                        rowList.add(columns[i].getValueProducer().apply(val));
                     }
-                    model.addRow(rowData);
+                    list.add(rowList);
                 };
             }
 
             @Override
-            public BinaryOperator<TableModelK> combiner() {
-                return (model1, model2) -> {
-                    final int r1 = model1.getRowCount();
-                    final int r2 = model2.getRowCount();
-                    TableModelK combinedModel = new TableModelK(r1 + r2, model1.getColumnCount());
-                    for (int i = 0; i < combinedModel.getRowCount(); i++) {
-                        for (int j = 0; j < combinedModel.getColumnCount(); j++) {
-                            Object value = i < r1 ? model1.getValueAt(i, j) : model2.getValueAt(i - r1, j);
-                            combinedModel.setValueAt(value, i, j);
-                        }
-                    }
-                    return combinedModel;
+            public BinaryOperator<List<List<Object>>> combiner() {
+                return (list1, list2) -> {
+                    List<List<Object>> combinedList = new ArrayList<>(list1.size() + list2.size());
+                    combinedList.addAll(list1);
+                    combinedList.addAll(list2);
+                    return combinedList;
                 };
             }
 
             @Override
-            public Function<TableModelK, K> finisher() {
-                return model -> {
+            public Function<List<List<Object>>, K> finisher() {
+                return list -> {
+                    List<Class<?>> columnClasses = new ArrayList<>(columns.length);
+                    List<String> columnNames = new ArrayList<>(columns.length);
+                    boolean[] editable = new boolean[columns.length];
+                    for (int i = 0; i < columns.length; i++) {
+                        columnNames.add(columns[i].getName());
+                        columnClasses.add(columns[i].getColumnClass());
+                        editable[i] = columns[i].isEditable();
+                    }
+                    TableModelK model = new TableModelK(list, columns.length, columnClasses, columnNames, editable);
                     final AtomicReference<K> tableRef = new AtomicReference<>();
                     try {
                         Runnable finisherTask = () -> {
-                            Vector<String> columnNames = new Vector(columns.length);
-                            for (int i = 0; i < columns.length; i++) {
-                                columnNames.add(columns[i].getName());
-                                model.setColumnClass(i, columns[i].getColumnClass());
-                            }
-                            model.setColumnIdentifiers(columnNames);
                             K table = Objects.requireNonNull(tableSupplier.get(), "table");
                             table.setModel(model);
                             for (int i = 0; i < columns.length; i++) {

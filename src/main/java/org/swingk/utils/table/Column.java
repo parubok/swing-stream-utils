@@ -16,6 +16,7 @@ public class Column<K> {
     private final int preferredWidth;
     private final Function<K, ? extends Object> valueProducer;
     private final Class<?> columnClass;
+    private final boolean editable;
 
     /**
      * @param name Name of the column. Not null.
@@ -23,11 +24,17 @@ public class Column<K> {
      * @param preferredWidth Preferred width of the column in pixels. See {@link #DEFAULT_PREFERRED_WIDTH}.
      * @param columnClass Class which will be returned from {@link javax.swing.table.TableModel#getColumnClass(int)} for this column. Not null.
      */
-    public Column(String name, Function<K, ? extends Object> valueProducer, int preferredWidth, Class<?> columnClass) {
+    public Column(String name, Function<K, ? extends Object> valueProducer, int preferredWidth, Class<?> columnClass,
+                  boolean editable) {
         this.name = Objects.requireNonNull(name);
         this.valueProducer = Objects.requireNonNull(valueProducer);
         this.preferredWidth = preferredWidth;
         this.columnClass = Objects.requireNonNull(columnClass);
+        this.editable = editable;
+    }
+
+    public Column(String name, Function<K, ? extends Object> valueProducer, int preferredWidth, Class<?> columnClass) {
+        this(name, valueProducer, preferredWidth, columnClass, false);
     }
 
     public Column(String name, Function<K, ? extends Object> valueProducer, int preferredWidth) {
@@ -56,5 +63,9 @@ public class Column<K> {
 
     public Class<?> getColumnClass() {
         return columnClass;
+    }
+
+    public boolean isEditable() {
+        return editable;
     }
 }
