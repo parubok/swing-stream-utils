@@ -197,4 +197,28 @@ class TableStreamUtilsTest {
         Assertions.assertThrows(IllegalArgumentException.class,
                 () -> Arrays.asList("value").stream().collect(TableStreamUtils.toJTable()));
     }
+
+    @Test
+    void toJTable_performance_parallel_vs_single() {
+        performance_toJTable_stream(true);
+        // performance_toJTable_stream(false);
+    }
+
+    private void performance_toJTable_stream(boolean parallel) {
+        final int c = 1_000_000;
+        List<Integer> values = IntStream.range(0, c).mapToObj(Integer::new).collect(Collectors.toList());
+        final int repeats = 30;
+        long totalTime = 0;
+        for (int i = 0; i < repeats; i++) {
+            long t0 = System.currentTimeMillis();
+            JTable table = (parallel ? values.parallelStream() : values.stream()).collect(TableStreamUtils.toJTable(
+                    new Column<>("col1", v -> String.format("Value: %d", v)),
+                    new Column<>("col2", v -> Integer.toHexString(Integer.parseInt(Integer.toString(v + v)))),
+                    new Column<>("col3", v -> Arrays.toString(Integer.toString(v + v).getBytes()))));
+            long t = System.currentTimeMillis() - t0;
+            totalTime += t;
+            Assertions.assertEquals(c, table.getRowCount());
+        }
+        System.out.println("Aver. (parallel: " + parallel + "): " + (totalTime / repeats));
+    }
 }

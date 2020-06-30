@@ -151,12 +151,7 @@ public class TableStreamUtils {
 
             @Override
             public BinaryOperator<List<List<Object>>> combiner() {
-                return (list1, list2) -> {
-                    List<List<Object>> combinedList = new ArrayList<>(list1.size() + list2.size());
-                    combinedList.addAll(list1);
-                    combinedList.addAll(list2);
-                    return combinedList;
-                };
+                return CombinedList::new;
             }
 
             @Override
