@@ -181,8 +181,7 @@ class TableStreamUtilsTest {
     @Test
     void toTableModel_1() {
         List<Point> values = new ArrayList<>();
-        int c = 100_0000;
-        for (int i = 0; i < c; i++) {
+        for (int i = 0; i < 100_0000; i++) {
             values.add(new Point(i + 1, i + 2));
         }
         SimpleTableModel model = values.parallelStream().collect(TableStreamUtils.toTableModel(
