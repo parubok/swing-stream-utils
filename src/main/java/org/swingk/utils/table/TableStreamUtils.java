@@ -128,16 +128,8 @@ public class TableStreamUtils {
         return new AbstractCollector<T, K>(columns) {
             @Override
             public Function<List<List<Object>>, K> finisher() {
-                return list -> {
-                    List<Class<?>> columnClasses = new ArrayList<>(columns.length);
-                    List<String> columnNames = new ArrayList<>(columns.length);
-                    boolean[] editable = new boolean[columns.length];
-                    for (int i = 0; i < columns.length; i++) {
-                        columnNames.add(columns[i].getName());
-                        columnClasses.add(columns[i].getColumnClass());
-                        editable[i] = columns[i].isEditable();
-                    }
-                    TableModel model = new SimpleTableModel(list, columns.length, columnClasses, columnNames, editable);
+                return data -> {
+                    TableModel model = createModel(data, columns);
                     final AtomicReference<K> tableRef = new AtomicReference<>();
                     try {
                         Runnable finisherTask = () -> {
@@ -166,10 +158,23 @@ public class TableStreamUtils {
         };
     }
 
+    private static <T> SimpleTableModel createModel(List<List<Object>> data, Column<T>[] columns) {
+        List<Class<?>> columnClasses = new ArrayList<>(columns.length);
+        List<String> columnNames = new ArrayList<>(columns.length);
+        boolean[] editable = new boolean[columns.length];
+        for (int i = 0; i < columns.length; i++) {
+            columnNames.add(columns[i].getName());
+            columnClasses.add(columns[i].getColumnClass());
+            editable[i] = columns[i].isEditable();
+        }
+        return new SimpleTableModel(data, columns.length, columnClasses, columnNames, editable);
+    }
+
     /**
-     * Collector for Java 8 streams to create {@link SimpleTableModel} (an element from the stream produces a single table row).
+     * Collector for Java 8 streams to create {@link SimpleTableModel} (an element from the stream produces a single
+     * table row).
      *
-     * @param columns The table column descriptors.
+     * @param columns The table column descriptors (column preferred width is ignored).
      * @param <T> Type of stream elements.
      * @return The table model.
      */
@@ -177,17 +182,7 @@ public class TableStreamUtils {
         return new AbstractCollector<T, SimpleTableModel>(columns) {
             @Override
             public Function<List<List<Object>>, SimpleTableModel> finisher() {
-                return list -> {
-                    List<Class<?>> columnClasses = new ArrayList<>(columns.length);
-                    List<String> columnNames = new ArrayList<>(columns.length);
-                    boolean[] editable = new boolean[columns.length];
-                    for (int i = 0; i < columns.length; i++) {
-                        columnNames.add(columns[i].getName());
-                        columnClasses.add(columns[i].getColumnClass());
-                        editable[i] = columns[i].isEditable();
-                    }
-                    return new SimpleTableModel(list, columns.length, columnClasses, columnNames, editable);
-                };
+                return data -> createModel(data, columns);
             }
         };
     }
