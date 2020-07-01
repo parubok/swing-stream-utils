@@ -3,15 +3,15 @@ package org.swingk.utils.table;
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
 
-public class TableModelK extends AbstractTableModel {
+public class SimpleTableModel extends AbstractTableModel {
     private final List<List<Object>> data;
     private final int columnCount;
     private final List<Class<?>> columnClasses;
     private final List<String> columnNames;
     private final boolean[] columnsEditable;
 
-    public TableModelK(List<List<Object>> data, int columnCount, List<Class<?>> columnClasses, List<String> columnNames,
-                boolean[] columnsEditable) {
+    public SimpleTableModel(List<List<Object>> data, int columnCount, List<Class<?>> columnClasses,
+                            List<String> columnNames, boolean[] columnsEditable) {
         super();
         this.data = data;
         this.columnCount = columnCount;

@@ -117,7 +117,7 @@ public class TableStreamUtils {
      * performed on a different thread (e.g. parallel stream).
      * </p>
      * <p>
-     * <b>Note 2:</b> Model of the resulting {@link JTable} is instance of {@link TableModelK}.
+     * <b>Note 2:</b> Model of the resulting {@link JTable} is instance of {@link SimpleTableModel}.
      * </p>
      *
      * @param tableSupplier Creates a concrete instance of {@link JTable} for the collector. Called on EDT.
@@ -166,7 +166,7 @@ public class TableStreamUtils {
                         columnClasses.add(columns[i].getColumnClass());
                         editable[i] = columns[i].isEditable();
                     }
-                    TableModel model = new TableModelK(list, columns.length, columnClasses, columnNames, editable);
+                    TableModel model = new SimpleTableModel(list, columns.length, columnClasses, columnNames, editable);
                     final AtomicReference<K> tableRef = new AtomicReference<>();
                     try {
                         Runnable finisherTask = () -> {
@@ -190,6 +190,63 @@ public class TableStreamUtils {
                         throw new RuntimeException(e.getCause());
                     }
                     return tableRef.get();
+                };
+            }
+
+            @Override
+            public Set<Characteristics> characteristics() {
+                return Collections.emptySet();
+            }
+        };
+    }
+
+    /**
+     * Collector for Java 8 streams to create {@link SimpleTableModel} (an element from the stream produces a single table row).
+     *
+     * @param columns The table column descriptors.
+     * @param <T> Type of stream elements.
+     * @return The table model.
+     */
+    public static <T> Collector<T, List<List<Object>>, SimpleTableModel> toTableModel(Column<T>... columns) {
+        if (columns.length == 0) {
+            throw new IllegalArgumentException("Columns must be specified.");
+        }
+        return new Collector<T, List<List<Object>>, SimpleTableModel>() {
+
+            @Override
+            public Supplier<List<List<Object>>> supplier() {
+                return ArrayList::new;
+            }
+
+            @Override
+            public BiConsumer<List<List<Object>>, T> accumulator() {
+                return (list, val) -> {
+                    List<Object> rowList = new ArrayList<>(columns.length + 1);
+                    for (int i = 0; i < columns.length; i++) {
+                        rowList.add(columns[i].getValueProducer().apply(val));
+                    }
+                    rowList.add(val);
+                    list.add(rowList);
+                };
+            }
+
+            @Override
+            public BinaryOperator<List<List<Object>>> combiner() {
+                return CombinedList::new;
+            }
+
+            @Override
+            public Function<List<List<Object>>, SimpleTableModel> finisher() {
+                return list -> {
+                    List<Class<?>> columnClasses = new ArrayList<>(columns.length);
+                    List<String> columnNames = new ArrayList<>(columns.length);
+                    boolean[] editable = new boolean[columns.length];
+                    for (int i = 0; i < columns.length; i++) {
+                        columnNames.add(columns[i].getName());
+                        columnClasses.add(columns[i].getColumnClass());
+                        editable[i] = columns[i].isEditable();
+                    }
+                    return new SimpleTableModel(list, columns.length, columnClasses, columnNames, editable);
                 };
             }
 
