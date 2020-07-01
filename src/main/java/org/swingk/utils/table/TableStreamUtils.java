@@ -120,7 +120,7 @@ public class TableStreamUtils {
      *
      * @param tableSupplier Creates a concrete instance of {@link JTable} for the collector. Called on EDT.
      * @param columns The table column descriptors.
-     * @param <T> Type of stream elements.
+     * @param <T> Type of the stream elements.
      * @return The new table.
      */
     public static <T, K extends JTable> Collector<T, List<List<Object>>, K> toJTable(Supplier<K> tableSupplier,
