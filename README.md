@@ -59,7 +59,7 @@ import static org.swingk.utils.table.TableStreamUtils.toTableModel;
 // may be executed on any thread
 List<User> users = ...;
 SimpleTableModel tableModel = users.parallelStream()
-                                .collect(toTableModel(new Column<>("Name", User::getName, 100, String.class),
-                                                     new Column<>("Salary", User::getSalary, 50, Integer.class),
-                                                     new Column<>("Role", User::getRole, 200, String.class));
+                            .collect(toTableModel(new Column<>("Name", User::getName, 100, String.class),
+                                                  new Column<>("Salary", User::getSalary, 50, Integer.class),
+                                                  new Column<>("Role", User::getRole, 200, String.class));
 ```
