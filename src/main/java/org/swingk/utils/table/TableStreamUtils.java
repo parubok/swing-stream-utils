@@ -3,6 +3,7 @@ package org.swingk.utils.table;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,8 +22,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 /**
- * Utils to iterate over cells of {@link JTable}.
- * Must be invoked on EDT.
+ * Java-8 stream utils for Swing {@link JTable}.
  */
 public class TableStreamUtils {
 
@@ -91,7 +91,8 @@ public class TableStreamUtils {
     }
 
     /**
-     * Note: The table traversal order is from left to right, from top to bottom.
+     * Must be invoked on EDT.
+     * The table traversal order is from left to right, from top to bottom.
      *
      * @param table Table which cells will be streamed. Not null.
      * @param <T>   Type of the table.
@@ -165,8 +166,7 @@ public class TableStreamUtils {
                         columnClasses.add(columns[i].getColumnClass());
                         editable[i] = columns[i].isEditable();
                     }
-                    TableModelK model = new TableModelK(list, columns.length, columnClasses, columnNames,
-                            editable);
+                    TableModel model = new TableModelK(list, columns.length, columnClasses, columnNames, editable);
                     final AtomicReference<K> tableRef = new AtomicReference<>();
                     try {
                         Runnable finisherTask = () -> {
