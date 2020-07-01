@@ -5,7 +5,7 @@
 
   <groupId>org.swingk.utils.table</groupId>
   <artifactId>table-stream-utils</artifactId>
-  <version>1.5</version>
+  <version>1.6-SNAPSHOT</version>
 
   <name>table-stream-utils</name>
   <url>https://github.com/parubok/table-stream-utils</url>
@@ -20,7 +20,7 @@
     <connection>scm:git:git@github.com:parubok/table-stream-utils</connection>
     <url>scm:git:git@github.com:parubok/table-stream-utils</url>
     <developerConnection>scm:git:git@github.com:parubok/table-stream-utils</developerConnection>
-    <tag>v1.5</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <dependencies>
