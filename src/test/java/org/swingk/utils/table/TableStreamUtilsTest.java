@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
+import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import java.awt.Dimension;
@@ -202,6 +203,28 @@ class TableStreamUtilsTest {
             Assertions.assertEquals(values.get(i).x * values.get(i).y, model.getValueAt(i, 2));
             Assertions.assertTrue(model.isCellEditable(i, 2));
         }
+    }
+
+    @Test
+    void toTableModel_setValueAt() {
+        List<String> values = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            values.add("value " + i);
+        }
+        SimpleTableModel model = values.stream().collect(TableStreamUtils.toTableModel(
+                new Column<>("col1"),
+                new Column<>("col2")));
+        List<TableModelEvent> events = new ArrayList<>();
+        model.addTableModelListener(events::add);
+        final String value = "abc";
+        model.setValueAt(value, 0, 1);
+        Assertions.assertEquals(value, model.getValueAt(0, 1));
+        Assertions.assertEquals(1, events.size());
+        Assertions.assertEquals(TableModelEvent.UPDATE, events.get(0).getType());
+        Assertions.assertEquals(0, events.get(0).getFirstRow());
+        Assertions.assertEquals(0, events.get(0).getLastRow());
+        Assertions.assertEquals(1, events.get(0).getColumn());
+        Assertions.assertEquals(model, events.get(0).getSource());
     }
 
     @Test
