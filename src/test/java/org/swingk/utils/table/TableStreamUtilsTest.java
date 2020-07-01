@@ -200,11 +200,11 @@ class TableStreamUtilsTest {
 
     @Test
     void toJTable_performance_parallel_vs_single() {
-        performance_toJTable_stream(true);
-        // performance_toJTable_stream(false);
+        Assertions.assertTrue(performance_toJTable_stream(true) < performance_toJTable_stream(false),
+                "Parallel stream must be faster than regular stream.");
     }
 
-    private void performance_toJTable_stream(boolean parallel) {
+    private long performance_toJTable_stream(boolean parallel) {
         final int c = 1_000_000;
         List<Integer> values = IntStream.range(0, c).mapToObj(Integer::new).collect(Collectors.toList());
         final int repeats = 30;
@@ -219,6 +219,8 @@ class TableStreamUtilsTest {
             totalTime += t;
             Assertions.assertEquals(c, table.getRowCount());
         }
-        System.out.println("Aver. (parallel: " + parallel + "): " + (totalTime / repeats));
+        long aver = totalTime / repeats;
+        System.out.println("Aver. (parallel: " + parallel + "): " + aver);
+        return aver;
     }
 }

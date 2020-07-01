@@ -11,10 +11,7 @@ import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.BiConsumer;
-import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
@@ -113,8 +110,8 @@ public class TableStreamUtils {
     /**
      * Collector for Java 8 streams to create {@link JTable} (an element from the stream produces a single table row).
      * <p>
-     * <b>Note 1:</b> The collector ensures that the table component is created/accessed on EDT even if the streaming is
-     * performed on a different thread (e.g. parallel stream).
+     * <b>Note 1:</b> The collector ensures that the table component is created/accessed on EDT even if the streaming
+     * is performed on a different thread (e.g. parallel stream).
      * </p>
      * <p>
      * <b>Note 2:</b> Model of the resulting {@link JTable} is instance of {@link SimpleTableModel}.
@@ -128,33 +125,7 @@ public class TableStreamUtils {
     public static <T, K extends JTable> Collector<T, List<List<Object>>, K> toJTable(Supplier<K> tableSupplier,
                                                                                      Column<T>... columns) {
         Objects.requireNonNull(tableSupplier);
-        if (columns.length == 0) {
-            throw new IllegalArgumentException("Columns must be specified.");
-        }
-        return new Collector<T, List<List<Object>>, K>() {
-
-            @Override
-            public Supplier<List<List<Object>>> supplier() {
-                return ArrayList::new;
-            }
-
-            @Override
-            public BiConsumer<List<List<Object>>, T> accumulator() {
-                return (list, val) -> {
-                    List<Object> rowList = new ArrayList<>(columns.length + 1);
-                    for (int i = 0; i < columns.length; i++) {
-                        rowList.add(columns[i].getValueProducer().apply(val));
-                    }
-                    rowList.add(val);
-                    list.add(rowList);
-                };
-            }
-
-            @Override
-            public BinaryOperator<List<List<Object>>> combiner() {
-                return CombinedList::new;
-            }
-
+        return new AbstractCollector<T, K>(columns) {
             @Override
             public Function<List<List<Object>>, K> finisher() {
                 return list -> {
@@ -192,11 +163,6 @@ public class TableStreamUtils {
                     return tableRef.get();
                 };
             }
-
-            @Override
-            public Set<Characteristics> characteristics() {
-                return Collections.emptySet();
-            }
         };
     }
 
@@ -208,33 +174,7 @@ public class TableStreamUtils {
      * @return The table model.
      */
     public static <T> Collector<T, List<List<Object>>, SimpleTableModel> toTableModel(Column<T>... columns) {
-        if (columns.length == 0) {
-            throw new IllegalArgumentException("Columns must be specified.");
-        }
-        return new Collector<T, List<List<Object>>, SimpleTableModel>() {
-
-            @Override
-            public Supplier<List<List<Object>>> supplier() {
-                return ArrayList::new;
-            }
-
-            @Override
-            public BiConsumer<List<List<Object>>, T> accumulator() {
-                return (list, val) -> {
-                    List<Object> rowList = new ArrayList<>(columns.length + 1);
-                    for (int i = 0; i < columns.length; i++) {
-                        rowList.add(columns[i].getValueProducer().apply(val));
-                    }
-                    rowList.add(val);
-                    list.add(rowList);
-                };
-            }
-
-            @Override
-            public BinaryOperator<List<List<Object>>> combiner() {
-                return CombinedList::new;
-            }
-
+        return new AbstractCollector<T, SimpleTableModel>(columns) {
             @Override
             public Function<List<List<Object>>, SimpleTableModel> finisher() {
                 return list -> {
@@ -248,11 +188,6 @@ public class TableStreamUtils {
                     }
                     return new SimpleTableModel(list, columns.length, columnClasses, columnNames, editable);
                 };
-            }
-
-            @Override
-            public Set<Characteristics> characteristics() {
-                return Collections.emptySet();
             }
         };
     }
