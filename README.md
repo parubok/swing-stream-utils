@@ -47,3 +47,19 @@ JTable table = servers.parallelStream() // OK to use parallel stream!
                                new Column<>("Status", Server::getStatus, 200, String.class));
 SwingUtilities.invokeLater(() -> panel.add(table))); // continue with the table on EDT
 ```
+
+Table model may be build from stream as following:
+```java
+import java.util.List;
+...
+import org.swingk.utils.table.Column;
+
+import static org.swingk.utils.table.TableStreamUtils.toTableModel;
+
+// may be executed on any thread
+List<User> users = ...;
+SimpleTableModel tableModel = users.parallelStream()
+                                .collect(toTableModel(new Column<>("Name", User::getName, 100, String.class),
+                                                     new Column<>("Salary", User::getSalary, 50, Integer.class),
+                                                     new Column<>("Role", User::getRole, 200, String.class));
+```
