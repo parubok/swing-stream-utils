@@ -172,7 +172,7 @@ public class TableStreamUtils {
 
     /**
      * Collector for Java 8 streams to create {@link SimpleTableModel} (an element from the stream produces a single
-     * table row).
+     * table row, the corresponding element may be retrieved via {@link SimpleTableModel#getRowObject(int)}).
      *
      * @param columns The table column descriptors (column preferred width is ignored).
      * @param <T> Type of stream elements.

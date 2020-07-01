@@ -23,6 +23,9 @@ public class SimpleTableModel extends AbstractTableModel {
         this.columnsEditable = columnsEditable;
     }
 
+    /**
+     * @return Data object (e.g. stream element) associated with this row.
+     */
     public Object getRowObject(int rowIndex) {
         return data.get(rowIndex).get(columnCount);
     }
