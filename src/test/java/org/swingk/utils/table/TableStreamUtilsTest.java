@@ -10,6 +10,7 @@ import javax.swing.table.TableModel;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
@@ -175,6 +176,30 @@ class TableStreamUtilsTest {
             Assertions.assertEquals(new Dimension(2, 5), table.getValueAt(0, 1));
             Assertions.assertEquals(new Dimension(3, 6), table.getValueAt(1, 1));
         });
+    }
+
+    @Test
+    void toTableModel_1() {
+        List<Point> values = new ArrayList<>();
+        int c = 100_0000;
+        for (int i = 0; i < c; i++) {
+            values.add(new Point(i + 1, i + 2));
+        }
+        SimpleTableModel model = values.parallelStream().collect(TableStreamUtils.toTableModel(
+                new Column<>("col1", p -> p.x, Column.DEFAULT_PREFERRED_WIDTH, Integer.class),
+                new Column<>("col2", p -> p.y, Column.DEFAULT_PREFERRED_WIDTH, Integer.class),
+                new Column<>("col3", p -> p.x * p.y, Column.DEFAULT_PREFERRED_WIDTH, Integer.class)));
+        Assertions.assertEquals(values.size(), model.getRowCount());
+        Assertions.assertEquals(3, model.getColumnCount());
+        Assertions.assertEquals("col1", model.getColumnName(0));
+        Assertions.assertEquals("col2", model.getColumnName(1));
+        Assertions.assertEquals("col3", model.getColumnName(2));
+        for (int i = 0; i < values.size(); i++) {
+            Assertions.assertEquals(values.get(i), model.getRowObject(i));
+            Assertions.assertEquals(values.get(i).x, model.getValueAt(i, 0));
+            Assertions.assertEquals(values.get(i).y, model.getValueAt(i, 1));
+            Assertions.assertEquals(values.get(i).x * values.get(i).y, model.getValueAt(i, 2));
+        }
     }
 
     @Test
