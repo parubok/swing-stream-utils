@@ -3,12 +3,15 @@ package org.swingk.utils.table;
 import java.util.AbstractList;
 import java.util.List;
 
+/**
+ * A list which 'combines' two other lists to present them as a single list.
+ * @param <T> List element type.
+ */
 final class CombinedList<T> extends AbstractList<T> {
 
     private final List<T> list1;
     private final int size1;
     private final List<T> list2;
-
 
     CombinedList(List<T> list1, List<T> list2) {
         this.list1 = list1;
