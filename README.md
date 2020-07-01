@@ -60,6 +60,6 @@ import static org.swingk.utils.table.TableStreamUtils.toTableModel;
 List<User> users = ...;
 SimpleTableModel tableModel = users.parallelStream()
                             .collect(toTableModel(new Column<>("Name", User::getName, 100, String.class),
-                                                  new Column<>("Salary", User::getSalary, 50, Integer.class),
+                                                  new Column<>("Income", User::getIncome, 50, Long.class),
                                                   new Column<>("Role", User::getRole, 200, String.class));
 ```
