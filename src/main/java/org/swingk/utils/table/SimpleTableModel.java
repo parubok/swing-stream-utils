@@ -6,14 +6,14 @@ import java.util.List;
 /**
  * Table model with fixed row/column count.
  */
-public class SimpleTableModel extends AbstractTableModel {
+public final class SimpleTableModel extends AbstractTableModel {
     private final List<List<Object>> data;
     private final int columnCount;
     private final List<Class<?>> columnClasses;
     private final List<String> columnNames;
     private final boolean[] columnsEditable;
 
-    public SimpleTableModel(List<List<Object>> data, int columnCount, List<Class<?>> columnClasses,
+    SimpleTableModel(List<List<Object>> data, int columnCount, List<Class<?>> columnClasses,
                             List<String> columnNames, boolean[] columnsEditable) {
         super();
         this.data = data;
