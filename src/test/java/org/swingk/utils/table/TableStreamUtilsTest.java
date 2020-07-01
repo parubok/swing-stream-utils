@@ -188,7 +188,7 @@ class TableStreamUtilsTest {
         SimpleTableModel model = values.parallelStream().collect(TableStreamUtils.toTableModel(
                 new Column<>("col1", p -> p.x, Column.DEFAULT_PREFERRED_WIDTH, Integer.class),
                 new Column<>("col2", p -> p.y, Column.DEFAULT_PREFERRED_WIDTH, Integer.class),
-                new Column<>("col3", p -> p.x * p.y, Column.DEFAULT_PREFERRED_WIDTH, Integer.class)));
+                new Column<>("col3", p -> p.x * p.y, Column.DEFAULT_PREFERRED_WIDTH, Integer.class, true)));
         Assertions.assertEquals(values.size(), model.getRowCount());
         Assertions.assertEquals(3, model.getColumnCount());
         Assertions.assertEquals("col1", model.getColumnName(0));
@@ -197,8 +197,11 @@ class TableStreamUtilsTest {
         for (int i = 0; i < values.size(); i++) {
             Assertions.assertEquals(values.get(i), model.getRowObject(i));
             Assertions.assertEquals(values.get(i).x, model.getValueAt(i, 0));
+            Assertions.assertFalse(model.isCellEditable(i, 0));
             Assertions.assertEquals(values.get(i).y, model.getValueAt(i, 1));
+            Assertions.assertFalse(model.isCellEditable(i, 1));
             Assertions.assertEquals(values.get(i).x * values.get(i).y, model.getValueAt(i, 2));
+            Assertions.assertTrue(model.isCellEditable(i, 2));
         }
     }
 
