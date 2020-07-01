@@ -108,7 +108,8 @@ public class TableStreamUtils {
     }
 
     /**
-     * Collector for Java 8 streams to create {@link JTable} (an element from the stream produces a single table row).
+     * Collector for Java 8 streams to create {@link JTable} (an element from the stream produces a single table row,
+     * the corresponding element may be retrieved via {@link SimpleTableModel#getRowObject(int)).
      * <p>
      * <b>Note 1:</b> The collector ensures that the table component is created/accessed on EDT even if the streaming
      * is performed on a different thread (e.g. parallel stream).
