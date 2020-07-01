@@ -13,8 +13,8 @@ public final class SimpleTableModel extends AbstractTableModel {
     private final List<String> columnNames;
     private final boolean[] columnsEditable;
 
-    SimpleTableModel(List<List<Object>> data, int columnCount, List<Class<?>> columnClasses,
-                            List<String> columnNames, boolean[] columnsEditable) {
+    SimpleTableModel(List<List<Object>> data, int columnCount, List<Class<?>> columnClasses, List<String> columnNames,
+                     boolean[] columnsEditable) {
         super();
         this.data = data;
         this.columnCount = columnCount;
