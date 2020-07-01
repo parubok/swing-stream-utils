@@ -48,7 +48,7 @@ JTable table = servers.parallelStream() // OK to use parallel stream!
 SwingUtilities.invokeLater(() -> panel.add(table))); // continue with the table on EDT
 ```
 
-Table model may be build from stream as following:
+Table model may be build from a stream as following:
 ```java
 import java.util.List;
 ...
