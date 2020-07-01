@@ -3,6 +3,9 @@ package org.swingk.utils.table;
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
 
+/**
+ * Table model with fixed row/column count.
+ */
 public class SimpleTableModel extends AbstractTableModel {
     private final List<List<Object>> data;
     private final int columnCount;
