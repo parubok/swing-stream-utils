@@ -63,3 +63,5 @@ SimpleTableModel tableModel = users.parallelStream()
                                                   new Column<>("ID", User::getID, 50, Long.class),
                                                   new Column<>("Role", User::getRole, 200, String.class));
 ```
+
+Requires Java 8 or later.
