@@ -1,3 +1,5 @@
+![Java CI with Maven](https://github.com/parubok/table-stream-utils/workflows/Java%20CI%20with%20Maven/badge.svg)
+
 # table-stream-utils
 Utils for working with `JTable` via Java 8 streams.
 
