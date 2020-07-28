@@ -1,8 +1,8 @@
 ![Java CI with Maven](https://github.com/parubok/table-stream-utils/workflows/Java%20CI%20with%20Maven/badge.svg)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/parubok/table-stream-utils/blob/master/LICENSE)
 
-# table-stream-utils
-Utils for working with `JTable` via Java 8 streams.
+# swing-stream-utils
+Utils for working with Java Swing components via Java 8 streams.
 
 Example 1 (count how many times cell value "London" appears in the selected cells of column 3):
 ```java
