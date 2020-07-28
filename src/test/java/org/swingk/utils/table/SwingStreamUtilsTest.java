@@ -276,13 +276,15 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void toJComboBox() {
-        List<String> list = Arrays.asList("str1", "str2");
-        JComboBox<String> combo = list.stream().collect(SwingStreamUtils.toJComboBox());
-        Assertions.assertEquals(2, combo.getItemCount());
-        Assertions.assertEquals("str1", combo.getItemAt(0));
-        Assertions.assertEquals("str2", combo.getItemAt(1));
-        Assertions.assertEquals(0, combo.getSelectedIndex());
-        Assertions.assertEquals("str1", combo.getSelectedItem());
+    void toJComboBox() throws Exception {
+        SwingUtilities.invokeAndWait(() -> {
+            List<String> list = Arrays.asList("str1", "str2");
+            JComboBox<String> combo = list.stream().collect(SwingStreamUtils.toJComboBox());
+            Assertions.assertEquals(2, combo.getItemCount());
+            Assertions.assertEquals("str1", combo.getItemAt(0));
+            Assertions.assertEquals("str2", combo.getItemAt(1));
+            Assertions.assertEquals(0, combo.getSelectedIndex());
+            Assertions.assertEquals("str1", combo.getSelectedItem());
+        });
     }
 }
