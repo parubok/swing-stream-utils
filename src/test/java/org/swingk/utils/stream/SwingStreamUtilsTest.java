@@ -3,6 +3,7 @@ package org.swingk.utils.stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
@@ -286,5 +287,19 @@ class SwingStreamUtilsTest {
             Assertions.assertEquals(0, combo.getSelectedIndex());
             Assertions.assertEquals("str1", combo.getSelectedItem());
         });
+    }
+
+    @Test
+    void toComboBoxModel() {
+        List<String> list = new ArrayList<>();
+        final int c = 10_000;
+        for (int i = 0; i < c; i++) {
+            list.add("item_" + i);
+        }
+        DefaultComboBoxModel<String> model = list.parallelStream().collect(SwingStreamUtils.toComboBoxModel());
+        Assertions.assertEquals(c, model.getSize());
+        for (int i = 0; i < c; i++) {
+            Assertions.assertEquals(list.get(i), model.getElementAt(i));
+        }
     }
 }
