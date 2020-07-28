@@ -8,7 +8,7 @@
   <version>1.7-SNAPSHOT</version>
 
   <name>swing-stream-utils</name>
-  <url>https://github.com/parubok/table-stream-utils</url>
+  <url>https://github.com/parubok/swing-stream-utils</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -17,9 +17,9 @@
   </properties>
 
   <scm>
-    <connection>scm:git:git@github.com:parubok/table-stream-utils</connection>
-    <url>scm:git:git@github.com:parubok/table-stream-utils</url>
-    <developerConnection>scm:git:git@github.com:parubok/table-stream-utils</developerConnection>
+    <connection>scm:git:git@github.com:parubok/swing-stream-utils</connection>
+    <url>scm:git:git@github.com:parubok/swing-stream-utils</url>
+    <developerConnection>scm:git:git@github.com:parubok/swing-stream-utils</developerConnection>
     <tag>HEAD</tag>
   </scm>
 
