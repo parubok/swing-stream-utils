@@ -3,6 +3,7 @@ package org.swingk.utils.table;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
@@ -272,5 +273,16 @@ class SwingStreamUtilsTest {
         long aver = totalTime / repeats;
         System.out.println("Aver. (parallel: " + parallel + "): " + aver);
         return aver;
+    }
+
+    @Test
+    void toJComboBox() {
+        List<String> list = Arrays.asList("str1", "str2");
+        JComboBox<String> combo = list.stream().collect(SwingStreamUtils.toJComboBox());
+        Assertions.assertEquals(2, combo.getItemCount());
+        Assertions.assertEquals("str1", combo.getItemAt(0));
+        Assertions.assertEquals("str2", combo.getItemAt(1));
+        Assertions.assertEquals(0, combo.getSelectedIndex());
+        Assertions.assertEquals("str1", combo.getSelectedItem());
     }
 }
