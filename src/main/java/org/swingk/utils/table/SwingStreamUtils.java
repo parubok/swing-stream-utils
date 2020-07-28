@@ -194,6 +194,11 @@ public class SwingStreamUtils {
         };
     }
 
+    /**
+     * Collector for Java 8 streams to create vanilla {@link JComboBox} with {@link DefaultComboBoxModel}.
+     *
+     * @see #toJComboBox(Supplier, Supplier, BiConsumer)
+     */
     public static <T> Collector<T, List<T>, JComboBox<T>> toJComboBox() {
         return toJComboBox(JComboBox::new, DefaultComboBoxModel::new, (item, model) -> model.addElement(item));
     }
@@ -207,8 +212,7 @@ public class SwingStreamUtils {
      * </p>
      *
      * @param comboSupplier Creates a concrete instance of {@link JComboBox} for the collector. Called on EDT.
-     * @param modelSupplier Creates a concrete instance of {@link ComboBoxModel} for the collector. Called on the
-     *                      current thread.
+     * @param modelSupplier Creates a concrete instance of {@link ComboBoxModel} for the collector. Called on the current thread.
      * @param itemAdder Adds item to the model. Called on the current thread.
      * @param <T> Type of the stream elements.
      * @param <K> Type of the resulting combo box.
@@ -230,7 +234,7 @@ public class SwingStreamUtils {
 
             @Override
             public BiConsumer<List<T>, T> accumulator() {
-                return (list, val) ->  list.add(val);
+                return List::add;
             }
 
             @Override
