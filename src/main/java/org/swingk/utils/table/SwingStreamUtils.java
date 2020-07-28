@@ -1,5 +1,8 @@
 package org.swingk.utils.table;
 
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableColumn;
@@ -11,7 +14,10 @@ import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiConsumer;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
@@ -19,11 +25,11 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 /**
- * Java-8 stream utils for Swing {@link JTable}.
+ * Java-8 stream utils for Swing components.
  */
-public class TableStreamUtils {
+public class SwingStreamUtils {
 
-    private TableStreamUtils() {
+    private SwingStreamUtils() {
     }
 
     /**
@@ -187,4 +193,65 @@ public class TableStreamUtils {
             }
         };
     }
+
+    public static <T> Collector<T, List<T>, JComboBox<T>> toJComboBox() {
+        return toJComboBox(JComboBox::new, DefaultComboBoxModel::new, (item, model) -> model.addElement(item));
+    }
+
+    public static <T, K extends JComboBox<T>, M extends ComboBoxModel<T>> Collector<T, List<T>, K> toJComboBox(Supplier<K> comboSupplier,
+                                                                                                               Supplier<M> modelSupplier, BiConsumer<T, M> itemAdder) {
+        Objects.requireNonNull(comboSupplier);
+        Objects.requireNonNull(modelSupplier);
+        Objects.requireNonNull(itemAdder);
+        return new Collector<T, List<T>, K>() {
+
+            @Override
+            public Supplier<List<T>> supplier() {
+                return ArrayList::new;
+            }
+
+            @Override
+            public BiConsumer<List<T>, T> accumulator() {
+                return (list, val) ->  list.add(val);
+            }
+
+            @Override
+            public BinaryOperator<List<T>> combiner() {
+                return CombinedList::new;
+            }
+
+            @Override
+            public Set<Characteristics> characteristics() {
+                return Collections.emptySet();
+            }
+
+            @Override
+            public Function<List<T>, K> finisher() {
+                return data -> {
+                    final M model = Objects.requireNonNull(modelSupplier.get(), "model");
+                    data.forEach(item -> itemAdder.accept(item, model));
+                    final AtomicReference<K> comboRef = new AtomicReference<>();
+                    try {
+                        Runnable finisherTask = () -> {
+                            K combo = Objects.requireNonNull(comboSupplier.get(), "combo box");
+                            combo.setModel(model);
+                            comboRef.set(combo);
+                        };
+                        // Swing components must be created/accessed on EDT:
+                        if (SwingUtilities.isEventDispatchThread()) {
+                            finisherTask.run();
+                        } else {
+                            SwingUtilities.invokeAndWait(finisherTask);
+                        }
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    } catch (InvocationTargetException e) {
+                        throw new RuntimeException(e.getCause());
+                    }
+                    return comboRef.get();
+                };
+            }
+        };
+    }
+
 }

@@ -25,7 +25,7 @@ import java.util.List;
 
 import org.swingk.utils.table.Column;
 
-import static org.swingk.utils.table.TableStreamUtils.toJTable;
+import static org.swingk.utils.table.SwingStreamUtils.toJTable;
 
 List<File> files = ...;
 /* FileTable is a subclass of JTable */
@@ -40,7 +40,7 @@ import java.util.List;
 ...
 import org.swingk.utils.table.Column;
 
-import static org.swingk.utils.table.TableStreamUtils.toJTable;
+import static org.swingk.utils.table.SwingStreamUtils.toJTable;
 
 // not EDT
 List<Server> servers = ...;
@@ -57,7 +57,7 @@ import java.util.List;
 ...
 import org.swingk.utils.table.Column;
 
-import static org.swingk.utils.table.TableStreamUtils.toTableModel;
+import static org.swingk.utils.table.SwingStreamUtils.toTableModel;
 
 // may be executed on any thread
 List<User> users = ...;

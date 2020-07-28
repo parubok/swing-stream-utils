@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-class TableStreamUtilsTest {
+class SwingStreamUtilsTest {
 
     @Test
     void asIterable_1() throws Exception {
@@ -29,7 +29,7 @@ class TableStreamUtilsTest {
             model.setValueAt("c0", 0, 0);
             model.setValueAt("c1", 0, 1);
             JTable table = new JTable(model);
-            Iterable<TableCellData<JTable>> iterable = TableStreamUtils.asIterable(table);
+            Iterable<TableCellData<JTable>> iterable = SwingStreamUtils.asIterable(table);
             Assertions.assertNotNull(iterable);
             Iterator<TableCellData<JTable>> iterator = iterable.iterator();
             Assertions.assertNotNull(iterator);
@@ -56,7 +56,7 @@ class TableStreamUtilsTest {
             model.setValueAt("c0", 0, 0);
             model.setValueAt("c1", 0, 1);
             JTable table = new JTable(model);
-            Assertions.assertIterableEquals(Arrays.asList("c0", "c1"), TableStreamUtils.asStream(table)
+            Assertions.assertIterableEquals(Arrays.asList("c0", "c1"), SwingStreamUtils.asStream(table)
                     .map(TableCellData::getValue)
                     .collect(Collectors.toList()));
         });
@@ -72,7 +72,7 @@ class TableStreamUtilsTest {
                 model.setValueAt(Integer.valueOf(i), i, 1);
             }
             JTable table = new JTable(model);
-            Assertions.assertEquals(10, TableStreamUtils.asStream(table)
+            Assertions.assertEquals(10, SwingStreamUtils.asStream(table)
                     .filter(d -> d.getColumn() == 1)
                     .mapToInt(d -> (Integer) d.getValue())
                     .sum());
@@ -86,7 +86,7 @@ class TableStreamUtilsTest {
             final int columns = 3;
             TableModel model = new DefaultTableModel(rows, columns);
             JTable table = new JTable(model);
-            Assertions.assertEquals(6, TableStreamUtils.asStream(table)
+            Assertions.assertEquals(6, SwingStreamUtils.asStream(table)
                     .peek(d -> Assertions.assertSame(table, d.getTable()))
                     .peek(d -> Assertions.assertFalse(d.isSelected()))
                     .peek(d -> Assertions.assertTrue(d.isEditable()))
@@ -101,7 +101,7 @@ class TableStreamUtilsTest {
             final int columns = 3;
             TableModel model = new DefaultTableModel(rows, columns);
             JTable table = new JTable(model);
-            Assertions.assertIterableEquals(Arrays.asList(0, 0, 0, 1, 1, 1), TableStreamUtils.asStream(table)
+            Assertions.assertIterableEquals(Arrays.asList(0, 0, 0, 1, 1, 1), SwingStreamUtils.asStream(table)
                     .map(d -> d.getRow())
                     .collect(Collectors.toList()));
         });
@@ -114,7 +114,7 @@ class TableStreamUtilsTest {
             final int columns = 3;
             TableModel model = new DefaultTableModel(rows, columns);
             JTable table = new JTable(model);
-            Assertions.assertIterableEquals(Arrays.asList(0, 1, 2, 0, 1, 2), TableStreamUtils.asStream(table)
+            Assertions.assertIterableEquals(Arrays.asList(0, 1, 2, 0, 1, 2), SwingStreamUtils.asStream(table)
                     .map(d -> d.getColumn())
                     .collect(Collectors.toList()));
         });
@@ -125,7 +125,7 @@ class TableStreamUtilsTest {
         SwingUtilities.invokeAndWait(() -> {
             TableModel model = new DefaultTableModel(0, 0);
             JTable table = new JTable(model);
-            Assertions.assertIterableEquals(Collections.emptyList(), TableStreamUtils.asStream(table)
+            Assertions.assertIterableEquals(Collections.emptyList(), SwingStreamUtils.asStream(table)
                     .collect(Collectors.toList()));
         });
     }
@@ -135,7 +135,7 @@ class TableStreamUtilsTest {
         SwingUtilities.invokeAndWait(() -> {
             DefaultTableModel model = new DefaultTableModel(3, 2);
             JTable table = new JTable(model);
-            Iterable<TableCellData<JTable>> iterable = TableStreamUtils.asIterable(table);
+            Iterable<TableCellData<JTable>> iterable = SwingStreamUtils.asIterable(table);
             Iterator<TableCellData<JTable>> iterator = iterable.iterator();
             iterator.next();
             model.addRow(new Object[] { "d1", "d2" });
@@ -149,7 +149,7 @@ class TableStreamUtilsTest {
     void toJTable_1() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             List<String> values = Arrays.asList("valA", "valB", "valC");
-            JTable table = values.stream().collect(TableStreamUtils.toJTable(new Column<>("col1")));
+            JTable table = values.stream().collect(SwingStreamUtils.toJTable(new Column<>("col1")));
             Assertions.assertEquals(values.size(), table.getRowCount());
             Assertions.assertEquals(1, table.getColumnCount());
             Assertions.assertEquals("col1", table.getColumnName(0));
@@ -164,7 +164,7 @@ class TableStreamUtilsTest {
         SwingUtilities.invokeAndWait(() -> {
             List<Rectangle> values = Arrays.asList(new Rectangle(0, 0, 2, 5), new Rectangle(1, 1, 3, 6));
             JTable table = values.stream()
-                    .collect(TableStreamUtils.toJTable(new Column<>("Location", r -> r.getLocation(), 20, Point.class),
+                    .collect(SwingStreamUtils.toJTable(new Column<>("Location", r -> r.getLocation(), 20, Point.class),
                                                         new Column<>("Size", r -> r.getSize(), 30, Dimension.class)));
             Assertions.assertEquals(values.size(), table.getRowCount());
             Assertions.assertEquals(2, table.getColumnCount());
@@ -185,7 +185,7 @@ class TableStreamUtilsTest {
         for (int i = 0; i < 100_0000; i++) {
             values.add(new Point(i + 1, i + 2));
         }
-        SimpleTableModel model = values.parallelStream().collect(TableStreamUtils.toTableModel(
+        SimpleTableModel model = values.parallelStream().collect(SwingStreamUtils.toTableModel(
                 new Column<>("col1", p -> p.x, Column.DEFAULT_PREFERRED_WIDTH, Integer.class),
                 new Column<>("col2", p -> p.y, Column.DEFAULT_PREFERRED_WIDTH, Integer.class),
                 new Column<>("col3", p -> p.x * p.y, Column.DEFAULT_PREFERRED_WIDTH, Integer.class, true)));
@@ -211,7 +211,7 @@ class TableStreamUtilsTest {
         for (int i = 0; i < 10; i++) {
             values.add("value " + i);
         }
-        SimpleTableModel model = values.stream().collect(TableStreamUtils.toTableModel(
+        SimpleTableModel model = values.stream().collect(SwingStreamUtils.toTableModel(
                 new Column<>("col1"),
                 new Column<>("col2")));
         List<TableModelEvent> events = new ArrayList<>();
@@ -230,7 +230,7 @@ class TableStreamUtilsTest {
     @Test
     void toJTable_parallelStream() throws Exception {
         List<Integer> values = IntStream.range(0, 100_000).mapToObj(Integer::new).collect(Collectors.toList());
-        JTable table = values.parallelStream().collect(TableStreamUtils.toJTable(new Column<>("col1")));
+        JTable table = values.parallelStream().collect(SwingStreamUtils.toJTable(new Column<>("col1")));
         SwingUtilities.invokeAndWait(() -> {
             Assertions.assertEquals(values.size(), table.getRowCount());
             Assertions.assertEquals(1, table.getColumnCount());
@@ -245,7 +245,7 @@ class TableStreamUtilsTest {
     @Test
     void toJTable_no_columns() {
         Assertions.assertThrows(IllegalArgumentException.class,
-                () -> Arrays.asList("value").stream().collect(TableStreamUtils.toJTable()));
+                () -> Arrays.asList("value").stream().collect(SwingStreamUtils.toJTable()));
     }
 
     @Test
@@ -261,7 +261,7 @@ class TableStreamUtilsTest {
         long totalTime = 0;
         for (int i = 0; i < repeats; i++) {
             long t0 = System.currentTimeMillis();
-            JTable table = (parallel ? values.parallelStream() : values.stream()).collect(TableStreamUtils.toJTable(
+            JTable table = (parallel ? values.parallelStream() : values.stream()).collect(SwingStreamUtils.toJTable(
                     new Column<>("COL1", v -> String.format("Value: %d", v)),
                     new Column<>("COL2", v -> Integer.toHexString(Integer.parseInt(Integer.toString(v + v)))),
                     new Column<>("COL3", v -> Arrays.toString(Integer.toString(v + v).getBytes()))));
