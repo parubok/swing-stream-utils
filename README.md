@@ -34,6 +34,19 @@ FileTable table = files.stream()
                                                 new Column<>("Size", File::length, 70, Long.class));
 ```
 
+Example 3 (create combo box with file names from a list of `File` objects):
+```java
+import java.io.File;
+import java.util.List;
+
+import static org.swingk.utils.stream.SwingStreamUtils.toJComboBox;
+
+List<File> files = ...;
+JComboBox<String> = files.stream()
+             .map(File::getName)
+             .collect(toJComboBox());
+```
+
 It is worth mentioning that the utility ensures that the Swing component creation and configuration are performed on EDT, even when the streaming code runs on a different thread. So the following example code is valid:
 ```java
 import java.util.List;
