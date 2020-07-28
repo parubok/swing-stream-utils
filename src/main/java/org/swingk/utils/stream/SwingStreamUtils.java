@@ -200,7 +200,7 @@ public class SwingStreamUtils {
      * @see #toJComboBox(Supplier, Supplier, BiConsumer)
      */
     public static <T> Collector<T, List<T>, JComboBox<T>> toJComboBox() {
-        return toJComboBox(JComboBox::new, DefaultComboBoxModel::new, (item, model) -> model.addElement(item));
+        return toJComboBox(JComboBox::new, DefaultComboBoxModel::new, DefaultComboBoxModel::addElement);
     }
 
     /**
@@ -221,7 +221,7 @@ public class SwingStreamUtils {
      */
     public static <T, K extends JComboBox<T>, M extends ComboBoxModel<T>> Collector<T, List<T>, K> toJComboBox(Supplier<K> comboSupplier,
                                                                                                                Supplier<M> modelSupplier,
-                                                                                                               BiConsumer<T, M> itemAdder) {
+                                                                                                               BiConsumer<M, T> itemAdder) {
         Objects.requireNonNull(comboSupplier);
         Objects.requireNonNull(modelSupplier);
         Objects.requireNonNull(itemAdder);
@@ -250,7 +250,7 @@ public class SwingStreamUtils {
             public Function<List<T>, K> finisher() {
                 return data -> {
                     final M model = Objects.requireNonNull(modelSupplier.get(), "model");
-                    data.forEach(item -> itemAdder.accept(item, model));
+                    data.forEach(item -> itemAdder.accept(model, item));
                     final AtomicReference<K> comboRef = new AtomicReference<>();
                     try {
                         Runnable finisherTask = () -> {
@@ -281,7 +281,7 @@ public class SwingStreamUtils {
      * @see #toComboBoxModel(Supplier, BiConsumer)
      */
     public static <T> Collector<T, List<T>, DefaultComboBoxModel<T>> toComboBoxModel() {
-        return toComboBoxModel(DefaultComboBoxModel::new, (item, model) -> model.addElement(item));
+        return toComboBoxModel(DefaultComboBoxModel::new, DefaultComboBoxModel::addElement);
     }
 
     /**
@@ -294,7 +294,7 @@ public class SwingStreamUtils {
      * @return The new combo box model.
      */
     public static <T, M extends ComboBoxModel<T>> Collector<T, List<T>, M> toComboBoxModel(Supplier<M> modelSupplier,
-                                                                                           BiConsumer<T, M> itemAdder) {
+                                                                                           BiConsumer<M, T> itemAdder) {
         Objects.requireNonNull(modelSupplier);
         Objects.requireNonNull(itemAdder);
         return new Collector<T, List<T>, M>() {
@@ -322,7 +322,7 @@ public class SwingStreamUtils {
             public Function<List<T>, M> finisher() {
                 return data -> {
                     final M model = Objects.requireNonNull(modelSupplier.get(), "model");
-                    data.forEach(item -> itemAdder.accept(item, model));
+                    data.forEach(item -> itemAdder.accept(model, item));
                     return model;
                 };
             }
