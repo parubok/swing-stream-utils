@@ -1,4 +1,4 @@
-package org.swingk.utils.table;
+package org.swingk.utils.stream;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

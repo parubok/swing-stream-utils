@@ -1,4 +1,4 @@
-package org.swingk.utils.table;
+package org.swingk.utils.stream;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.List;

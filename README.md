@@ -6,8 +6,8 @@ Utils for working with Java Swing components via Java 8 streams.
 
 Example 1 (count how many times cell value "London" appears in the selected cells of column 3):
 ```java
-import org.swingk.utils.table.TableStreamUtils;
-import org.swingk.utils.table.TableCellData;
+import org.swingk.utils.stream.TableStreamUtils;
+import org.swingk.utils.stream.TableCellData;
 
 JTable table = ...;
 long count = TableStreamUtils.asStream(table)
@@ -23,9 +23,9 @@ Example 2 (create table with 'Name' and 'Size' columns from a list of `File` obj
 import java.io.File;
 import java.util.List;
 
-import org.swingk.utils.table.Column;
+import org.swingk.utils.stream.Column;
 
-import static org.swingk.utils.table.SwingStreamUtils.toJTable;
+import static org.swingk.utils.stream.SwingStreamUtils.toJTable;
 
 List<File> files = ...;
 /* FileTable is a subclass of JTable */
@@ -38,9 +38,9 @@ It is worth mentioning that the utility ensures that the `JTable` creation and c
 ```java
 import java.util.List;
 ...
-import org.swingk.utils.table.Column;
+import org.swingk.utils.stream.Column;
 
-import static org.swingk.utils.table.SwingStreamUtils.toJTable;
+import static org.swingk.utils.stream.SwingStreamUtils.toJTable;
 
 // not EDT
 List<Server> servers = ...;
@@ -57,7 +57,7 @@ import java.util.List;
 ...
 import org.swingk.utils.table.Column;
 
-import static org.swingk.utils.table.SwingStreamUtils.toTableModel;
+import static org.swingk.utils.stream.SwingStreamUtils.toTableModel;
 
 // may be executed on any thread
 List<User> users = ...;

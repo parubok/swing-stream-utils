@@ -3,11 +3,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.swingk.utils.table</groupId>
-  <artifactId>table-stream-utils</artifactId>
+  <groupId>org.swingk.utils.stream</groupId>
+  <artifactId>swing-stream-utils</artifactId>
   <version>1.7-SNAPSHOT</version>
 
-  <name>table-stream-utils</name>
+  <name>swing-stream-utils</name>
   <url>https://github.com/parubok/table-stream-utils</url>
 
   <properties>
