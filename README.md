@@ -55,7 +55,7 @@ SwingUtilities.invokeLater(() -> panel.add(table))); // continue with the table 
 ```java
 import java.util.List;
 ...
-import org.swingk.utils.table.Column;
+import org.swingk.utils.stream.Column;
 
 import static org.swingk.utils.stream.SwingStreamUtils.toTableModel;
 
