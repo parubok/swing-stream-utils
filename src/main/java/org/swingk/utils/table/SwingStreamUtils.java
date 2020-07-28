@@ -114,7 +114,7 @@ public class SwingStreamUtils {
     }
 
     /**
-     * Collector for Java 8 streams to create {@link JTable} (an element from the stream produces a single table row,
+     * Stream collector to create {@link JTable} (an element from the stream produces a single table row,
      * the corresponding element may be retrieved via {@link SimpleTableModel#getRowObject(int)).
      * <p>
      * <b>Note 1:</b> The collector ensures that the table component is created/accessed on EDT even if the streaming
@@ -178,7 +178,7 @@ public class SwingStreamUtils {
     }
 
     /**
-     * Collector for Java 8 streams to create {@link SimpleTableModel} (an element from the stream produces a single
+     * Stream collector to create {@link SimpleTableModel} (an element from the stream produces a single
      * table row, the corresponding element may be retrieved via {@link SimpleTableModel#getRowObject(int)}).
      *
      * @param columns The table column descriptors (column preferred width is ignored).
@@ -195,7 +195,7 @@ public class SwingStreamUtils {
     }
 
     /**
-     * Collector for Java 8 streams to create vanilla {@link JComboBox} with {@link DefaultComboBoxModel}.
+     * Stream collector to create vanilla {@link JComboBox} with {@link DefaultComboBoxModel}.
      *
      * @see #toJComboBox(Supplier, Supplier, BiConsumer)
      */
@@ -204,7 +204,7 @@ public class SwingStreamUtils {
     }
 
     /**
-     * Collector for Java 8 streams to create {@link JComboBox}.
+     * Stream collector to create {@link JComboBox}.
      * <p>
      * <b>Note:</b> The collector ensures that the combo box component is created/accessed on EDT even if the
      * streaming is performed on a different thread (e.g. parallel stream). The model supplier is called on the current
