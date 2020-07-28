@@ -4,7 +4,7 @@
 # swing-stream-utils
 Utils for working with Java Swing components via Java 8 streams.
 
-Example 1 (count how many times cell value "London" appears in the selected cells of column 3):
+Example 1 (count how many times `JTable` cell value "London" appears in the selected cells of column 3):
 ```java
 import org.swingk.utils.stream.TableStreamUtils;
 import org.swingk.utils.stream.TableCellData;
@@ -18,7 +18,7 @@ long count = TableStreamUtils.asStream(table)
   .count();
 ```
 
-Example 2 (create table with 'Name' and 'Size' columns from a list of `File` objects):
+Example 2 (create subclass of `JTable` with 'Name' and 'Size' columns from a list of `File` objects):
 ```java
 import java.io.File;
 import java.util.List;
@@ -34,7 +34,7 @@ FileTable table = files.stream()
                                                 new Column<>("Size", File::length, 70, Long.class));
 ```
 
-It is worth mentioning that the utility ensures that the `JTable` creation and configuration are performed on EDT, even when the streaming code runs on a different thread. So the following example code is valid:
+It is worth mentioning that the utility ensures that the Swing component creation and configuration are performed on EDT, even when the streaming code runs on a different thread. So the following example code is valid:
 ```java
 import java.util.List;
 ...
