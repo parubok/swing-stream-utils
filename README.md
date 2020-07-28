@@ -38,6 +38,7 @@ Example 3 (create combo box with file names from a list of `File` objects):
 ```java
 import java.io.File;
 import java.util.List;
+import javax.swing.JComboBox;
 
 import static org.swingk.utils.stream.SwingStreamUtils.toJComboBox;
 
