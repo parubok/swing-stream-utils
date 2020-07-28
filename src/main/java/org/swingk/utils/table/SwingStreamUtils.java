@@ -226,7 +226,6 @@ public class SwingStreamUtils {
         Objects.requireNonNull(modelSupplier);
         Objects.requireNonNull(itemAdder);
         return new Collector<T, List<T>, K>() {
-
             @Override
             public Supplier<List<T>> supplier() {
                 return ArrayList::new;
