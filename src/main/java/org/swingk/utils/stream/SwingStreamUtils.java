@@ -274,4 +274,58 @@ public class SwingStreamUtils {
             }
         };
     }
+
+    /**
+     * Stream collector to create vanilla {@link DefaultComboBoxModel}.
+     *
+     * @see #toComboBoxModel(Supplier, BiConsumer)
+     */
+    public static <T> Collector<T, List<T>, DefaultComboBoxModel<T>> toComboBoxModel() {
+        return toComboBoxModel(DefaultComboBoxModel::new, (item, model) -> model.addElement(item));
+    }
+
+    /**
+     * Stream collector to create {@link ComboBoxModel}.
+     *
+     * @param modelSupplier Creates a concrete instance of {@link ComboBoxModel} for the collector. Called on the current thread.
+     * @param itemAdder Adds item to the model. Called on the current thread.
+     * @param <T> Type of the stream elements.
+     * @param <M> Type of the combo box model.
+     * @return The new combo box model.
+     */
+    public static <T, M extends ComboBoxModel<T>> Collector<T, List<T>, M> toComboBoxModel(Supplier<M> modelSupplier,
+                                                                                           BiConsumer<T, M> itemAdder) {
+        Objects.requireNonNull(modelSupplier);
+        Objects.requireNonNull(itemAdder);
+        return new Collector<T, List<T>, M>() {
+            @Override
+            public Supplier<List<T>> supplier() {
+                return ArrayList::new;
+            }
+
+            @Override
+            public BiConsumer<List<T>, T> accumulator() {
+                return List::add;
+            }
+
+            @Override
+            public BinaryOperator<List<T>> combiner() {
+                return CombinedList::new;
+            }
+
+            @Override
+            public Set<Characteristics> characteristics() {
+                return Collections.emptySet();
+            }
+
+            @Override
+            public Function<List<T>, M> finisher() {
+                return data -> {
+                    final M model = Objects.requireNonNull(modelSupplier.get(), "model");
+                    data.forEach(item -> itemAdder.accept(item, model));
+                    return model;
+                };
+            }
+        };
+    }
 }
