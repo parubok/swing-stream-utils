@@ -215,11 +215,12 @@ public class SwingStreamUtils {
      * @param modelSupplier Creates a concrete instance of {@link ComboBoxModel} for the collector. Called on the current thread.
      * @param itemAdder Adds item to the model. Called on the current thread.
      * @param <T> Type of the stream elements.
+     * @param <D> Type of the resulting combo box items.
      * @param <K> Type of the resulting combo box.
      * @param <M> Type of the combo box model.
      * @return The new combo box.
      */
-    public static <T, K extends JComboBox<T>, M extends ComboBoxModel<T>> Collector<T, List<T>, K> toJComboBox(Supplier<K> comboSupplier,
+    public static <T, D, K extends JComboBox<D>, M extends ComboBoxModel<D>> Collector<T, List<T>, K> toJComboBox(Supplier<K> comboSupplier,
                                                                                                                Supplier<M> modelSupplier,
                                                                                                                BiConsumer<M, T> itemAdder) {
         Objects.requireNonNull(comboSupplier);
@@ -285,15 +286,16 @@ public class SwingStreamUtils {
     }
 
     /**
-     * Stream collector to create {@link ComboBoxModel}.
+     * Stream collector to create {@link ComboBoxModel}. Works on the current thread.
      *
-     * @param modelSupplier Creates a concrete instance of {@link ComboBoxModel} for the collector. Called on the current thread.
-     * @param itemAdder Adds item to the model. Called on the current thread.
+     * @param modelSupplier Creates a concrete instance of {@link ComboBoxModel} for the collector.
+     * @param itemAdder Adds item to the model.
      * @param <T> Type of the stream elements.
+     * @param <D> Type of the resulting combo box model items.
      * @param <M> Type of the combo box model.
      * @return The new combo box model.
      */
-    public static <T, M extends ComboBoxModel<T>> Collector<T, List<T>, M> toComboBoxModel(Supplier<M> modelSupplier,
+    public static <T, D, M extends ComboBoxModel<D>> Collector<T, List<T>, M> toComboBoxModel(Supplier<M> modelSupplier,
                                                                                            BiConsumer<M, T> itemAdder) {
         Objects.requireNonNull(modelSupplier);
         Objects.requireNonNull(itemAdder);

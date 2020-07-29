@@ -302,4 +302,20 @@ class SwingStreamUtilsTest {
             Assertions.assertEquals(list.get(i), model.getElementAt(i));
         }
     }
+
+    @Test
+    void toComboBoxModel_2() {
+        List<Integer> list = new ArrayList<>();
+        final int c = 10_000;
+        for (int i = 0; i < c; i++) {
+            list.add(i);
+        }
+        DefaultComboBoxModel<String> model = list.parallelStream()
+                .collect(SwingStreamUtils.toComboBoxModel(DefaultComboBoxModel::new,
+                        (m, index) -> m.addElement(Integer.toString(index))));
+        Assertions.assertEquals(c, model.getSize());
+        for (int i = 0; i < c; i++) {
+            Assertions.assertEquals(Integer.toString(list.get(i)), model.getElementAt(i));
+        }
+    }
 }
