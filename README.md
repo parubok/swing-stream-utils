@@ -4,6 +4,8 @@
 # swing-stream-utils
 Utils for working with Java Swing components via Java 8 streams.
 
+Functionality of the library is provided by the static methods of class `org.swingk.utils.stream.SwingStreamUtils`.
+
 Example 1 (count how many times `JTable` cell value "London" appears in the selected cells of column 3):
 ```java
 import org.swingk.utils.stream.SwingStreamUtils;
