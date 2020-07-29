@@ -6,11 +6,11 @@ Utils for working with Java Swing components via Java 8 streams.
 
 Example 1 (count how many times `JTable` cell value "London" appears in the selected cells of column 3):
 ```java
-import org.swingk.utils.stream.TableStreamUtils;
+import org.swingk.utils.stream.SwingStreamUtils;
 import org.swingk.utils.stream.TableCellData;
 
 JTable table = ...;
-long count = TableStreamUtils.asStream(table)
+long count = SwingStreamUtils.asStream(table)
   .filter(TableCellData::isSelected)
   .filter(cellData -> cellData.getColumn() == 3)
   .map(TableCellData::getValue)
