@@ -58,13 +58,12 @@ import org.swingk.utils.stream.Column;
 
 import static org.swingk.utils.stream.SwingStreamUtils.toJTable;
 
-// not EDT
+// may be not EDT (for example, Swing worker background thread)
 List<Server> servers = ...;
 JTable table = servers.parallelStream() // OK to use parallel stream!
              .collect(toJTable(new Column<>("Name", Server::getName, 100, String.class),
                                new Column<>("Users", Server::getUserCount, 50, Integer.class),
                                new Column<>("Status", Server::getStatus, 200, String.class));
-SwingUtilities.invokeLater(() -> panel.add(table))); // continue with the table on EDT
 ```
 
 `SimpleTableModel` may be build from a stream as following:
