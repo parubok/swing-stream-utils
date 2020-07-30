@@ -174,7 +174,7 @@ public class SwingStreamUtils {
             columnClasses.add(columns[i].getColumnClass());
             editable[i] = columns[i].isEditable();
         }
-        return new SimpleTableModel(data, columns.length, columnClasses, columnNames, editable);
+        return new SimpleTableModel(data, columnClasses, columnNames, editable);
     }
 
     /**

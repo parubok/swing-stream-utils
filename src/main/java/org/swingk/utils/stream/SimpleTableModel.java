@@ -2,22 +2,24 @@ package org.swingk.utils.stream;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
+import java.util.function.IntFunction;
 
 /**
  * Table model with fixed row/column count.
+ * Implements {@link IntFunction} to access row data objects.
  */
-public final class SimpleTableModel extends AbstractTableModel {
+public final class SimpleTableModel extends AbstractTableModel implements IntFunction<Object> {
     private final List<List<Object>> data;
     private final int columnCount;
     private final List<Class<?>> columnClasses;
     private final List<String> columnNames;
     private final boolean[] columnsEditable;
 
-    SimpleTableModel(List<List<Object>> data, int columnCount, List<Class<?>> columnClasses, List<String> columnNames,
+    SimpleTableModel(List<List<Object>> data, List<Class<?>> columnClasses, List<String> columnNames,
                      boolean[] columnsEditable) {
         super();
         this.data = data;
-        this.columnCount = columnCount;
+        this.columnCount = columnClasses.size();
         this.columnClasses = columnClasses;
         this.columnNames = columnNames;
         this.columnsEditable = columnsEditable;
@@ -28,6 +30,11 @@ public final class SimpleTableModel extends AbstractTableModel {
      */
     public Object getRowObject(int rowIndex) {
         return data.get(rowIndex).get(columnCount);
+    }
+
+    @Override
+    public Object apply(int rowIndex) {
+        return getRowObject(rowIndex);
     }
 
     @Override
