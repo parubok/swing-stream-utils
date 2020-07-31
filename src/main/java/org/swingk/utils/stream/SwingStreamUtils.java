@@ -340,6 +340,8 @@ public class SwingStreamUtils {
      *
      * @param parent Parent container. Not null.
      * @return Iterable which iterates over all descendant components in the parent container (incl. the parent itself).
+     * @see Container#getComponentCount()
+     * @see Container#getComponent(int)
      */
     public static Iterable<Component> getDescendantsIterable(Container parent) {
         Objects.requireNonNull(parent);
