@@ -7,6 +7,8 @@ import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
+import java.awt.Component;
+import java.awt.Container;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,6 +25,8 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+
+import static java.util.Arrays.asList;
 
 /**
  * Java-8 stream utils for Swing components.
@@ -296,7 +300,7 @@ public class SwingStreamUtils {
      * @return The new combo box model.
      */
     public static <T, D, M extends ComboBoxModel<D>> Collector<T, List<T>, M> toComboBoxModel(Supplier<M> modelSupplier,
-                                                                                           BiConsumer<M, T> itemAdder) {
+                                                                                              BiConsumer<M, T> itemAdder) {
         Objects.requireNonNull(modelSupplier);
         Objects.requireNonNull(itemAdder);
         return new Collector<T, List<T>, M>() {
@@ -329,5 +333,81 @@ public class SwingStreamUtils {
                 };
             }
         };
+    }
+
+    /**
+     * Must be invoked on EDT.
+     *
+     * @param parent Parent container. Not null.
+     * @return Iterable which iterates over all descendant components in the parent container (incl. the parent itself).
+     */
+    public static Iterable<Component> getDescendantsIterable(Container parent) {
+        Objects.requireNonNull(parent);
+        return () -> new Iterator<Component>() {
+
+            private List<Component> currentPath = Collections.emptyList();
+
+            private List<Component> nextRightOrEmpty() {
+                if (currentPath.size() > 1) {
+                    int indexInPath = currentPath.size() - 2;
+                    while (indexInPath > -1) {
+                        Container parent = (Container) currentPath.get(indexInPath);
+                        List<Component> children = asList(parent.getComponents());
+                        int childIndex = children.indexOf(currentPath.get(indexInPath + 1));
+                        if (childIndex < (children.size() - 1)) {
+                            // take next child:
+                            List<Component> nextPath = new ArrayList<>(currentPath.subList(0, indexInPath + 1));
+                            nextPath.add(children.get(childIndex + 1));
+                            return nextPath;
+                        }
+                        indexInPath--; // go 1 level up
+                    }
+                }
+                return Collections.emptyList(); // unable to find next path on the right
+            }
+
+            /**
+             * Should not modify {@code currentPath}.
+             */
+            private List<Component> getNextPath() {
+                if (currentPath.isEmpty()) {
+                    return Collections.singletonList(parent); // start
+                }
+                // try to go down first:
+                Component com = currentPath.get(currentPath.size() - 1);
+                if (com instanceof Container) {
+                    Container container = (Container) com;
+                    if (container.getComponentCount() > 0) {
+                        List<Component> nextPath = new ArrayList<>(currentPath);
+                        nextPath.add(container.getComponent(0));
+                        return nextPath;
+                    }
+                }
+                // find next component on the right if exists:
+                return nextRightOrEmpty();
+            }
+
+            @Override
+            public boolean hasNext() {
+                return !getNextPath().isEmpty();
+            }
+
+            @Override
+            public Component next() {
+                currentPath = getNextPath();
+                return currentPath.get(currentPath.size() - 1);
+            }
+        };
+    }
+
+    /**
+     * Must be invoked on EDT.
+     *
+     * @param parent Parent container. Not null.
+     * @return Stream of all descendant components in the parent container (incl. the parent itself).
+     * @see #getDescendantsIterable(Container)
+     */
+    public static Stream<Component> streamDescendants(Container parent) {
+        return StreamSupport.stream(getDescendantsIterable(parent).spliterator(), false);
     }
 }
