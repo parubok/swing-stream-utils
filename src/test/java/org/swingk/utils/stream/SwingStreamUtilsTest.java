@@ -14,6 +14,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Label;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
@@ -405,6 +406,16 @@ class SwingStreamUtilsTest {
             List<Component> list = new ArrayList<>();
             SwingStreamUtils.getDescendantsIterable(panel).forEach(list::add);
             Assertions.assertEquals(Arrays.asList(panel, panel2, panel3, panel4), list);
+        });
+    }
+
+    @Test
+    void getDescendantsIterable_7() throws Exception {
+        SwingUtilities.invokeAndWait(() -> {
+            Label label = new Label();
+            List<Component> list = new ArrayList<>();
+            SwingStreamUtils.getDescendantsIterable(label).forEach(list::add);
+            Assertions.assertEquals(Arrays.asList(label), list);
         });
     }
 
