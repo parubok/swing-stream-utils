@@ -18,6 +18,14 @@ long count = SwingStreamUtils.asStream(table)
   .map(TableCellData::getValue)
   .filter(value -> "London".equals(value))
   .count();
+  
+// or with foreach loop:
+count = 0;
+for (TableCellData cellData: SwingStreamUtils.asIterable(table)) {
+  if (cellData.isSelected() && cellData.getColumn() == 3 && "London".equals(cellData.getValue())) {
+    count++;
+  }
+}
 ```
 
 Example 2 (create subclass of `JTable` with 'Name' and 'Size' columns from a list of `File` objects):
