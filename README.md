@@ -58,7 +58,23 @@ JComboBox<String> = files.stream()
              .collect(toComboBox());
 ```
 
-It is worth mentioning that the utility ensures that the Swing component creation and configuration are performed on EDT, even when the streaming code runs on a different thread. So the following example code is valid:
+Example 4 (find all visible descendant components in a container):
+```java
+import java.util.List;
+import java.util.stream.Collectors;
+import java.awt.Component;
+import java.awt.Container;
+
+import static org.swingk.utils.stream.SwingStreamUtils.streamDescendants;
+
+Container container = ...;
+List<Component> visibleDescendants = streamDescendants(container)
+             .filter(com -> com != container) // remove the container itself
+             .filter(Component::isVisible)
+             .collect(Collectors.toList());
+```
+
+It is worth mentioning that in most cases (check JavaDoc) the utility ensures that the Swing component creation and configuration are performed on EDT, even when the streaming code runs on a different thread. So the following example code is valid:
 ```java
 import java.util.List;
 ...
