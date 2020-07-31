@@ -4,7 +4,7 @@ import java.util.Objects;
 import java.util.function.Function;
 
 /**
- * {@link javax.swing.JTable} column descriptor for {@link SwingStreamUtils#toJTable} collectors.
+ * {@link javax.swing.JTable} column descriptor for {@link SwingStreamUtils#toTable} collectors.
  * @param <K> Type of stream elements.
  * @see javax.swing.table.TableColumn
  */

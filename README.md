@@ -28,19 +28,19 @@ for (TableCellData cellData: SwingStreamUtils.asIterable(table)) {
 }
 ```
 
-Example 2 (create subclass of `JTable` with 'Name' and 'Size' columns from a list of `File` objects):
+Example 2 (create table with 'Name' and 'Size' columns from a list of `File` objects):
 ```java
 import java.io.File;
 import java.util.List;
 
 import org.swingk.utils.stream.Column;
 
-import static org.swingk.utils.stream.SwingStreamUtils.toJTable;
+import static org.swingk.utils.stream.SwingStreamUtils.toTable;
 
 List<File> files = ...;
 /* FileTable is a subclass of JTable */
 FileTable table = files.stream()
-             .collect(toJTable(FileTable::new, new Column<>("Name", File::getName, 100, String.class), 
+             .collect(toTable(FileTable::new, new Column<>("Name", File::getName, 100, String.class), 
                                                 new Column<>("Size", File::length, 70, Long.class));
 ```
 
@@ -50,12 +50,12 @@ import java.io.File;
 import java.util.List;
 import javax.swing.JComboBox;
 
-import static org.swingk.utils.stream.SwingStreamUtils.toJComboBox;
+import static org.swingk.utils.stream.SwingStreamUtils.toComboBox;
 
 List<File> files = ...;
 JComboBox<String> = files.stream()
              .map(File::getName)
-             .collect(toJComboBox());
+             .collect(toComboBox());
 ```
 
 It is worth mentioning that the utility ensures that the Swing component creation and configuration are performed on EDT, even when the streaming code runs on a different thread. So the following example code is valid:
@@ -64,12 +64,12 @@ import java.util.List;
 ...
 import org.swingk.utils.stream.Column;
 
-import static org.swingk.utils.stream.SwingStreamUtils.toJTable;
+import static org.swingk.utils.stream.SwingStreamUtils.toTable;
 
 // may be not EDT (for example, Swing worker background thread)
 List<Server> servers = ...;
 JTable table = servers.parallelStream() // OK to use parallel stream!
-             .collect(toJTable(new Column<>("Name", Server::getName, 100, String.class),
+             .collect(toTable(new Column<>("Name", Server::getName, 100, String.class),
                                new Column<>("Users", Server::getUserCount, 50, Integer.class),
                                new Column<>("Status", Server::getStatus, 200, String.class));
 ```

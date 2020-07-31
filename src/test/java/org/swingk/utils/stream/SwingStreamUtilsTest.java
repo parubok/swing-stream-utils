@@ -151,7 +151,7 @@ class SwingStreamUtilsTest {
     void toJTable_1() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             List<String> values = Arrays.asList("valA", "valB", "valC");
-            JTable table = values.stream().collect(SwingStreamUtils.toJTable(new Column<>("col1")));
+            JTable table = values.stream().collect(SwingStreamUtils.toTable(new Column<>("col1")));
             Assertions.assertEquals(values.size(), table.getRowCount());
             Assertions.assertEquals(1, table.getColumnCount());
             Assertions.assertEquals("col1", table.getColumnName(0));
@@ -166,7 +166,7 @@ class SwingStreamUtilsTest {
         SwingUtilities.invokeAndWait(() -> {
             List<Rectangle> values = Arrays.asList(new Rectangle(0, 0, 2, 5), new Rectangle(1, 1, 3, 6));
             JTable table = values.stream()
-                    .collect(SwingStreamUtils.toJTable(new Column<>("Location", r -> r.getLocation(), 20, Point.class),
+                    .collect(SwingStreamUtils.toTable(new Column<>("Location", r -> r.getLocation(), 20, Point.class),
                                                         new Column<>("Size", r -> r.getSize(), 30, Dimension.class)));
             Assertions.assertEquals(values.size(), table.getRowCount());
             Assertions.assertEquals(2, table.getColumnCount());
@@ -232,7 +232,7 @@ class SwingStreamUtilsTest {
     @Test
     void toJTable_parallelStream() throws Exception {
         List<Integer> values = IntStream.range(0, 100_000).mapToObj(Integer::new).collect(Collectors.toList());
-        JTable table = values.parallelStream().collect(SwingStreamUtils.toJTable(new Column<>("col1")));
+        JTable table = values.parallelStream().collect(SwingStreamUtils.toTable(new Column<>("col1")));
         SwingUtilities.invokeAndWait(() -> {
             Assertions.assertEquals(values.size(), table.getRowCount());
             Assertions.assertEquals(1, table.getColumnCount());
@@ -247,7 +247,7 @@ class SwingStreamUtilsTest {
     @Test
     void toJTable_no_columns() {
         Assertions.assertThrows(IllegalArgumentException.class,
-                () -> Arrays.asList("value").stream().collect(SwingStreamUtils.toJTable()));
+                () -> Arrays.asList("value").stream().collect(SwingStreamUtils.toTable()));
     }
 
     @Test
@@ -263,7 +263,7 @@ class SwingStreamUtilsTest {
         long totalTime = 0;
         for (int i = 0; i < repeats; i++) {
             long t0 = System.currentTimeMillis();
-            JTable table = (parallel ? values.parallelStream() : values.stream()).collect(SwingStreamUtils.toJTable(
+            JTable table = (parallel ? values.parallelStream() : values.stream()).collect(SwingStreamUtils.toTable(
                     new Column<>("COL1", v -> String.format("Value: %d", v)),
                     new Column<>("COL2", v -> Integer.toHexString(Integer.parseInt(Integer.toString(v + v)))),
                     new Column<>("COL3", v -> Arrays.toString(Integer.toString(v + v).getBytes()))));
@@ -280,7 +280,7 @@ class SwingStreamUtilsTest {
     void toJComboBox() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             List<String> list = Arrays.asList("str1", "str2");
-            JComboBox<String> combo = list.stream().collect(SwingStreamUtils.toJComboBox());
+            JComboBox<String> combo = list.stream().collect(SwingStreamUtils.toComboBox());
             Assertions.assertEquals(2, combo.getItemCount());
             Assertions.assertEquals("str1", combo.getItemAt(0));
             Assertions.assertEquals("str2", combo.getItemAt(1));

@@ -107,10 +107,10 @@ public class SwingStreamUtils {
     }
 
     /**
-     * @see #toJTable(Supplier, Column[])
+     * @see #toTable(Supplier, Column[])
      */
-    public static <T> Collector<T, List<List<Object>>, JTable> toJTable(Column<T>... columns) {
-        return toJTable(JTable::new, columns);
+    public static <T> Collector<T, List<List<Object>>, JTable> toTable(Column<T>... columns) {
+        return toTable(JTable::new, columns);
     }
 
     /**
@@ -129,8 +129,8 @@ public class SwingStreamUtils {
      * @param <T> Type of the stream elements.
      * @return The new table.
      */
-    public static <T, K extends JTable> Collector<T, List<List<Object>>, K> toJTable(Supplier<K> tableSupplier,
-                                                                                     Column<T>... columns) {
+    public static <T, K extends JTable> Collector<T, List<List<Object>>, K> toTable(Supplier<K> tableSupplier,
+                                                                                    Column<T>... columns) {
         Objects.requireNonNull(tableSupplier);
         return new AbstractCollector<T, K>(columns) {
             @Override
@@ -197,10 +197,10 @@ public class SwingStreamUtils {
     /**
      * Stream collector to create vanilla {@link JComboBox} with {@link DefaultComboBoxModel}.
      *
-     * @see #toJComboBox(Supplier, Supplier, BiConsumer)
+     * @see #toComboBox(Supplier, Supplier, BiConsumer)
      */
-    public static <T> Collector<T, List<T>, JComboBox<T>> toJComboBox() {
-        return toJComboBox(JComboBox::new, DefaultComboBoxModel::new, DefaultComboBoxModel::addElement);
+    public static <T> Collector<T, List<T>, JComboBox<T>> toComboBox() {
+        return toComboBox(JComboBox::new, DefaultComboBoxModel::new, DefaultComboBoxModel::addElement);
     }
 
     /**
@@ -220,9 +220,9 @@ public class SwingStreamUtils {
      * @param <M> Type of the combo box model.
      * @return The new combo box.
      */
-    public static <T, D, K extends JComboBox<D>, M extends ComboBoxModel<D>> Collector<T, List<T>, K> toJComboBox(Supplier<K> comboSupplier,
-                                                                                                               Supplier<M> modelSupplier,
-                                                                                                               BiConsumer<M, T> itemAdder) {
+    public static <T, D, K extends JComboBox<D>, M extends ComboBoxModel<D>> Collector<T, List<T>, K> toComboBox(Supplier<K> comboSupplier,
+                                                                                                                 Supplier<M> modelSupplier,
+                                                                                                                 BiConsumer<M, T> itemAdder) {
         Objects.requireNonNull(comboSupplier);
         Objects.requireNonNull(modelSupplier);
         Objects.requireNonNull(itemAdder);
