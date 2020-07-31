@@ -323,89 +323,103 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void getDescendantsIterable_1() {
-        JPanel panel = new JPanel();
-        List<Component> list = new ArrayList<>();
-        SwingStreamUtils.getDescendantsIterable(panel).forEach(list::add);
-        Assertions.assertEquals(Arrays.asList(panel), list);
+    void getDescendantsIterable_1() throws Exception {
+        SwingUtilities.invokeAndWait(() -> {
+            JPanel panel = new JPanel();
+            List<Component> list = new ArrayList<>();
+            SwingStreamUtils.getDescendantsIterable(panel).forEach(list::add);
+            Assertions.assertEquals(Arrays.asList(panel), list);
+        });
     }
 
     @Test
-    void getDescendantsIterable_2() {
-        JPanel panel = new JPanel();
-        JLabel label = new JLabel();
-        panel.add(label);
-        List<Component> list = new ArrayList<>();
-        SwingStreamUtils.getDescendantsIterable(panel).forEach(list::add);
-        Assertions.assertEquals(Arrays.asList(panel, label), list);
+    void getDescendantsIterable_2() throws Exception {
+        SwingUtilities.invokeAndWait(() -> {
+            JPanel panel = new JPanel();
+            JLabel label = new JLabel();
+            panel.add(label);
+            List<Component> list = new ArrayList<>();
+            SwingStreamUtils.getDescendantsIterable(panel).forEach(list::add);
+            Assertions.assertEquals(Arrays.asList(panel, label), list);
+        });
     }
 
     @Test
-    void getDescendantsIterable_3() {
-        JPanel panel = new JPanel();
-        JLabel label1 = new JLabel();
-        JLabel label2 = new JLabel();
-        panel.add(label1);
-        panel.add(label2);
-        List<Component> list = new ArrayList<>();
-        SwingStreamUtils.getDescendantsIterable(panel).forEach(list::add);
-        Assertions.assertEquals(Arrays.asList(panel, label1, label2), list);
+    void getDescendantsIterable_3() throws Exception {
+        SwingUtilities.invokeAndWait(() -> {
+            JPanel panel = new JPanel();
+            JLabel label1 = new JLabel();
+            JLabel label2 = new JLabel();
+            panel.add(label1);
+            panel.add(label2);
+            List<Component> list = new ArrayList<>();
+            SwingStreamUtils.getDescendantsIterable(panel).forEach(list::add);
+            Assertions.assertEquals(Arrays.asList(panel, label1, label2), list);
+        });
     }
 
     @Test
-    void getDescendantsIterable_4() {
-        JPanel panel = new JPanel();
-        JPanel panel2 = new JPanel();
-        JLabel label1 = new JLabel();
-        JLabel label2 = new JLabel();
-        panel.add(label1);
-        panel.add(panel2);
-        panel2.add(label2);
-        List<Component> list = new ArrayList<>();
-        SwingStreamUtils.getDescendantsIterable(panel).forEach(list::add);
-        Assertions.assertEquals(Arrays.asList(panel, label1, panel2, label2), list);
+    void getDescendantsIterable_4() throws Exception {
+        SwingUtilities.invokeAndWait(() -> {
+            JPanel panel = new JPanel();
+            JPanel panel2 = new JPanel();
+            JLabel label1 = new JLabel();
+            JLabel label2 = new JLabel();
+            panel.add(label1);
+            panel.add(panel2);
+            panel2.add(label2);
+            List<Component> list = new ArrayList<>();
+            SwingStreamUtils.getDescendantsIterable(panel).forEach(list::add);
+            Assertions.assertEquals(Arrays.asList(panel, label1, panel2, label2), list);
+        });
     }
 
     @Test
-    void getDescendantsIterable_5() {
-        JPanel panel = new JPanel();
-        JPanel panel2 = new JPanel();
-        JLabel label1 = new JLabel();
-        JLabel label2 = new JLabel();
-        JLabel label3 = new JLabel();
-        panel.add(label1);
-        panel.add(panel2);
-        panel2.add(label2);
-        panel2.add(label3);
-        List<Component> list = new ArrayList<>();
-        SwingStreamUtils.getDescendantsIterable(panel).forEach(list::add);
-        Assertions.assertEquals(Arrays.asList(panel, label1, panel2, label2, label3), list);
+    void getDescendantsIterable_5() throws Exception {
+        SwingUtilities.invokeAndWait(() -> {
+            JPanel panel = new JPanel();
+            JPanel panel2 = new JPanel();
+            JLabel label1 = new JLabel();
+            JLabel label2 = new JLabel();
+            JLabel label3 = new JLabel();
+            panel.add(label1);
+            panel.add(panel2);
+            panel2.add(label2);
+            panel2.add(label3);
+            List<Component> list = new ArrayList<>();
+            SwingStreamUtils.getDescendantsIterable(panel).forEach(list::add);
+            Assertions.assertEquals(Arrays.asList(panel, label1, panel2, label2, label3), list);
+        });
     }
 
     @Test
-    void getDescendantsIterable_6() {
-        JPanel panel = new JPanel();
-        JPanel panel2 = new JPanel();
-        JPanel panel3 = new JPanel();
-        JPanel panel4 = new JPanel();
-        panel.add(panel2);
-        panel2.add(panel3);
-        panel3.add(panel4);
-        List<Component> list = new ArrayList<>();
-        SwingStreamUtils.getDescendantsIterable(panel).forEach(list::add);
-        Assertions.assertEquals(Arrays.asList(panel, panel2, panel3, panel4), list);
+    void getDescendantsIterable_6() throws Exception {
+        SwingUtilities.invokeAndWait(() -> {
+            JPanel panel = new JPanel();
+            JPanel panel2 = new JPanel();
+            JPanel panel3 = new JPanel();
+            JPanel panel4 = new JPanel();
+            panel.add(panel2);
+            panel2.add(panel3);
+            panel3.add(panel4);
+            List<Component> list = new ArrayList<>();
+            SwingStreamUtils.getDescendantsIterable(panel).forEach(list::add);
+            Assertions.assertEquals(Arrays.asList(panel, panel2, panel3, panel4), list);
+        });
     }
 
     @Test
-    void streamDescendants_1() {
-        JPanel panel = new JPanel();
-        JPanel panel2 = new JPanel();
-        JPanel panel3 = new JPanel();
-        JPanel panel4 = new JPanel();
-        panel.add(panel2);
-        panel2.add(panel3);
-        panel3.add(panel4);
-        Assertions.assertEquals(Arrays.asList(panel, panel2, panel3, panel4),
-                SwingStreamUtils.streamDescendants(panel).collect(Collectors.toList()));
+    void streamDescendants_1() throws Exception {
+        SwingUtilities.invokeAndWait(() -> {
+            JPanel panel = new JPanel();
+            JPanel panel2 = new JPanel();
+            JPanel panel3 = new JPanel();
+            JPanel panel4 = new JPanel();
+            panel.add(panel2);
+            panel2.add(panel3);
+            panel3.add(panel4);
+            Assertions.assertEquals(Arrays.asList(panel, panel2, panel3, panel4),
+                    SwingStreamUtils.streamDescendants(panel).collect(Collectors.toList()));
+        });
     }
 }

@@ -338,12 +338,12 @@ public class SwingStreamUtils {
     /**
      * Must be invoked on EDT.
      *
-     * @param parent Parent container. Not null.
-     * @return Iterable which iterates over all descendant components in the parent container (incl. the parent itself).
+     * @param parent Parent component. Not null.
+     * @return Iterable which iterates over all descendant components in the parent component (incl. the parent itself).
      * @see Container#getComponentCount()
      * @see Container#getComponent(int)
      */
-    public static Iterable<Component> getDescendantsIterable(Container parent) {
+    public static Iterable<Component> getDescendantsIterable(Component parent) {
         Objects.requireNonNull(parent);
         return () -> new Iterator<Component>() {
 
@@ -407,9 +407,9 @@ public class SwingStreamUtils {
      *
      * @param parent Parent container. Not null.
      * @return Stream of all descendant components in the parent container (incl. the parent itself).
-     * @see #getDescendantsIterable(Container)
+     * @see #getDescendantsIterable(Component)
      */
-    public static Stream<Component> streamDescendants(Container parent) {
+    public static Stream<Component> streamDescendants(Component parent) {
         return StreamSupport.stream(getDescendantsIterable(parent).spliterator(), false);
     }
 }

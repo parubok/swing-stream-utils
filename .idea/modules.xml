@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/table-stream-utils.iml" filepath="$PROJECT_DIR$/table-stream-utils.iml" />
+      <module fileurl="file://$PROJECT_DIR$/swing-stream-utils.iml" filepath="$PROJECT_DIR$/swing-stream-utils.iml" />
     </modules>
   </component>
 </project>
