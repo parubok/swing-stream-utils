@@ -82,6 +82,9 @@ public class SwingStreamUtils {
                 @Override
                 public TableCellData<T> next() {
                     checkForConcurrentModification();
+                    if (!hasMoreCells) {
+                        throw new NoSuchElementException();
+                    }
                     Object value = table.getValueAt(row, column);
                     TableCellData<T> cellData = new TableCellData<>(row, column, value, table);
                     if (column < lastColumn) {
