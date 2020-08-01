@@ -355,6 +355,11 @@ public class SwingStreamUtils {
             private List<Component> currentPath = Collections.emptyList(); // never null
 
             /**
+             * Stores next path to prevent multiple calls to {@link #getNextPath()} for the same current path.
+             */
+            private List<Component> nextPath;
+
+            /**
              * Note: Should not modify {@code currentPath}.
              *
              * @return Next path relative to the current path or empty path if the iteration is completed and there is
@@ -395,12 +400,16 @@ public class SwingStreamUtils {
 
             @Override
             public boolean hasNext() {
-                return !getNextPath().isEmpty();
+                if (nextPath == null) {
+                    nextPath = getNextPath();
+                }
+                return !nextPath.isEmpty();
             }
 
             @Override
             public Component next() {
-                currentPath = getNextPath();
+                currentPath = nextPath != null ? nextPath : getNextPath();
+                nextPath = null; // current path has changed  - clear next path
                 if (currentPath.isEmpty()) {
                     throw new NoSuchElementException();
                 }
