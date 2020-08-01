@@ -58,7 +58,7 @@ JComboBox<String> = files.stream()
              .collect(toComboBox());
 ```
 
-Example 4 (find all visible descendant components in a container):
+Example 4 (find all visible descendants of a container):
 ```java
 import java.util.List;
 import java.util.stream.Collectors;
@@ -69,7 +69,7 @@ import static org.swingk.utils.stream.SwingStreamUtils.streamDescendants;
 
 Container container = ...;
 List<Component> visibleDescendants = streamDescendants(container)
-             .filter(com -> com != container) // remove the container itself
+             .skip(1) // skip the container itself
              .filter(Component::isVisible)
              .collect(Collectors.toList());
 ```
