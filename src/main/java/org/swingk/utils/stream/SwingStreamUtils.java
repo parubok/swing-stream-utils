@@ -359,6 +359,8 @@ public class SwingStreamUtils {
              */
             private List<Component> nextPath;
 
+            private boolean completed;
+
             /**
              * Note: Should not modify {@code currentPath}.
              *
@@ -366,6 +368,7 @@ public class SwingStreamUtils {
              * no next path.
              */
             private List<Component> getNextPath() {
+                assert !completed;
                 if (currentPath.isEmpty()) {
                     return Collections.singletonList(parent); // start iteration with the root parent path
                 }
@@ -400,6 +403,9 @@ public class SwingStreamUtils {
 
             @Override
             public boolean hasNext() {
+                if (completed) {
+                    return false;
+                }
                 if (nextPath == null) {
                     nextPath = getNextPath();
                 }
@@ -408,11 +414,12 @@ public class SwingStreamUtils {
 
             @Override
             public Component next() {
-                currentPath = nextPath != null ? nextPath : getNextPath();
-                nextPath = null; // current path has changed  - clear next path
-                if (currentPath.isEmpty()) {
+                if (completed) {
                     throw new NoSuchElementException();
                 }
+                currentPath = nextPath != null ? nextPath : getNextPath();
+                nextPath = getNextPath(); // current path has changed  - update next path
+                completed = nextPath.isEmpty();
                 return currentPath.get(currentPath.size() - 1);
             }
         };

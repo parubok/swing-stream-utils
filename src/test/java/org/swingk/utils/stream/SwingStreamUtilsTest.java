@@ -430,9 +430,13 @@ class SwingStreamUtilsTest {
             JPanel panel = new JPanel();
             Iterator<Component> iterator = SwingStreamUtils.getDescendantsIterable(panel).iterator();
             Assertions.assertTrue(iterator.hasNext());
+            Assertions.assertTrue(iterator.hasNext());
             Assertions.assertEquals(panel, iterator.next());
             Assertions.assertFalse(iterator.hasNext());
+            Assertions.assertFalse(iterator.hasNext());
             Assertions.assertThrows(NoSuchElementException.class, () -> iterator.next());
+            Assertions.assertFalse(iterator.hasNext()); // second time
+            Assertions.assertThrows(NoSuchElementException.class, () -> iterator.next()); // second time
         });
     }
 
