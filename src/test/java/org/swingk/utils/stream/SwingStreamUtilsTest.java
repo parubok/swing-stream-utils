@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -51,6 +52,21 @@ class SwingStreamUtilsTest {
             Assertions.assertEquals(1, cell_1.getColumn());
             Assertions.assertEquals(table, cell_1.getTable());
             Assertions.assertFalse(iterator.hasNext());
+        });
+    }
+
+    @Test
+    void asIterable_2() throws Exception {
+        SwingUtilities.invokeAndWait(() -> {
+            TableModel model = new DefaultTableModel(1, 1);
+            JTable table = new JTable(model);
+            Iterable<TableCellData<JTable>> iterable = SwingStreamUtils.asIterable(table);
+            Assertions.assertNotNull(iterable);
+            Iterator<TableCellData<JTable>> iterator = iterable.iterator();
+            Assertions.assertTrue(iterator.hasNext());
+            Assertions.assertNull(iterator.next().getValue());
+            Assertions.assertFalse(iterator.hasNext());
+            Assertions.assertThrows(NoSuchElementException.class, () -> iterator.next());
         });
     }
 
@@ -405,6 +421,18 @@ class SwingStreamUtilsTest {
             List<Component> list = new ArrayList<>();
             SwingStreamUtils.getDescendantsIterable(panel).forEach(list::add);
             Assertions.assertEquals(Arrays.asList(panel, panel2, panel3, panel4), list);
+        });
+    }
+
+    @Test
+    void getDescendantsIterable_7() throws Exception {
+        SwingUtilities.invokeAndWait(() -> {
+            JPanel panel = new JPanel();
+            Iterator<Component> iterator = SwingStreamUtils.getDescendantsIterable(panel).iterator();
+            Assertions.assertTrue(iterator.hasNext());
+            Assertions.assertEquals(panel, iterator.next());
+            Assertions.assertFalse(iterator.hasNext());
+            Assertions.assertThrows(NoSuchElementException.class, () -> iterator.next());
         });
     }
 
