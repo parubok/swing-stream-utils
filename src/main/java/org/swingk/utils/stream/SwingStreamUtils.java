@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
@@ -340,6 +341,7 @@ public class SwingStreamUtils {
      *
      * @param parent Parent component. Not null.
      * @return Iterable which iterates over all descendant components in the parent component (incl. the parent itself).
+     * First returned item of the iterable is the root parent.
      * @see Container#getComponentCount()
      * @see Container#getComponent(int)
      */
@@ -347,9 +349,29 @@ public class SwingStreamUtils {
         Objects.requireNonNull(parent);
         return () -> new Iterator<Component>() {
 
-            private List<Component> currentPath = Collections.emptyList();
+            private List<Component> currentPath = Collections.emptyList(); // never null
 
-            private List<Component> nextRightOrEmpty() {
+            /**
+             * Note: Should not modify {@code currentPath}.
+             *
+             * @return Next path relative to the current path or empty path if the iteration is completed and there is
+             * no next path.
+             */
+            private List<Component> getNextPath() {
+                if (currentPath.isEmpty()) {
+                    return Collections.singletonList(parent); // start iteration with the root parent path
+                }
+                // try to go down first:
+                Component com = currentPath.get(currentPath.size() - 1);
+                if (com instanceof Container) {
+                    Container container = (Container) com;
+                    if (container.getComponentCount() > 0) {
+                        List<Component> nextPath = new ArrayList<>(currentPath);
+                        nextPath.add(container.getComponent(0));
+                        return nextPath;
+                    }
+                }
+                // try to go to the right:
                 if (currentPath.size() > 1) {
                     int indexInPath = currentPath.size() - 2;
                     while (indexInPath > -1) {
@@ -365,28 +387,7 @@ public class SwingStreamUtils {
                         indexInPath--; // go 1 level up
                     }
                 }
-                return Collections.emptyList(); // unable to find next path on the right
-            }
-
-            /**
-             * Should not modify {@code currentPath}.
-             */
-            private List<Component> getNextPath() {
-                if (currentPath.isEmpty()) {
-                    return Collections.singletonList(parent); // start
-                }
-                // try to go down first:
-                Component com = currentPath.get(currentPath.size() - 1);
-                if (com instanceof Container) {
-                    Container container = (Container) com;
-                    if (container.getComponentCount() > 0) {
-                        List<Component> nextPath = new ArrayList<>(currentPath);
-                        nextPath.add(container.getComponent(0));
-                        return nextPath;
-                    }
-                }
-                // find next component on the right if exists:
-                return nextRightOrEmpty();
+                return Collections.emptyList(); // unable to find next path - end of iteration
             }
 
             @Override
@@ -397,6 +398,9 @@ public class SwingStreamUtils {
             @Override
             public Component next() {
                 currentPath = getNextPath();
+                if (currentPath.isEmpty()) {
+                    throw new NoSuchElementException();
+                }
                 return currentPath.get(currentPath.size() - 1);
             }
         };
@@ -406,7 +410,8 @@ public class SwingStreamUtils {
      * Must be invoked on EDT.
      *
      * @param parent Parent container. Not null.
-     * @return Stream of all descendant components in the parent container (incl. the parent itself).
+     * @return Stream of all descendant components in the parent container (incl. the parent itself). First element
+     * of the stream is the root parent.
      * @see #getDescendantsIterable(Component)
      */
     public static Stream<Component> streamDescendants(Component parent) {
