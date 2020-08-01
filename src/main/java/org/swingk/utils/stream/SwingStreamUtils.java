@@ -340,7 +340,7 @@ public class SwingStreamUtils {
     }
 
     /**
-     * Must be invoked on EDT.
+     * Must be invoked on EDT. The component hierarchy should not change during iteration.
      *
      * @param parent Parent component. Not null.
      * @return Iterable which iterates over all descendant components in the parent component (incl. the parent itself).
@@ -352,10 +352,15 @@ public class SwingStreamUtils {
         Objects.requireNonNull(parent);
         return () -> new Iterator<Component>() {
 
-            private List<Component> currentPath = Collections.emptyList(); // never null
+            /**
+             * Path (in components tree) which last element was returned by the last call to {@link #next()}.
+             * Never null. Initially empty.
+             */
+            private List<Component> currentPath = Collections.emptyList();
 
             /**
-             * Stores next path to prevent multiple calls to {@link #getNextPath()} for the same current path.
+             * Stores next path (relative to the current path) to prevent multiple calls to {@link #getNextPath()} for
+             * the same current path.
              */
             private List<Component> nextPath;
 
@@ -426,7 +431,7 @@ public class SwingStreamUtils {
     }
 
     /**
-     * Must be invoked on EDT.
+     * Must be invoked on EDT. The component hierarchy should not change during streaming.
      *
      * @param parent Parent container. Not null.
      * @return Stream of all descendant components in the parent container (incl. the parent itself). First element
