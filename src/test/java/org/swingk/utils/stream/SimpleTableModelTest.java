@@ -10,9 +10,9 @@ import static java.util.Arrays.asList;
 class SimpleTableModelTest {
     @Test
     void basic_test_1() {
-        List<List<Object>> data = asList(asList(1, "A"), asList(2, "B"));
-        SimpleTableModel model = new SimpleTableModel(data, asList(Integer.class, String.class), asList("col1", "col2"),
-                new boolean[]{false, true});
+        List<List<Object>> data = asList(asList(1, "A", "data1"), asList(2, "B", "data2"));
+        SimpleTableModel<String> model = new SimpleTableModel<>(data, asList(Integer.class, String.class),
+                asList("col1", "col2"), new boolean[]{false, true});
         Assertions.assertEquals(1, model.getValueAt(0, 0));
         Assertions.assertEquals("A", model.getValueAt(0, 1));
         Assertions.assertEquals(2, model.getValueAt(1, 0));
@@ -25,5 +25,7 @@ class SimpleTableModelTest {
         Assertions.assertTrue(model.isCellEditable(0, 1));
         Assertions.assertFalse(model.isCellEditable(1, 0));
         Assertions.assertTrue(model.isCellEditable(1, 1));
+        Assertions.assertEquals("data1", model.getRowObject(0));
+        Assertions.assertEquals("data2", model.getRowObject(1));
     }
 }

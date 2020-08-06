@@ -7,8 +7,10 @@ import java.util.function.IntFunction;
 /**
  * Table model with fixed row/column count.
  * Implements {@link IntFunction} to access row data objects.
+ *
+ * @param <T> Type of stream elements.
  */
-public final class SimpleTableModel extends AbstractTableModel implements IntFunction<Object> {
+public final class SimpleTableModel<T> extends AbstractTableModel implements IntFunction<T> {
     private final List<List<Object>> data;
     private final int columnCount;
     private final List<Class<?>> columnClasses;
@@ -28,12 +30,12 @@ public final class SimpleTableModel extends AbstractTableModel implements IntFun
     /**
      * @return Data object (e.g. stream element) associated with this row.
      */
-    public Object getRowObject(int rowIndex) {
-        return data.get(rowIndex).get(columnCount);
+    public T getRowObject(int rowIndex) {
+        return (T) data.get(rowIndex).get(columnCount);
     }
 
     @Override
-    public Object apply(int rowIndex) {
+    public T apply(int rowIndex) {
         return getRowObject(rowIndex);
     }
 

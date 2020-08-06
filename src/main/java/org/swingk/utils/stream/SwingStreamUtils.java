@@ -6,7 +6,6 @@ import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
 import java.awt.Component;
 import java.awt.Container;
 import java.lang.reflect.InvocationTargetException;
@@ -144,7 +143,7 @@ public class SwingStreamUtils {
             @Override
             public Function<List<List<Object>>, K> finisher() {
                 return data -> {
-                    TableModel model = createModel(data, columns);
+                    SimpleTableModel model = createModel(data, columns);
                     final AtomicReference<K> tableRef = new AtomicReference<>();
                     try {
                         Runnable finisherTask = () -> {
@@ -173,7 +172,7 @@ public class SwingStreamUtils {
         };
     }
 
-    private static <T> SimpleTableModel createModel(List<List<Object>> data, Column<T>[] columns) {
+    private static <T> SimpleTableModel<T> createModel(List<List<Object>> data, Column<T>[] columns) {
         List<Class<?>> columnClasses = new ArrayList<>(columns.length);
         List<String> columnNames = new ArrayList<>(columns.length);
         boolean[] editable = new boolean[columns.length];
@@ -182,7 +181,7 @@ public class SwingStreamUtils {
             columnClasses.add(columns[i].getColumnClass());
             editable[i] = columns[i].isEditable();
         }
-        return new SimpleTableModel(data, columnClasses, columnNames, editable);
+        return new SimpleTableModel<>(data, columnClasses, columnNames, editable);
     }
 
     /**
@@ -193,10 +192,10 @@ public class SwingStreamUtils {
      * @param <T> Type of stream elements.
      * @return The table model.
      */
-    public static <T> Collector<T, List<List<Object>>, SimpleTableModel> toTableModel(Column<T>... columns) {
-        return new AbstractCollector<T, SimpleTableModel>(columns) {
+    public static <T> Collector<T, List<List<Object>>, SimpleTableModel<T>> toTableModel(Column<T>... columns) {
+        return new AbstractCollector<T, SimpleTableModel<T>>(columns) {
             @Override
-            public Function<List<List<Object>>, SimpleTableModel> finisher() {
+            public Function<List<List<Object>>, SimpleTableModel<T>> finisher() {
                 return data -> createModel(data, columns);
             }
         };

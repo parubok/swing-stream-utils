@@ -206,7 +206,7 @@ class SwingStreamUtilsTest {
         for (int i = 0; i < 100_0000; i++) {
             values.add(new Point(i + 1, i + 2));
         }
-        SimpleTableModel model = values.parallelStream().collect(SwingStreamUtils.toTableModel(
+        SimpleTableModel<Point> model = values.parallelStream().collect(SwingStreamUtils.toTableModel(
                 new Column<>("col1", p -> p.x, Column.DEFAULT_PREFERRED_WIDTH, Integer.class),
                 new Column<>("col2", p -> p.y, Column.DEFAULT_PREFERRED_WIDTH, Integer.class),
                 new Column<>("col3", p -> p.x * p.y, Column.DEFAULT_PREFERRED_WIDTH, Integer.class, true)));
@@ -216,7 +216,8 @@ class SwingStreamUtilsTest {
         Assertions.assertEquals("col2", model.getColumnName(1));
         Assertions.assertEquals("col3", model.getColumnName(2));
         for (int i = 0; i < values.size(); i++) {
-            Assertions.assertEquals(values.get(i), model.getRowObject(i));
+            Point rowPoint = model.getRowObject(i);
+            Assertions.assertEquals(values.get(i), rowPoint);
             Assertions.assertEquals(values.get(i).x, model.getValueAt(i, 0));
             Assertions.assertFalse(model.isCellEditable(i, 0));
             Assertions.assertEquals(values.get(i).y, model.getValueAt(i, 1));
@@ -232,7 +233,7 @@ class SwingStreamUtilsTest {
         for (int i = 0; i < 10; i++) {
             values.add("value " + i);
         }
-        SimpleTableModel model = values.stream().collect(SwingStreamUtils.toTableModel(
+        SimpleTableModel<String> model = values.stream().collect(SwingStreamUtils.toTableModel(
                 new Column<>("col1"),
                 new Column<>("col2")));
         List<TableModelEvent> events = new ArrayList<>();
