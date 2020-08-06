@@ -100,7 +100,7 @@ import static org.swingk.utils.stream.SwingStreamUtils.toTableModel;
 
 // may be executed on any thread
 List<User> users = ...;
-SimpleTableModel tableModel = users.parallelStream()
+SimpleTableModel<User> tableModel = users.parallelStream()
                             .collect(toTableModel(new Column<>("Name", User::getName, 100, String.class),
                                                   new Column<>("ID", User::getID, 50, Long.class),
                                                   new Column<>("Role", User::getRole, 200, String.class));
