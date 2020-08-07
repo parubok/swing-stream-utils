@@ -236,6 +236,8 @@ class SwingStreamUtilsTest {
         SimpleTableModel<String> model = values.stream().collect(SwingStreamUtils.toTableModel(
                 new Column<>("col1"),
                 new Column<>("col2")));
+        Assertions.assertEquals("value 0", model.getRowObject(0));
+        Assertions.assertEquals("value 1", model.getRowObject(1));
         List<TableModelEvent> events = new ArrayList<>();
         model.addTableModelListener(events::add);
         final String value = "abc";
