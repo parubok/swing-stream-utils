@@ -202,8 +202,9 @@ class SwingStreamUtilsTest {
 
     @Test
     void toTableModel_1() {
-        List<Point> values = new ArrayList<>();
-        for (int i = 0; i < 100_0000; i++) {
+        int size = 100_0000;
+        List<Point> values = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) {
             values.add(new Point(i + 1, i + 2));
         }
         SimpleTableModel<Point> model = values.parallelStream().collect(SwingStreamUtils.toTableModel(
