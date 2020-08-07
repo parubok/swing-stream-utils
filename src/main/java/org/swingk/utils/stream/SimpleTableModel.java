@@ -7,8 +7,10 @@ import java.util.function.IntFunction;
 /**
  * Table model with fixed row/column count.
  * Implements {@link IntFunction} to access row data objects.
+ * Supports {@link #setValueAt(Object, int, int)} operation.
  *
- * @param <T> Type of stream elements.
+ * @param <T> Type of the source stream elements.
+ * @see SwingStreamUtils#toTableModel(Column[])
  */
 public final class SimpleTableModel<T> extends AbstractTableModel implements IntFunction<T> {
     private final List<List<Object>> data;
