@@ -48,6 +48,23 @@ class SimpleTableModelTest {
     }
 
     @Test
+    void setNumRows_1() {
+        List<List<Object>> data = asList(asList(1, "A", "data1"), asList(2, "B", "data2"));
+        SimpleTableModel<String> model = new SimpleTableModel<>(data, asList(Integer.class, String.class),
+                asList("col1", "col2"), new boolean[]{false, true});
+        model.setRowCount(5);
+        Assertions.assertEquals(5, model.getRowCount());
+        Assertions.assertEquals("data1", model.getRowObject(0));
+        Assertions.assertEquals("data2", model.getRowObject(1));
+        Assertions.assertNull(model.getRowObject(2));
+        Assertions.assertNull(model.getRowObject(3));
+        Assertions.assertNull(model.getRowObject(4));
+
+        model.setRowObject(4, "data5");
+        Assertions.assertEquals("data5", model.getRowObject(4));
+    }
+
+    @Test
     void insert_row_1() {
         List<List<Object>> data = asList(asList(1, "A", "data1"), asList(2, "B", "data2"));
         SimpleTableModel<String> model = new SimpleTableModel<>(data, asList(Integer.class, String.class),
