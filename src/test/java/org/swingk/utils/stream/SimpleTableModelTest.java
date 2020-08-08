@@ -45,4 +45,20 @@ class SimpleTableModelTest {
         model.setRowObject(1, "data3");
         Assertions.assertEquals("data3", model.getRowObject(1));
     }
+
+    @Test
+    void insert_row_1() {
+        List<List<Object>> data = asList(asList(1, "A", "data1"), asList(2, "B", "data2"));
+        SimpleTableModel<String> model = new SimpleTableModel<>(data, asList(Integer.class, String.class),
+                asList("col1", "col2"), new boolean[]{false, true});
+        Assertions.assertEquals(2, model.getRowCount());
+        model.insertRow(1, new Object[]{10, "K"});
+        Assertions.assertEquals(3, model.getRowCount());
+        Assertions.assertEquals("data1", model.getRowObject(0));
+        Assertions.assertNull(model.getRowObject(1));
+        Assertions.assertEquals("data2", model.getRowObject(2));
+
+        model.setRowObject(1, "dataB");
+        Assertions.assertEquals("dataB", model.getRowObject(1));
+    }
 }
