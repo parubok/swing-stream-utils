@@ -3,6 +3,7 @@ package org.swingk.utils.stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -60,5 +61,105 @@ class SimpleTableModelTest {
 
         model.setRowObject(1, "dataB");
         Assertions.assertEquals("dataB", model.getRowObject(1));
+    }
+
+    @Test
+    void move_row_1() {
+        List<List<Object>> data = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            data.add(asList(i, "V" + i, "data" + i));
+        }
+        SimpleTableModel<String> model = new SimpleTableModel<>(data, asList(Integer.class, String.class),
+                asList("col1", "col2"), new boolean[]{false, true});
+        Assertions.assertEquals(10, model.getRowCount());
+
+        model.moveRow(1, 2, 5);
+        Assertions.assertEquals(10, model.getRowCount());
+
+        Assertions.assertEquals("data0", model.getRowObject(0));
+        Assertions.assertEquals("data3", model.getRowObject(1));
+        Assertions.assertEquals("data4", model.getRowObject(2));
+        Assertions.assertEquals("data5", model.getRowObject(3));
+        Assertions.assertEquals("data6", model.getRowObject(4));
+        Assertions.assertEquals("data1", model.getRowObject(5));
+        Assertions.assertEquals("data2", model.getRowObject(6));
+        Assertions.assertEquals("data7", model.getRowObject(7));
+        Assertions.assertEquals("data8", model.getRowObject(8));
+        Assertions.assertEquals("data9", model.getRowObject(9));
+    }
+
+    @Test
+    void move_row_2() {
+        List<List<Object>> data = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            data.add(asList(i, "V" + i, "data" + i));
+        }
+        SimpleTableModel<String> model = new SimpleTableModel<>(data, asList(Integer.class, String.class),
+                asList("col1", "col2"), new boolean[]{false, true});
+        Assertions.assertEquals(10, model.getRowCount());
+
+        model.moveRow(0, 0, 9);
+        Assertions.assertEquals(10, model.getRowCount());
+
+        Assertions.assertEquals("data1", model.getRowObject(0));
+        Assertions.assertEquals("data2", model.getRowObject(1));
+        Assertions.assertEquals("data3", model.getRowObject(2));
+        Assertions.assertEquals("data4", model.getRowObject(3));
+        Assertions.assertEquals("data5", model.getRowObject(4));
+        Assertions.assertEquals("data6", model.getRowObject(5));
+        Assertions.assertEquals("data7", model.getRowObject(6));
+        Assertions.assertEquals("data8", model.getRowObject(7));
+        Assertions.assertEquals("data9", model.getRowObject(8));
+        Assertions.assertEquals("data0", model.getRowObject(9));
+    }
+
+    @Test
+    void move_row_3() {
+        List<List<Object>> data = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            data.add(asList(i, "V" + i, "data" + i));
+        }
+        SimpleTableModel<String> model = new SimpleTableModel<>(data, asList(Integer.class, String.class),
+                asList("col1", "col2"), new boolean[]{false, true});
+        Assertions.assertEquals(10, model.getRowCount());
+
+        model.moveRow(9, 9, 0);
+        Assertions.assertEquals(10, model.getRowCount());
+
+        Assertions.assertEquals("data9", model.getRowObject(0));
+        Assertions.assertEquals("data0", model.getRowObject(1));
+        Assertions.assertEquals("data1", model.getRowObject(2));
+        Assertions.assertEquals("data2", model.getRowObject(3));
+        Assertions.assertEquals("data3", model.getRowObject(4));
+        Assertions.assertEquals("data4", model.getRowObject(5));
+        Assertions.assertEquals("data5", model.getRowObject(6));
+        Assertions.assertEquals("data6", model.getRowObject(7));
+        Assertions.assertEquals("data7", model.getRowObject(8));
+        Assertions.assertEquals("data8", model.getRowObject(9));
+    }
+
+    @Test
+    void move_row_4() {
+        List<List<Object>> data = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            data.add(asList(i, "V" + i, "data" + i));
+        }
+        SimpleTableModel<String> model = new SimpleTableModel<>(data, asList(Integer.class, String.class),
+                asList("col1", "col2"), new boolean[]{false, true});
+        Assertions.assertEquals(10, model.getRowCount());
+
+        model.moveRow(0, 4, 5);
+        Assertions.assertEquals(10, model.getRowCount());
+
+        Assertions.assertEquals("data5", model.getRowObject(0));
+        Assertions.assertEquals("data6", model.getRowObject(1));
+        Assertions.assertEquals("data7", model.getRowObject(2));
+        Assertions.assertEquals("data8", model.getRowObject(3));
+        Assertions.assertEquals("data9", model.getRowObject(4));
+        Assertions.assertEquals("data0", model.getRowObject(5));
+        Assertions.assertEquals("data1", model.getRowObject(6));
+        Assertions.assertEquals("data2", model.getRowObject(7));
+        Assertions.assertEquals("data3", model.getRowObject(8));
+        Assertions.assertEquals("data4", model.getRowObject(9));
     }
 }

@@ -14,7 +14,7 @@ import java.util.function.IntFunction;
  * @see SwingStreamUtils#toTableModel(Column[])
  */
 public final class SimpleTableModel<T> extends DefaultTableModel implements IntFunction<T> {
-    private final List<T> rowsObjects;
+    private final List<T> rowObjects;
     private final List<Class<?>> columnClasses;
     private final boolean[] columnsEditable;
 
@@ -22,9 +22,9 @@ public final class SimpleTableModel<T> extends DefaultTableModel implements IntF
                      boolean[] columnsEditable) {
         super(data.size(), columnClasses.size());
         final int colCount = getColumnCount();
-        this.rowsObjects = new ArrayList<>(getRowCount());
+        this.rowObjects = new ArrayList<>(getRowCount());
         for (int row = 0; row < getRowCount(); row++) {
-            this.rowsObjects.add((T) data.get(row).get(colCount));
+            this.rowObjects.add((T) data.get(row).get(colCount));
             for (int column = 0; column < colCount; column++) {
                 Vector rowVector = (Vector) dataVector.elementAt(row);
                 rowVector.setElementAt(data.get(row).get(column), column);
@@ -37,34 +37,44 @@ public final class SimpleTableModel<T> extends DefaultTableModel implements IntF
 
     @Override
     public void setNumRows(int rowCount) {
-        while (rowCount > rowsObjects.size()){
-            rowsObjects.add(null);
+        while (rowCount > rowObjects.size()){
+            rowObjects.add(null);
         }
-        while (rowCount < rowsObjects.size()) {
-            rowsObjects.remove(rowsObjects.size() - 1);
+        while (rowCount < rowObjects.size()) {
+            rowObjects.remove(rowObjects.size() - 1);
         }
-        assert rowCount == rowsObjects.size();
+        assert rowCount == rowObjects.size();
         super.setNumRows(rowCount);
     }
 
     @Override
     public void moveRow(int start, int end, int to) {
-        List<T> subList = rowsObjects.subList(start, end + 1);
-        List<T> temp = new ArrayList<>(subList);
-        subList.clear();
-        rowsObjects.addAll(to, temp);
+        if (start != to) {
+            List<T> newRowObjects = new ArrayList<>(rowObjects.size());
+            List<T> toMove = rowObjects.subList(start, end + 1);
+            if (start > 0) {
+                newRowObjects.addAll(rowObjects.subList(0, start));
+            }
+            if (end < (rowObjects.size() - 1)) {
+                newRowObjects.addAll(rowObjects.subList(end + 1, rowObjects.size()));
+            }
+            newRowObjects.addAll(to, toMove);
+
+            rowObjects.clear();
+            rowObjects.addAll(newRowObjects);
+        }
         super.moveRow(start, end, to);
     }
 
     @Override
     public void removeRow(int row) {
-        rowsObjects.remove(row);
+        rowObjects.remove(row);
         super.removeRow(row);
     }
 
     @Override
     public void insertRow(int row, Vector rowData) {
-        rowsObjects.add(row, null);
+        rowObjects.add(row, null);
         super.insertRow(row, rowData);
     }
 
@@ -72,7 +82,7 @@ public final class SimpleTableModel<T> extends DefaultTableModel implements IntF
      * @return Data object (e.g. stream element) associated with this row.
      */
     public T getRowObject(int rowIndex) {
-        return rowsObjects.get(rowIndex);
+        return rowObjects.get(rowIndex);
     }
 
     /**
@@ -80,7 +90,7 @@ public final class SimpleTableModel<T> extends DefaultTableModel implements IntF
      * @param rowObject Data object (e.g. stream element) associated with this row.
      */
     public void setRowObject(int rowIndex, T rowObject) {
-        rowsObjects.set(rowIndex, rowObject);
+        rowObjects.set(rowIndex, rowObject);
     }
 
     @Override
