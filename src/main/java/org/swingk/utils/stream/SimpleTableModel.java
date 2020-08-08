@@ -1,7 +1,6 @@
 package org.swingk.utils.stream;
 
 import javax.swing.table.DefaultTableModel;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import java.util.function.IntFunction;
@@ -14,21 +13,26 @@ import java.util.function.IntFunction;
  * @see SwingStreamUtils#toTableModel(Column[])
  */
 public final class SimpleTableModel<T> extends DefaultTableModel implements IntFunction<T> {
-    private final List<T> rowObjects;
+    /**
+     * Single-column model to keep row objects.
+     */
+    private final DefaultTableModel rowObjects;
+
     private final List<Class<?>> columnClasses;
     private final boolean[] columnsEditable;
 
     SimpleTableModel(List<List<Object>> data, List<Class<?>> columnClasses, List<String> columnNames,
                      boolean[] columnsEditable) {
         super(data.size(), columnClasses.size());
+        final int rowCount = getRowCount();
         final int colCount = getColumnCount();
-        this.rowObjects = new ArrayList<>(getRowCount());
-        for (int row = 0; row < getRowCount(); row++) {
-            this.rowObjects.add((T) data.get(row).get(colCount));
+        this.rowObjects = new DefaultTableModel(rowCount, 1);
+        for (int row = 0; row < rowCount; row++) {
             for (int column = 0; column < colCount; column++) {
                 Vector rowVector = (Vector) dataVector.elementAt(row);
                 rowVector.setElementAt(data.get(row).get(column), column);
             }
+            this.rowObjects.setValueAt((T) data.get(row).get(colCount), row, 0);
         }
         setColumnIdentifiers(new Vector(columnNames));
         this.columnClasses = columnClasses;
@@ -37,44 +41,25 @@ public final class SimpleTableModel<T> extends DefaultTableModel implements IntF
 
     @Override
     public void setNumRows(int rowCount) {
-        while (rowCount > rowObjects.size()){
-            rowObjects.add(null);
-        }
-        while (rowCount < rowObjects.size()) {
-            rowObjects.remove(rowObjects.size() - 1);
-        }
-        assert rowCount == rowObjects.size();
+        rowObjects.setNumRows(rowCount);
         super.setNumRows(rowCount);
     }
 
     @Override
     public void moveRow(int start, int end, int to) {
-        if (start != to) {
-            List<T> newRowObjects = new ArrayList<>(rowObjects.size());
-            List<T> toMove = rowObjects.subList(start, end + 1);
-            if (start > 0) {
-                newRowObjects.addAll(rowObjects.subList(0, start));
-            }
-            if (end < (rowObjects.size() - 1)) {
-                newRowObjects.addAll(rowObjects.subList(end + 1, rowObjects.size()));
-            }
-            newRowObjects.addAll(to, toMove);
-
-            rowObjects.clear();
-            rowObjects.addAll(newRowObjects);
-        }
+        rowObjects.moveRow(start, end, to);
         super.moveRow(start, end, to);
     }
 
     @Override
     public void removeRow(int row) {
-        rowObjects.remove(row);
+        rowObjects.removeRow(row);
         super.removeRow(row);
     }
 
     @Override
     public void insertRow(int row, Vector rowData) {
-        rowObjects.add(row, null);
+        rowObjects.insertRow(row, new Object[]{null});
         super.insertRow(row, rowData);
     }
 
@@ -82,7 +67,7 @@ public final class SimpleTableModel<T> extends DefaultTableModel implements IntF
      * @return Data object (e.g. stream element) associated with this row.
      */
     public T getRowObject(int rowIndex) {
-        return rowObjects.get(rowIndex);
+        return (T) rowObjects.getValueAt(rowIndex, 0);
     }
 
     /**
@@ -90,7 +75,7 @@ public final class SimpleTableModel<T> extends DefaultTableModel implements IntF
      * @param rowObject Data object (e.g. stream element) associated with this row.
      */
     public void setRowObject(int rowIndex, T rowObject) {
-        rowObjects.set(rowIndex, rowObject);
+        rowObjects.setValueAt(rowObject, rowIndex, 0);
     }
 
     @Override
