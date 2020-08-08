@@ -90,7 +90,7 @@ JTable table = servers.parallelStream() // OK to use parallel stream!
                                new Column<>("Status", Server::getStatus, 200, String.class));
 ```
 
-`SimpleTableModel` may be build from a stream as following:
+`SimpleTableModel` (extends `javax.swing.table.DefaultTableModel`) may be build from a stream as following:
 ```java
 import java.util.List;
 ...
