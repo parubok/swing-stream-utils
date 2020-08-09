@@ -143,7 +143,7 @@ public class SwingStreamUtils {
             @Override
             public Function<List<List<Object>>, K> finisher() {
                 return data -> {
-                    SimpleTableModel model = createModel(data, columns);
+                    SimpleTableModel<T> model = createModel(data, columns);
                     final AtomicReference<K> tableRef = new AtomicReference<>();
                     try {
                         Runnable finisherTask = () -> {
