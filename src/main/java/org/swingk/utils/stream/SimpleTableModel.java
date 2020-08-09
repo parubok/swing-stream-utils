@@ -8,7 +8,7 @@ import java.util.function.ObjIntConsumer;
 
 /**
  * Table model which extends {@link DefaultTableModel}.
- * Implements {@link IntFunction} to access row data objects.
+ * Implements {@link IntFunction} to access row data objects and {@link ObjIntConsumer} to set row data objects.
  *
  * @param <T> Type of the source stream elements.
  * @see SwingStreamUtils#toTableModel(Column[])
