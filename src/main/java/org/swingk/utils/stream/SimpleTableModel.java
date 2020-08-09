@@ -22,6 +22,9 @@ public final class SimpleTableModel<T> extends DefaultTableModel implements IntF
     private final List<Class<?>> columnClasses;
     private final boolean[] columnsEditable;
 
+    /**
+     * Package-private constructor.
+     */
     SimpleTableModel(List<List<Object>> data, List<Class<?>> columnClasses, List<String> columnNames,
                      boolean[] columnsEditable) {
         super(data.size(), columnClasses.size());
