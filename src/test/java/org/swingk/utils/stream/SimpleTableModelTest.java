@@ -51,7 +51,7 @@ class SimpleTableModelTest {
     void setRowCount_1() {
         List<List<Object>> data = asList(asList(1, "A", "data1"), asList(2, "B", "data2"));
         SimpleTableModel<String> model = new SimpleTableModel<>(data, asList(Integer.class, String.class),
-                asList("col1", "col2"), new boolean[]{false, true});
+                asList("c1", "c2"), new boolean[2]);
         Assertions.assertEquals(2, model.getRowCount());
         model.setRowCount(5);
         Assertions.assertEquals(5, model.getRowCount());
