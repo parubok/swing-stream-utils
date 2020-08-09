@@ -4,6 +4,7 @@ import javax.swing.table.DefaultTableModel;
 import java.util.List;
 import java.util.Vector;
 import java.util.function.IntFunction;
+import java.util.function.ObjIntConsumer;
 
 /**
  * Table model which extends {@link DefaultTableModel}.
@@ -12,7 +13,7 @@ import java.util.function.IntFunction;
  * @param <T> Type of the source stream elements.
  * @see SwingStreamUtils#toTableModel(Column[])
  */
-public final class SimpleTableModel<T> extends DefaultTableModel implements IntFunction<T> {
+public final class SimpleTableModel<T> extends DefaultTableModel implements IntFunction<T>, ObjIntConsumer<T> {
     /**
      * Single-column model to keep row objects.
      */
@@ -97,5 +98,10 @@ public final class SimpleTableModel<T> extends DefaultTableModel implements IntF
             return false;
         }
         return columnsEditable[columnIndex];
+    }
+
+    @Override
+    public void accept(T rowData, int rowIndex) {
+        setRowObject(rowIndex, rowData);
     }
 }
