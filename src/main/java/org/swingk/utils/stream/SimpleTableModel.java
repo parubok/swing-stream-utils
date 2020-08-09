@@ -35,7 +35,7 @@ public final class SimpleTableModel<T> extends DefaultTableModel implements IntF
             }
             this.rowObjects.setValueAt((T) data.get(row).get(colCount), row, 0);
         }
-        setColumnIdentifiers(new Vector(columnNames));
+        setColumnIdentifiers(new Vector<>(columnNames));
         this.columnClasses = columnClasses;
         this.columnsEditable = columnsEditable;
     }
