@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
+import java.util.function.ObjIntConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -215,6 +216,41 @@ class SwingStreamUtilsTest {
             Assertions.assertEquals(5, table.getValueAt(0, 1));
             Assertions.assertEquals("val2", table.getValueAt(1, 0));
             Assertions.assertEquals(4, table.getValueAt(1, 1));
+        });
+    }
+
+    @Test
+    void toJTable_custom_model_with_row_data() throws Exception {
+        SwingUtilities.invokeAndWait(() -> {
+
+            List<List> rowObjects = new ArrayList<>();
+            class MyModel extends DefaultTableModel implements ObjIntConsumer<String> {
+                MyModel(int r, int c) {
+                    super(r, c);
+                }
+
+                @Override
+                public void accept(String s, int value) {
+                    rowObjects.add(Arrays.asList(s, value));
+                }
+            }
+
+            List<String> values = Arrays.asList("val_1", "val2", "val_3");
+            JTable table = values.stream()
+                    .collect(SwingStreamUtils.toTable(JTable::new, rowCount -> new MyModel(rowCount, 2),
+                            new Column<>("C1", Function.identity(), 50, String.class),
+                            new Column<>("C2", String::length, 30, Integer.class)));
+            Assertions.assertEquals(values.size(), table.getRowCount());
+            Assertions.assertEquals(2, table.getColumnCount());
+            Assertions.assertEquals("val_1", table.getValueAt(0, 0));
+            Assertions.assertEquals(5, table.getValueAt(0, 1));
+            Assertions.assertEquals("val2", table.getValueAt(1, 0));
+            Assertions.assertEquals(4, table.getValueAt(1, 1));
+
+            Assertions.assertEquals(values.size(), rowObjects.size());
+            Assertions.assertEquals(Arrays.asList("val_1", 0), rowObjects.get(0));
+            Assertions.assertEquals(Arrays.asList("val2", 1), rowObjects.get(1));
+            Assertions.assertEquals(Arrays.asList("val_3", 2), rowObjects.get(2));
         });
     }
 
