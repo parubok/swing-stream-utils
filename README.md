@@ -44,7 +44,23 @@ FileTable table = files.stream()
                                                 new Column<>("Size", File::length, 70, Long.class));
 ```
 
-Example 3 (create combo box with file names from a list of `File` objects):
+Example 3 (create table with custom model):
+```java
+import java.io.File;
+import java.util.List;
+
+import org.swingk.utils.stream.Column;
+
+import static org.swingk.utils.stream.SwingStreamUtils.toTable;
+
+List<File> files = ...;
+FileTable table = files.stream()
+             .collect(toTable(() -> new FileTable(), rowCount -> new FileTableModel(rowCount), 
+                                                new Column<>("Name", File::getName, 100, String.class), 
+                                                new Column<>("Size", File::length, 70, Long.class));
+```
+
+Example 4 (create combo box with file names from a list of `File` objects):
 ```java
 import java.io.File;
 import java.util.List;
@@ -58,7 +74,7 @@ JComboBox<String> = files.stream()
              .collect(toComboBox());
 ```
 
-Example 4 (find all visible descendants of a container):
+Example 5 (find all visible descendants of a container):
 ```java
 import java.util.List;
 import java.util.stream.Collectors;
