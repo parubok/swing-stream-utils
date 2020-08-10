@@ -30,6 +30,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import static java.util.Arrays.asList;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Java-8 stream utils for Swing components.
@@ -48,7 +49,7 @@ public class SwingStreamUtils {
      * @throws IllegalArgumentException If the table is null.
      */
     public static <T extends JTable> Iterable<TableCellData<T>> asIterable(T table) {
-        Objects.requireNonNull(table, "table");
+        requireNonNull(table, "table");
         return () -> {
             final int lastRow = table.getRowCount() - 1;
             final int lastColumn = table.getColumnCount() - 1;
@@ -141,10 +142,8 @@ public class SwingStreamUtils {
      */
     public static <T, K extends JTable> Collector<T, List<List<Object>>, K> toTable(Supplier<K> tableSupplier,
                                                                                     Column<T>... columns) {
-        Objects.requireNonNull(tableSupplier);
-        if (columns.length == 0) {
-            throw new IllegalArgumentException("Columns must be specified");
-        }
+        requireNonNull(tableSupplier);
+        checkColumnsArg(columns);
         return new AbstractCollector<T, K>(columns) {
             @Override
             public Function<List<List<Object>>, K> finisher() {
@@ -161,7 +160,7 @@ public class SwingStreamUtils {
         final AtomicReference<K> tableRef = new AtomicReference<>();
         try {
             Runnable finisherTask = () -> {
-                K table = Objects.requireNonNull(tableSupplier.get(), "table");
+                K table = requireNonNull(tableSupplier.get(), "table");
                 table.setModel(model);
                 for (int i = 0; i < columns.length; i++) {
                     TableColumn tableColumn = table.getColumnModel().getColumn(i);
@@ -183,6 +182,12 @@ public class SwingStreamUtils {
         return tableRef.get();
     }
 
+    private static void checkColumnsArg(Column<?>... columns) {
+        if (columns.length == 0) {
+            throw new IllegalArgumentException("Columns must be specified.");
+        }
+    }
+
     /**
      * Stream collector to create {@link JTable} (an element from the stream produces a single table row).
      * This collector accepts a supplier to create model of the resulting table.
@@ -197,8 +202,8 @@ public class SwingStreamUtils {
      *
      * @param tableSupplier Creates a concrete instance of {@link JTable} for the collector. Called on EDT.
      * @param modelSupplier Creates a concrete instance of {@link TableModel} for the collector. Receives number of
-     *                      rows in the model. Should produce model with the correct number of rows and columns.
-     *                      Called on the current thread.
+     *                      rows in the model. Should produce model with the correct number of rows and columns,
+     *                      configured according to the provided column descriptors. Called on the current thread.
      * @param columns The table column descriptors.
      * @param <T> Type of the stream elements.
      * @return The new table.
@@ -206,17 +211,15 @@ public class SwingStreamUtils {
     public static <T, K extends JTable, M extends TableModel> Collector<T, List<List<Object>>, K> toTable(Supplier<K> tableSupplier,
                                                                                                           IntFunction<M> modelSupplier,
                                                                                                           Column<T>... columns) {
-        Objects.requireNonNull(tableSupplier);
-        Objects.requireNonNull(modelSupplier);
-        if (columns.length == 0) {
-            throw new IllegalArgumentException("Columns must be specified");
-        }
+        requireNonNull(tableSupplier);
+        requireNonNull(modelSupplier);
+        checkColumnsArg(columns);
         return new AbstractCollector<T, K>(columns) {
             @Override
             public Function<List<List<Object>>, K> finisher() {
                 return data -> {
                     final int rowCount = data.size();
-                    M model = Objects.requireNonNull(modelSupplier.apply(rowCount), "model");
+                    M model = requireNonNull(modelSupplier.apply(rowCount), "model");
                     if (model.getRowCount() != rowCount) {
                         throw new RuntimeException("Expected number of rows: " + rowCount + ", actual: "
                                 + model.getRowCount() + ".");
@@ -260,9 +263,7 @@ public class SwingStreamUtils {
      * @return The table model.
      */
     public static <T> Collector<T, List<List<Object>>, SimpleTableModel<T>> toTableModel(Column<T>... columns) {
-        if (columns.length == 0) {
-            throw new IllegalArgumentException("Columns must be specified");
-        }
+        checkColumnsArg(columns);
         return new AbstractCollector<T, SimpleTableModel<T>>(columns) {
             @Override
             public Function<List<List<Object>>, SimpleTableModel<T>> finisher() {
@@ -300,9 +301,9 @@ public class SwingStreamUtils {
     public static <T, D, K extends JComboBox<D>, M extends ComboBoxModel<D>> Collector<T, List<T>, K> toComboBox(Supplier<K> comboSupplier,
                                                                                                                  Supplier<M> modelSupplier,
                                                                                                                  BiConsumer<M, T> itemAdder) {
-        Objects.requireNonNull(comboSupplier);
-        Objects.requireNonNull(modelSupplier);
-        Objects.requireNonNull(itemAdder);
+        requireNonNull(comboSupplier);
+        requireNonNull(modelSupplier);
+        requireNonNull(itemAdder);
         return new Collector<T, List<T>, K>() {
             @Override
             public Supplier<List<T>> supplier() {
@@ -327,12 +328,12 @@ public class SwingStreamUtils {
             @Override
             public Function<List<T>, K> finisher() {
                 return data -> {
-                    final M model = Objects.requireNonNull(modelSupplier.get(), "model");
+                    final M model = requireNonNull(modelSupplier.get(), "model");
                     data.forEach(item -> itemAdder.accept(model, item));
                     final AtomicReference<K> comboRef = new AtomicReference<>();
                     try {
                         Runnable finisherTask = () -> {
-                            K combo = Objects.requireNonNull(comboSupplier.get(), "combo box");
+                            K combo = requireNonNull(comboSupplier.get(), "combo box");
                             combo.setModel(model);
                             comboRef.set(combo);
                         };
@@ -374,8 +375,8 @@ public class SwingStreamUtils {
      */
     public static <T, D, M extends ComboBoxModel<D>> Collector<T, List<T>, M> toComboBoxModel(Supplier<M> modelSupplier,
                                                                                               BiConsumer<M, T> itemAdder) {
-        Objects.requireNonNull(modelSupplier);
-        Objects.requireNonNull(itemAdder);
+        requireNonNull(modelSupplier);
+        requireNonNull(itemAdder);
         return new Collector<T, List<T>, M>() {
             @Override
             public Supplier<List<T>> supplier() {
@@ -400,7 +401,7 @@ public class SwingStreamUtils {
             @Override
             public Function<List<T>, M> finisher() {
                 return data -> {
-                    final M model = Objects.requireNonNull(modelSupplier.get(), "model");
+                    final M model = requireNonNull(modelSupplier.get(), "model");
                     data.forEach(item -> itemAdder.accept(model, item));
                     return model;
                 };
@@ -418,7 +419,7 @@ public class SwingStreamUtils {
      * @see Container#getComponent(int)
      */
     public static Iterable<Component> getDescendantsIterable(Component parent) {
-        Objects.requireNonNull(parent);
+        requireNonNull(parent);
         return () -> new Iterator<Component>() {
 
             /**
