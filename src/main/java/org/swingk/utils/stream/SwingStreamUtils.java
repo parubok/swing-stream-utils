@@ -6,6 +6,7 @@ import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
 import java.awt.Component;
 import java.awt.Container;
 import java.lang.reflect.InvocationTargetException;
@@ -21,6 +22,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
+import java.util.function.ObjIntConsumer;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
@@ -139,40 +141,75 @@ public class SwingStreamUtils {
     public static <T, K extends JTable> Collector<T, List<List<Object>>, K> toTable(Supplier<K> tableSupplier,
                                                                                     Column<T>... columns) {
         Objects.requireNonNull(tableSupplier);
+        if (columns.length == 0) {
+            throw new IllegalArgumentException("Columns must be specified");
+        }
         return new AbstractCollector<T, K>(columns) {
             @Override
             public Function<List<List<Object>>, K> finisher() {
                 return data -> {
-                    SimpleTableModel<T> model = createModel(data, columns);
-                    final AtomicReference<K> tableRef = new AtomicReference<>();
-                    try {
-                        Runnable finisherTask = () -> {
-                            K table = Objects.requireNonNull(tableSupplier.get(), "table");
-                            table.setModel(model);
-                            for (int i = 0; i < columns.length; i++) {
-                                TableColumn tableColumn = table.getColumnModel().getColumn(i);
-                                tableColumn.setPreferredWidth(columns[i].getPreferredWidth());
-                            }
-                            tableRef.set(table);
-                        };
-                        // Swing components must be created/accessed on EDT:
-                        if (SwingUtilities.isEventDispatchThread()) {
-                            finisherTask.run();
-                        } else {
-                            SwingUtilities.invokeAndWait(finisherTask);
-                        }
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    } catch (InvocationTargetException e) {
-                        throw new RuntimeException(e.getCause());
-                    }
-                    return tableRef.get();
+                    SimpleTableModel<T> model = createSimpleModel(data, columns);
+                    return finishToTable(tableSupplier, model, columns);
                 };
             }
         };
     }
 
-    private static <T> SimpleTableModel<T> createModel(List<List<Object>> data, Column<T>[] columns) {
+    private static <K extends JTable> K finishToTable(Supplier<K> tableSupplier, TableModel model,
+                                                      Column<?>... columns) {
+        final AtomicReference<K> tableRef = new AtomicReference<>();
+        try {
+            Runnable finisherTask = () -> {
+                K table = Objects.requireNonNull(tableSupplier.get(), "table");
+                table.setModel(model);
+                for (int i = 0; i < columns.length; i++) {
+                    TableColumn tableColumn = table.getColumnModel().getColumn(i);
+                    tableColumn.setPreferredWidth(columns[i].getPreferredWidth());
+                }
+                tableRef.set(table);
+            };
+            // Swing components must be created/accessed on EDT:
+            if (SwingUtilities.isEventDispatchThread()) {
+                finisherTask.run();
+            } else {
+                SwingUtilities.invokeAndWait(finisherTask);
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e.getCause());
+        }
+        return tableRef.get();
+    }
+
+    public static <T, K extends JTable, M extends TableModel> Collector<T, List<List<Object>>, K> toTable(Supplier<K> tableSupplier,
+                                                                                                          Supplier<M> modelSupplier,
+                                                                                                          Column<T>... columns) {
+        Objects.requireNonNull(tableSupplier);
+        Objects.requireNonNull(modelSupplier);
+        if (columns.length == 0) {
+            throw new IllegalArgumentException("Columns must be specified");
+        }
+        return new AbstractCollector<T, K>(columns) {
+            @Override
+            public Function<List<List<Object>>, K> finisher() {
+                return data -> {
+                    M model = Objects.requireNonNull(modelSupplier.get(), "model");
+                    for (int row = 0; row < data.size(); row++) {
+                        for (int column = 0; column < columns.length; column++) {
+                            model.setValueAt(data.get(row).get(column), row, column);
+                        }
+                        if (model instanceof ObjIntConsumer) {
+                            ((ObjIntConsumer) model).accept(data.get(row).get(columns.length), row);
+                        }
+                    }
+                    return finishToTable(tableSupplier, model, columns);
+                };
+            }
+        };
+    }
+
+    private static <T> SimpleTableModel<T> createSimpleModel(List<List<Object>> data, Column<T>[] columns) {
         List<Class<?>> columnClasses = new ArrayList<>(columns.length);
         List<String> columnNames = new ArrayList<>(columns.length);
         boolean[] editable = new boolean[columns.length];
@@ -193,10 +230,13 @@ public class SwingStreamUtils {
      * @return The table model.
      */
     public static <T> Collector<T, List<List<Object>>, SimpleTableModel<T>> toTableModel(Column<T>... columns) {
+        if (columns.length == 0) {
+            throw new IllegalArgumentException("Columns must be specified");
+        }
         return new AbstractCollector<T, SimpleTableModel<T>>(columns) {
             @Override
             public Function<List<List<Object>>, SimpleTableModel<T>> finisher() {
-                return data -> createModel(data, columns);
+                return data -> createSimpleModel(data, columns);
             }
         };
     }
