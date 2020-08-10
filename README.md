@@ -41,7 +41,7 @@ List<File> files = ...;
 /* FileTable is a subclass of JTable */
 FileTable table = files.stream()
              .collect(toTable(FileTable::new, new Column<>("Name", File::getName, 100, String.class), 
-                                                new Column<>("Size", File::length, 70, Long.class));
+                                                new Column<>("Size", File::length, 70, Long.class)));
 ```
 
 Example 3 (create table with specific model class):
@@ -57,7 +57,7 @@ List<File> files = ...;
 FileTable table = files.stream()
              .collect(toTable(() -> new FileTable(), rowCount -> new FileTableModel(rowCount), 
                                                 new Column<>("Name", File::getName, 100, String.class), 
-                                                new Column<>("Size", File::length, 70, Long.class));
+                                                new Column<>("Size", File::length, 70, Long.class)));
 ```
 
 Example 4 (create combo box with file names from a list of `File` objects):
