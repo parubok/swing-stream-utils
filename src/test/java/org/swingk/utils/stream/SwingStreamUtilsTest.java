@@ -23,6 +23,7 @@ import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -197,6 +198,23 @@ class SwingStreamUtilsTest {
             Assertions.assertEquals(new Point(1, 1), table.getValueAt(1, 0));
             Assertions.assertEquals(new Dimension(2, 5), table.getValueAt(0, 1));
             Assertions.assertEquals(new Dimension(3, 6), table.getValueAt(1, 1));
+        });
+    }
+
+    @Test
+    void toJTable_custom_model() throws Exception {
+        SwingUtilities.invokeAndWait(() -> {
+            List<String> values = Arrays.asList("val_1", "val2", "val_3");
+            JTable table = values.stream()
+                    .collect(SwingStreamUtils.toTable(JTable::new, rowCount -> new DefaultTableModel(rowCount, 2),
+                            new Column<>("C1", Function.identity(), 50, String.class),
+                            new Column<>("C2", String::length, 30, Integer.class)));
+            Assertions.assertEquals(values.size(), table.getRowCount());
+            Assertions.assertEquals(2, table.getColumnCount());
+            Assertions.assertEquals("val_1", table.getValueAt(0, 0));
+            Assertions.assertEquals(5, table.getValueAt(0, 1));
+            Assertions.assertEquals("val2", table.getValueAt(1, 0));
+            Assertions.assertEquals(4, table.getValueAt(1, 1));
         });
     }
 

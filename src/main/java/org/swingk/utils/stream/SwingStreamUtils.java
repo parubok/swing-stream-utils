@@ -22,6 +22,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
+import java.util.function.IntFunction;
 import java.util.function.ObjIntConsumer;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
@@ -190,19 +191,20 @@ public class SwingStreamUtils {
      * is performed on a different thread (e.g. parallel stream).
      * </p>
      * <p>
-     * <b>Note 2:</b> If the supplied model implements {@link ObjIntConsumer}, method
+     * <b>Note 2:</b> If the supplied model implements {@link ObjIntConsumer<T>}, method
      * {@link ObjIntConsumer#accept(T, int)} will be called for each stream element and its row index.
      * </p>
      *
      * @param tableSupplier Creates a concrete instance of {@link JTable} for the collector. Called on EDT.
-     * @param modelSupplier Creates a concrete instance of {@link TableModel} for the collector. Called on the current
-     *                      thread.
+     * @param modelSupplier Creates a concrete instance of {@link TableModel} for the collector. Receives number of
+     *                      rows in the model. Should produce model with the correct number of rows and columns.
+     *                      Called on the current thread.
      * @param columns The table column descriptors.
      * @param <T> Type of the stream elements.
      * @return The new table.
      */
     public static <T, K extends JTable, M extends TableModel> Collector<T, List<List<Object>>, K> toTable(Supplier<K> tableSupplier,
-                                                                                                          Supplier<M> modelSupplier,
+                                                                                                          IntFunction<M> modelSupplier,
                                                                                                           Column<T>... columns) {
         Objects.requireNonNull(tableSupplier);
         Objects.requireNonNull(modelSupplier);
@@ -213,8 +215,17 @@ public class SwingStreamUtils {
             @Override
             public Function<List<List<Object>>, K> finisher() {
                 return data -> {
-                    M model = Objects.requireNonNull(modelSupplier.get(), "model");
-                    for (int row = 0; row < data.size(); row++) {
+                    final int rowCount = data.size();
+                    M model = Objects.requireNonNull(modelSupplier.apply(rowCount), "model");
+                    if (model.getRowCount() != rowCount) {
+                        throw new RuntimeException("Expected number of rows: " + rowCount + ", actual: "
+                                + model.getRowCount() + ".");
+                    }
+                    if (model.getColumnCount() != columns.length) {
+                        throw new RuntimeException("Expected number of columns: " + columns.length +
+                                ", actual: " + model.getColumnCount() + ".");
+                    }
+                    for (int row = 0; row < rowCount; row++) {
                         for (int column = 0; column < columns.length; column++) {
                             model.setValueAt(data.get(row).get(column), row, column);
                         }
