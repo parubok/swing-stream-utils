@@ -126,10 +126,10 @@ public class SwingStreamUtils {
     }
 
     /**
-     * @return Iterable over combo box items of the provided model.
+     * @return {@link Iterable} over combo box items of the provided model.
      * @see ComboBoxItem
      */
-    public static <E> Iterable<ComboBoxItem<E>> combBoxModelIterable(ComboBoxModel<E> model) {
+    public static <E> Iterable<ComboBoxItem<E>> comboBoxModelIterable(ComboBoxModel<E> model) {
         requireNonNull(model);
         return () ->
         {
@@ -192,7 +192,7 @@ public class SwingStreamUtils {
      * @see ComboBoxItem
      */
     public static <E> Stream<ComboBoxItem<E>> streamComboBoxModel(ComboBoxModel<E> model) {
-        return StreamSupport.stream(combBoxModelIterable(model).spliterator(), false);
+        return StreamSupport.stream(comboBoxModelIterable(model).spliterator(), false);
     }
 
     /**

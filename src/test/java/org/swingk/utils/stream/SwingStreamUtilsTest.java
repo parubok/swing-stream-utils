@@ -558,11 +558,11 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void combBoxModelIterable_1() throws Exception {
+    void comboBoxModelIterable_1() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             String[] s = {"item1", "item2", "item3"};
             DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(s);
-            Iterable<ComboBoxItem<String>> iterable = SwingStreamUtils.combBoxModelIterable(model);
+            Iterable<ComboBoxItem<String>> iterable = SwingStreamUtils.comboBoxModelIterable(model);
             Iterator<ComboBoxItem<String>> iterator = iterable.iterator();
             Assertions.assertTrue(iterator.hasNext());
             Assertions.assertEquals("item1", iterator.next().getItem());
