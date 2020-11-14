@@ -90,6 +90,21 @@ List<Component> visibleDescendants = streamDescendants(container)
              .collect(Collectors.toList());
 ```
 
+Example 6 (find all unselected combo box items which start with a letter "z"):
+```java
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.swing.JComboBox;
+
+import static org.swingk.utils.stream.SwingStreamUtils.streamComboBox;
+
+JComboBox<String> comboBox = ...;
+List<String> visibleDescendants = streamComboBox(comboBox)
+             .filter(comboBoxItem -> !comboBoxItem.isSelected())
+             .filter(comboBoxItem -> comboBoxItem.getItem().startsWith("z"))
+             .collect(Collectors.toList());
+```
+
 It is worth mentioning that in most cases (check JavaDoc) the utility ensures that the Swing component creation and configuration are performed on EDT, even when the streaming code runs on a different thread. So the following example code is valid:
 ```java
 import java.util.List;
