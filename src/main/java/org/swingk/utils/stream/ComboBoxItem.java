@@ -5,14 +5,14 @@ package org.swingk.utils.stream;
  *
  * @param <E> Type of the combo box item.
  */
-public class CombBoxItem<E> {
+public class ComboBoxItem<E> {
 
     private final E item;
     private final int index;
     private final int modelSize;
     private final boolean selected;
 
-    public CombBoxItem(E item, int index, int modelSize, boolean selected) {
+    public ComboBoxItem(E item, int index, int modelSize, boolean selected) {
         assert index < modelSize;
         this.item = item;
         this.index = index;

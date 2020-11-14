@@ -530,7 +530,7 @@ class SwingStreamUtilsTest {
             ComboBoxModel<String> model = new DefaultComboBoxModel<>(s);
             JComboBox<String> combo = new JComboBox<>(model);
             Assertions.assertEquals(Arrays.asList(s), SwingStreamUtils.streamComboBox(combo)
-                    .map(CombBoxItem::getItem)
+                    .map(ComboBoxItem::getItem)
                     .collect(Collectors.toList()));
         });
     }
@@ -542,7 +542,7 @@ class SwingStreamUtilsTest {
             ComboBoxModel<String> model = new DefaultComboBoxModel<>(s);
             JComboBox<String> combo = new JComboBox<>(model);
             combo.setSelectedIndex(2);
-            List<CombBoxItem<String>> items = SwingStreamUtils.streamComboBox(combo)
+            List<ComboBoxItem<String>> items = SwingStreamUtils.streamComboBox(combo)
                     .collect(Collectors.toList());
 
             Assertions.assertEquals("item2", items.get(1).getItem());
@@ -554,6 +554,21 @@ class SwingStreamUtilsTest {
             Assertions.assertEquals(2, items.get(2).getIndex());
             Assertions.assertEquals(3, items.get(2).getModelSize());
             Assertions.assertTrue(items.get(2).isSelected());
+        });
+    }
+
+    @Test
+    void combBoxModelIterable_1() throws Exception {
+        SwingUtilities.invokeAndWait(() -> {
+            String[] s = {"item1", "item2", "item3"};
+            DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(s);
+            Iterable<ComboBoxItem<String>> iterable = SwingStreamUtils.combBoxModelIterable(model);
+            Iterator<ComboBoxItem<String>> iterator = iterable.iterator();
+            Assertions.assertTrue(iterator.hasNext());
+            Assertions.assertEquals("item1", iterator.next().getItem());
+            model.addElement("item4");
+            Assertions.assertTrue(iterator.hasNext());
+            Assertions.assertThrows(ConcurrentModificationException.class, () -> iterator.next());
         });
     }
 }

@@ -31,6 +31,7 @@ import java.util.stream.StreamSupport;
 
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
+import static java.util.Collections.emptyIterator;
 
 /**
  * Java-8 stream utils for Swing components.
@@ -55,7 +56,7 @@ public class SwingStreamUtils {
             final int lastColumn = table.getColumnCount() - 1;
 
             if (lastRow < 0 || lastColumn < 0) {
-                return Collections.emptyIterator();
+                return emptyIterator();
             }
 
             return new Iterator<TableCellData<T>>() {
@@ -125,12 +126,62 @@ public class SwingStreamUtils {
     }
 
     /**
+     * @return Iterable over combo box items of the provided model.
+     * @see ComboBoxItem
+     */
+    public static <E> Iterable<ComboBoxItem<E>> combBoxModelIterable(ComboBoxModel<E> model) {
+        requireNonNull(model);
+        return () ->
+        {
+            final int itemCount = model.getSize();
+            if (itemCount < 1) {
+                return emptyIterator();
+            }
+            final Object selectedItem = model.getSelectedItem();
+            return new Iterator<ComboBoxItem<E>>() {
+                private int index = 0;
+
+                private void checkForConcurrentModification() {
+                    final int c = model.getSize();
+                    if (itemCount != c) {
+                        throw new ConcurrentModificationException("Expected item count: " + itemCount
+                                + ", actual item count: " + c + ".");
+                    }
+                    Object sItem = model.getSelectedItem();
+                    if (!Objects.equals(selectedItem, sItem)) {
+                        throw new ConcurrentModificationException("Expected selected item: " + selectedItem
+                                + ", actual selected item: " + sItem + ".");
+                    }
+                }
+
+                @Override
+                public boolean hasNext() {
+                    return index < itemCount;
+                }
+
+                @Override
+                public ComboBoxItem<E> next() {
+                    checkForConcurrentModification();
+                    if (!hasNext()) {
+                        throw new NoSuchElementException();
+                    }
+                    E item = model.getElementAt(index);
+                    ComboBoxItem<E> comboBoxItem = new ComboBoxItem<>(item, index, itemCount,
+                            Objects.equals(item, selectedItem));
+                    index++;
+                    return comboBoxItem;
+                }
+            };
+        };
+    }
+
+    /**
      * Streams items of the provided {@link JComboBox}.
      *
      * @see #streamComboBoxModel(ComboBoxModel)
-     * @see CombBoxItem
+     * @see ComboBoxItem
      */
-    public static <E> Stream<CombBoxItem<E>> streamComboBox(JComboBox<E> comboBox) {
+    public static <E> Stream<ComboBoxItem<E>> streamComboBox(JComboBox<E> comboBox) {
         return streamComboBoxModel(comboBox.getModel());
     }
 
@@ -138,16 +189,10 @@ public class SwingStreamUtils {
      * Streams items of the provided {@link ComboBoxModel}.
      *
      * @see #streamComboBox(JComboBox)
-     * @see CombBoxItem
+     * @see ComboBoxItem
      */
-    public static <E> Stream<CombBoxItem<E>> streamComboBoxModel(ComboBoxModel<E> model) {
-        final int s = model.getSize();
-        List<CombBoxItem<E>> items = new ArrayList<>(s);
-        for (int i = 0; i < s; i++) {
-            E item = model.getElementAt(i);
-            items.add(new CombBoxItem<>(item, i, s, Objects.equals(item, model.getSelectedItem())));
-        }
-        return items.stream();
+    public static <E> Stream<ComboBoxItem<E>> streamComboBoxModel(ComboBoxModel<E> model) {
+        return StreamSupport.stream(combBoxModelIterable(model).spliterator(), false);
     }
 
     /**
