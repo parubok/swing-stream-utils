@@ -3,6 +3,7 @@ package org.swingk.utils.stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -510,6 +511,49 @@ class SwingStreamUtilsTest {
             panel3.add(panel4);
             Assertions.assertEquals(Arrays.asList(panel, panel2, panel3, panel4),
                     SwingStreamUtils.streamDescendants(panel).collect(Collectors.toList()));
+        });
+    }
+
+    @Test
+    void streamComboBox_1() throws Exception {
+        SwingUtilities.invokeAndWait(() -> {
+            JComboBox<String> combo = new JComboBox<>();
+            Assertions.assertEquals(Collections.emptyList(), SwingStreamUtils.streamComboBox(combo)
+                    .collect(Collectors.toList()));
+        });
+    }
+
+    @Test
+    void streamComboBox_2() throws Exception {
+        SwingUtilities.invokeAndWait(() -> {
+            String[] s = {"item1", "item2", "item3"};
+            ComboBoxModel<String> model = new DefaultComboBoxModel<>(s);
+            JComboBox<String> combo = new JComboBox<>(model);
+            Assertions.assertEquals(Arrays.asList(s), SwingStreamUtils.streamComboBox(combo)
+                    .map(CombBoxItem::getItem)
+                    .collect(Collectors.toList()));
+        });
+    }
+
+    @Test
+    void streamComboBox_3() throws Exception {
+        SwingUtilities.invokeAndWait(() -> {
+            String[] s = {"item1", "item2", "item3"};
+            ComboBoxModel<String> model = new DefaultComboBoxModel<>(s);
+            JComboBox<String> combo = new JComboBox<>(model);
+            combo.setSelectedIndex(2);
+            List<CombBoxItem<String>> items = SwingStreamUtils.streamComboBox(combo)
+                    .collect(Collectors.toList());
+
+            Assertions.assertEquals("item2", items.get(1).getItem());
+            Assertions.assertEquals(1, items.get(1).getIndex());
+            Assertions.assertEquals(3, items.get(1).getModelSize());
+            Assertions.assertFalse(items.get(1).isSelected());
+
+            Assertions.assertEquals("item3", items.get(2).getItem());
+            Assertions.assertEquals(2, items.get(2).getIndex());
+            Assertions.assertEquals(3, items.get(2).getModelSize());
+            Assertions.assertTrue(items.get(2).isSelected());
         });
     }
 }
