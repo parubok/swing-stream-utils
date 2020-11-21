@@ -105,6 +105,22 @@ List<String> visibleDescendants = streamComboBox(comboBox)
              .collect(Collectors.toList());
 ```
 
+Example 7 (find tree path which contains the specified node):
+```java
+import java.util.Optional;
+import javax.swing.JTree;
+import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeNode;
+
+import org.swingk.utils.stream.SwingStreamUtils;
+
+JTree tree = ...;
+TreeNode node = ...;
+Optional<TreePath> nodePath = SwingStreamUtils.streamTree(tree)
+             .filter(path -> path.getLastPathComponent().equals(node))
+             .findFirst();
+```
+
 It is worth mentioning that in most cases (check JavaDoc) the utility ensures that the Swing component creation and configuration are performed on EDT, even when the streaming code runs on a different thread. So the following example code is valid:
 ```java
 import java.util.List;
