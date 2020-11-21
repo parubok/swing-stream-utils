@@ -143,6 +143,7 @@ public class SwingStreamUtils {
     /**
      * Streams paths of the provided {@link JTree}.
      *
+     * @param tree Tree to stream. Not null.
      * @see #streamTreeModel(TreeModel)
      * @see TreePath
      */
@@ -154,6 +155,7 @@ public class SwingStreamUtils {
     /**
      * Streams paths of the provided {@link TreeModel}.
      *
+     * @param treeModel Tree model to stream. Not null.
      * @see #treeModelIterable(TreeModel)
      * @see TreePath
      */
@@ -164,7 +166,7 @@ public class SwingStreamUtils {
     /**
      * @param treeModel Tree model to iterate. Not null.
      * @return Iterable to iterate over paths of the provided tree model.
-     * @throws NullPointerException If the tree model is null.
+     * @see TreePath
      */
     public static Iterable<TreePath> treeModelIterable(TreeModel treeModel) {
         requireNonNull(treeModel, "treeModel");
@@ -198,6 +200,7 @@ public class SwingStreamUtils {
                             Object parent = currentPath.getPathComponent(indexInPath);
                             List<Object> children = getChildren(treeModel, parent);
                             int childIndex = children.indexOf(currentPath.getPathComponent(indexInPath + 1));
+                            assert childIndex > -1;
                             if (childIndex < (children.size() - 1)) {
                                 // take next child:
                                 List<Object> p = new ArrayList<>();
@@ -655,6 +658,7 @@ public class SwingStreamUtils {
                         Container parent = (Container) currentPath.get(indexInPath);
                         List<Component> children = asList(parent.getComponents());
                         int childIndex = children.indexOf(currentPath.get(indexInPath + 1));
+                        assert childIndex > -1;
                         if (childIndex < (children.size() - 1)) {
                             // take next child:
                             List<Component> nextPath = new ArrayList<>(currentPath.subList(0, indexInPath + 1));
