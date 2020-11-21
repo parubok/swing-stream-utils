@@ -9,10 +9,15 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -569,6 +574,149 @@ class SwingStreamUtilsTest {
             model.addElement("item4");
             Assertions.assertTrue(iterator.hasNext());
             Assertions.assertThrows(ConcurrentModificationException.class, () -> iterator.next());
+        });
+    }
+
+    @Test
+    void treeModelIterable_no_root() {
+        // not EDT
+        DefaultTreeModel model = new DefaultTreeModel(null);
+        Iterable<TreePath> iterable = SwingStreamUtils.treeModelIterable(model);
+        Assertions.assertNotNull(iterable);
+        Iterator<TreePath> iterator = iterable.iterator();
+        Assertions.assertNotNull(iterator);
+        Assertions.assertFalse(iterator.hasNext());
+        Assertions.assertThrows(NoSuchElementException.class, () -> iterator.next());
+    }
+
+    @Test
+    void treeModelIterable_1() {
+        // not EDT
+        TreeNode root = new DefaultMutableTreeNode("root");
+        DefaultTreeModel model = new DefaultTreeModel(root);
+        Iterable<TreePath> iterable = SwingStreamUtils.treeModelIterable(model);
+        Assertions.assertNotNull(iterable);
+        Iterator<TreePath> iterator = iterable.iterator();
+        Assertions.assertNotNull(iterator);
+        Assertions.assertTrue(iterator.hasNext());
+        TreePath path = iterator.next();
+        Assertions.assertEquals(1, path.getPathCount());
+        Assertions.assertEquals(root, path.getLastPathComponent());
+        Assertions.assertFalse(iterator.hasNext());
+        for (int i = 0; i < 10; i++) {
+            Assertions.assertThrows(NoSuchElementException.class, () -> iterator.next());
+        }
+    }
+
+    @Test
+    void treeModelIterable_2() {
+        // not EDT
+        TreeNode root = new DefaultMutableTreeNode("root");
+        DefaultTreeModel model = new DefaultTreeModel(root);
+        Iterable<TreePath> iterable = SwingStreamUtils.treeModelIterable(model);
+        Iterator<TreePath> iterator = iterable.iterator();
+        TreePath path = iterator.next(); // without calling hasNext
+        Assertions.assertEquals(1, path.getPathCount());
+        Assertions.assertEquals(root, path.getLastPathComponent());
+        Assertions.assertFalse(iterator.hasNext());
+        for (int i = 0; i < 10; i++) {
+            Assertions.assertThrows(NoSuchElementException.class, () -> iterator.next());
+        }
+    }
+
+    @Test
+    void treeModelIterable_3() {
+        // not EDT
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
+        DefaultMutableTreeNode node_1 = new DefaultMutableTreeNode("node_1");
+        DefaultMutableTreeNode node_2_1 = new DefaultMutableTreeNode("node_2_1");
+        DefaultMutableTreeNode node_2_2 = new DefaultMutableTreeNode("node_2_2");
+        root.add(node_1);
+        node_1.add(node_2_1);
+        node_1.add(node_2_2);
+        DefaultTreeModel model = new DefaultTreeModel(root);
+        Iterable<TreePath> iterable = SwingStreamUtils.treeModelIterable(model);
+        Iterator<TreePath> iterator = iterable.iterator();
+
+        Assertions.assertTrue(iterator.hasNext());
+        TreePath path_0 = iterator.next();
+        Assertions.assertEquals(1, path_0.getPathCount());
+        Assertions.assertEquals(root, path_0.getLastPathComponent());
+
+        Assertions.assertTrue(iterator.hasNext());
+        TreePath path_1 = iterator.next();
+        Assertions.assertEquals(2, path_1.getPathCount());
+        Assertions.assertEquals(root, path_1.getPathComponent(0));
+        Assertions.assertEquals(node_1, path_1.getLastPathComponent());
+
+        Assertions.assertTrue(iterator.hasNext());
+        TreePath path_2 = iterator.next();
+        Assertions.assertEquals(3, path_2.getPathCount());
+        Assertions.assertEquals(root, path_2.getPathComponent(0));
+        Assertions.assertEquals(node_1, path_2.getPathComponent(1));
+        Assertions.assertEquals(node_2_1, path_2.getPathComponent(2));
+
+        Assertions.assertTrue(iterator.hasNext());
+        TreePath path_3 = iterator.next();
+        Assertions.assertEquals(3, path_3.getPathCount());
+        Assertions.assertEquals(root, path_3.getPathComponent(0));
+        Assertions.assertEquals(node_1, path_3.getPathComponent(1));
+        Assertions.assertEquals(node_2_2, path_3.getPathComponent(2));
+
+        Assertions.assertFalse(iterator.hasNext());
+        Assertions.assertThrows(NoSuchElementException.class, () -> iterator.next());
+    }
+
+    @Test
+    void treeModelIterable_4() {
+        // not EDT
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
+        List<DefaultMutableTreeNode> children = new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            DefaultMutableTreeNode child = new DefaultMutableTreeNode("node_" + i);
+            children.add(child);
+            root.add(child);
+        }
+        DefaultTreeModel model = new DefaultTreeModel(root);
+        Iterable<TreePath> iterable = SwingStreamUtils.treeModelIterable(model);
+        Iterator<TreePath> iterator = iterable.iterator();
+        List<Object> leaves = new ArrayList<>();
+        iterator.next(); // skip root path
+        while (iterator.hasNext()) {
+            TreePath p = iterator.next();
+            Assertions.assertEquals(2, p.getPathCount());
+            leaves.add(p.getLastPathComponent());
+        }
+        Assertions.assertEquals(children, leaves);
+        Assertions.assertThrows(NoSuchElementException.class, () -> iterator.next());
+    }
+
+    @Test
+    void streamTreeModel_1() {
+        // not EDT
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
+        List<DefaultMutableTreeNode> children = new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            DefaultMutableTreeNode child = new DefaultMutableTreeNode("node_" + i);
+            children.add(child);
+            root.add(child);
+        }
+        DefaultTreeModel model = new DefaultTreeModel(root);
+        Assertions.assertEquals(children, SwingStreamUtils.streamTreeModel(model)
+                .filter(path -> path.getPathCount() > 1)
+                .peek(path -> Assertions.assertEquals(root, path.getPathComponent(0)))
+                .map(TreePath::getLastPathComponent)
+                .collect(Collectors.toList()));
+    }
+
+    @Test
+    void streamTree_1() throws Exception {
+        SwingUtilities.invokeAndWait(() -> {
+            TreeNode root = new DefaultMutableTreeNode("root");
+            DefaultTreeModel model = new DefaultTreeModel(root);
+            JTree tree = new JTree(model);
+            Assertions.assertEquals(Collections.singletonList(new TreePath(root)), SwingStreamUtils.streamTree(tree)
+                    .collect(Collectors.toList()));
         });
     }
 }

@@ -4,9 +4,12 @@ import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
+import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
+import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreePath;
 import java.awt.Component;
 import java.awt.Container;
 import java.lang.reflect.InvocationTargetException;
@@ -30,8 +33,8 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import static java.util.Arrays.asList;
-import static java.util.Objects.requireNonNull;
 import static java.util.Collections.emptyIterator;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Java-8 stream utils for Swing components.
@@ -47,7 +50,6 @@ public class SwingStreamUtils {
      * @param table Table which cells to iterate. Not null.
      * @param <T>   Type of the table.
      * @return Cell iterator for the provided table.
-     * @throws IllegalArgumentException If the table is null.
      */
     public static <T extends JTable> Iterable<TableCellData<T>> asIterable(T table) {
         requireNonNull(table, "table");
@@ -123,6 +125,117 @@ public class SwingStreamUtils {
      */
     public static <T extends JTable> Stream<TableCellData<T>> streamTable(T table) {
         return StreamSupport.stream(asIterable(table).spliterator(), false);
+    }
+
+    private static final TreePath EMPTY_TREE_PATH = new TreePath() {
+    };
+
+    private static List<Object> getChildren(TreeModel model, Object parent) {
+        final int c = model.getChildCount(parent);
+        assert c > 0;
+        List<Object> children = new ArrayList<>(c);
+        for (int i = 0; i < c; i++) {
+            children.add(model.getChild(parent, i));
+        }
+        return children;
+    }
+
+    /**
+     * Streams paths of the provided {@link JTree}.
+     *
+     * @see #streamTreeModel(TreeModel)
+     * @see TreePath
+     */
+    public static Stream<TreePath> streamTree(JTree tree) {
+        requireNonNull(tree, "tree");
+        return streamTreeModel(tree.getModel());
+    }
+
+    /**
+     * Streams paths of the provided {@link TreeModel}.
+     *
+     * @see #treeModelIterable(TreeModel)
+     * @see TreePath
+     */
+    public static Stream<TreePath> streamTreeModel(TreeModel treeModel) {
+        return StreamSupport.stream(treeModelIterable(treeModel).spliterator(), false);
+    }
+
+    /**
+     * @param treeModel Tree model to iterate. Not null.
+     * @return Iterable to iterate over paths of the provided tree model.
+     * @throws NullPointerException If the tree model is null.
+     */
+    public static Iterable<TreePath> treeModelIterable(TreeModel treeModel) {
+        requireNonNull(treeModel, "treeModel");
+        return () -> {
+            Object root = treeModel.getRoot();
+            if (root == null) {
+                return emptyIterator();
+            }
+
+            return new Iterator<TreePath>() {
+
+                private TreePath currentPath = EMPTY_TREE_PATH;
+                private TreePath nextPath;
+                private boolean completed;
+
+                private TreePath getNextPath() {
+                    assert !completed;
+                    if (currentPath == EMPTY_TREE_PATH) {
+                        return new TreePath(root); // start iteration with the root path
+                    }
+                    // try to go down first:
+                    Object currentNode = currentPath.getLastPathComponent();
+                    if (treeModel.getChildCount(currentNode) > 0) {
+                        Object child = treeModel.getChild(currentNode, 0);
+                        return currentPath.pathByAddingChild(child);
+                    }
+                    // try to go to the right:
+                    if (currentPath.getPathCount() > 1) {
+                        int indexInPath = currentPath.getPathCount() - 2;
+                        while (indexInPath > -1) {
+                            Object parent = currentPath.getPathComponent(indexInPath);
+                            List<Object> children = getChildren(treeModel, parent);
+                            int childIndex = children.indexOf(currentPath.getPathComponent(indexInPath + 1));
+                            if (childIndex < (children.size() - 1)) {
+                                // take next child:
+                                List<Object> p = new ArrayList<>();
+                                for (int i = 0; i < (indexInPath + 1); i++) {
+                                    p.add(currentPath.getPathComponent(i));
+                                }
+                                p.add(children.get(childIndex + 1));
+                                return new TreePath(p.toArray());
+                            }
+                            indexInPath--; // go 1 level up
+                        }
+                    }
+                    return EMPTY_TREE_PATH; // unable to find next path - end of iteration
+                }
+
+                @Override
+                public boolean hasNext() {
+                    if (completed) {
+                        return false;
+                    }
+                    if (nextPath == null) {
+                        nextPath = getNextPath();
+                    }
+                    return nextPath != EMPTY_TREE_PATH;
+                }
+
+                @Override
+                public TreePath next() {
+                    if (completed) {
+                        throw new NoSuchElementException();
+                    }
+                    currentPath = nextPath != null ? nextPath : getNextPath();
+                    nextPath = getNextPath(); // current path has changed  - update next path
+                    completed = (nextPath == EMPTY_TREE_PATH);
+                    return currentPath;
+                }
+            };
+        };
     }
 
     /**
