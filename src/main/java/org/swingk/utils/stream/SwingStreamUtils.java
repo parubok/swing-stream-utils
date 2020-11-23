@@ -32,7 +32,6 @@ import java.util.stream.Collector;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import static java.util.Arrays.asList;
 import static java.util.Collections.emptyIterator;
 import static java.util.Objects.requireNonNull;
 
@@ -164,6 +163,8 @@ public class SwingStreamUtils {
     }
 
     /**
+     * Note: The tree structure should not change during the iteration.
+     *
      * @param treeModel Tree model to iterate. Not null.
      * @return Iterable to iterate over paths of the provided tree model.
      * @see TreePath
@@ -604,93 +605,25 @@ public class SwingStreamUtils {
     }
 
     /**
-     * Must be invoked on EDT. The component hierarchy should not change during iteration.
+     * Must be invoked on EDT. The component hierarchy should not change during the iteration.
      *
-     * @param parent Parent component. Not null.
-     * @return Iterable which iterates over all descendant components in the parent component (incl. the parent itself).
-     * First returned item of the iterable is the root parent.
-     * @see Container#getComponentCount()
-     * @see Container#getComponent(int)
+     * @param root Root parent component. Not null.
+     * @return Iterable which iterates over all descendant components in the root component (incl. the root itself).
+     * First returned item of the iterable is the root component.
      */
-    public static Iterable<Component> getDescendantsIterable(Component parent) {
-        requireNonNull(parent);
+    public static Iterable<Component> getDescendantsIterable(Component root) {
+        requireNonNull(root);
         return () -> new Iterator<Component>() {
-
-            /**
-             * Path (in components tree) which last element was returned by the last call to {@link #next()}.
-             * Never null. Initially empty.
-             */
-            private List<Component> currentPath = Collections.emptyList();
-
-            /**
-             * Stores next path (relative to the current path) to prevent multiple calls to {@link #getNextPath()} for
-             * the same current path.
-             */
-            private List<Component> nextPath;
-
-            private boolean completed;
-
-            /**
-             * Note: Should not modify {@code currentPath}.
-             *
-             * @return Next path relative to the current path or empty path if the iteration is completed and there is
-             * no next path.
-             */
-            private List<Component> getNextPath() {
-                assert !completed;
-                if (currentPath.isEmpty()) {
-                    return Collections.singletonList(parent); // start iteration with the root parent path
-                }
-                // try to go down first:
-                Component com = currentPath.get(currentPath.size() - 1);
-                if (com instanceof Container) {
-                    Container container = (Container) com;
-                    if (container.getComponentCount() > 0) {
-                        List<Component> nextPath = new ArrayList<>(currentPath);
-                        nextPath.add(container.getComponent(0));
-                        return nextPath;
-                    }
-                }
-                // try to go to the right:
-                if (currentPath.size() > 1) {
-                    int indexInPath = currentPath.size() - 2;
-                    while (indexInPath > -1) {
-                        Container parent = (Container) currentPath.get(indexInPath);
-                        List<Component> children = asList(parent.getComponents());
-                        int childIndex = children.indexOf(currentPath.get(indexInPath + 1));
-                        assert childIndex > -1;
-                        if (childIndex < (children.size() - 1)) {
-                            // take next child:
-                            List<Component> nextPath = new ArrayList<>(currentPath.subList(0, indexInPath + 1));
-                            nextPath.add(children.get(childIndex + 1));
-                            return nextPath;
-                        }
-                        indexInPath--; // go 1 level up
-                    }
-                }
-                return Collections.emptyList(); // unable to find next path - end of iteration
-            }
+            private final Iterator<TreePath> pathIterator = treeModelIterable(new ComponentTreeModel(root)).iterator();
 
             @Override
             public boolean hasNext() {
-                if (completed) {
-                    return false;
-                }
-                if (nextPath == null) {
-                    nextPath = getNextPath();
-                }
-                return !nextPath.isEmpty();
+                return pathIterator.hasNext();
             }
 
             @Override
             public Component next() {
-                if (completed) {
-                    throw new NoSuchElementException();
-                }
-                currentPath = nextPath != null ? nextPath : getNextPath();
-                nextPath = getNextPath(); // current path has changed  - update next path
-                completed = nextPath.isEmpty();
-                return currentPath.get(currentPath.size() - 1);
+                return (Component) pathIterator.next().getLastPathComponent();
             }
         };
     }
