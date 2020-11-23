@@ -20,7 +20,6 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Label;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
@@ -502,24 +501,6 @@ class SwingStreamUtilsTest {
             Assertions.assertThrows(NoSuchElementException.class, () -> iterator.next());
             Assertions.assertFalse(iterator.hasNext()); // second time
             Assertions.assertThrows(NoSuchElementException.class, () -> iterator.next()); // second time
-        });
-    }
-
-    /**
-     * Test with AWT label which is not instance of {@link java.awt.Container}.
-     */
-    @Test
-    void getDescendantsIterable_8() throws Exception {
-        SwingUtilities.invokeAndWait(() -> {
-            Label label = new Label();
-            Iterable<Component> iterable = SwingStreamUtils.getDescendantsIterable(label);
-            Assertions.assertNotNull(iterable);
-            Iterator<Component> iterator = iterable.iterator();
-            Assertions.assertNotNull(iterator);
-            Assertions.assertTrue(iterator.hasNext());
-            Assertions.assertEquals(label, iterator.next());
-            Assertions.assertFalse(iterator.hasNext());
-            Assertions.assertThrows(NoSuchElementException.class, () -> iterator.next());
         });
     }
 
