@@ -14,7 +14,7 @@ import org.swingk.utils.stream.SwingStreamUtils;
 import org.swingk.utils.stream.TableCellData;
 
 JTable table = ...;
-long count = SwingStreamUtils.asStream(table)
+long count = SwingStreamUtils.stream(table)
   .filter(TableCellData::isSelected)
   .filter(cellData -> cellData.getColumn() == 3)
   .map(TableCellData::getValue)
@@ -94,14 +94,12 @@ List<Component> visibleDescendants = streamDescendants(container)
 
 Example 6 (find all unselected combo box items which start with a letter "z"):
 ```java
-import java.util.List;
-import java.util.stream.Collectors;
-import javax.swing.JComboBox;
 
-import static org.swingk.utils.stream.SwingStreamUtils.streamComboBox;
+
+import org.swingk.utils.stream.SwingStreamUtils;
 
 JComboBox<String> comboBox = ...;
-List<String> visibleDescendants = streamComboBox(comboBox)
+List<String> visibleDescendants = SwingStreamUtils.stream(comboBox)
              .filter(comboBoxItem -> !comboBoxItem.isSelected())
              .filter(comboBoxItem -> comboBoxItem.getItem().startsWith("z"))
              .collect(Collectors.toList());
@@ -118,7 +116,7 @@ import org.swingk.utils.stream.SwingStreamUtils;
 
 JTree tree = ...;
 TreeNode node = ...;
-Optional<TreePath> nodePath = SwingStreamUtils.streamTree(tree)
+Optional<TreePath> nodePath = SwingStreamUtils.stream(tree)
              .filter(path -> path.getLastPathComponent().equals(node))
              .findFirst();
 ```

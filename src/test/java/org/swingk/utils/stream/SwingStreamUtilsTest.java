@@ -85,7 +85,7 @@ class SwingStreamUtilsTest {
             model.setValueAt("c0", 0, 0);
             model.setValueAt("c1", 0, 1);
             JTable table = new JTable(model);
-            Assertions.assertIterableEquals(Arrays.asList("c0", "c1"), SwingStreamUtils.asStream(table)
+            Assertions.assertIterableEquals(Arrays.asList("c0", "c1"), SwingStreamUtils.stream(table)
                     .map(TableCellData::getValue)
                     .collect(Collectors.toList()));
         });
@@ -101,7 +101,7 @@ class SwingStreamUtilsTest {
                 model.setValueAt(Integer.valueOf(i), i, 1);
             }
             JTable table = new JTable(model);
-            Assertions.assertEquals(10, SwingStreamUtils.asStream(table)
+            Assertions.assertEquals(10, SwingStreamUtils.stream(table)
                     .filter(d -> d.getColumn() == 1)
                     .mapToInt(d -> (Integer) d.getValue())
                     .sum());
@@ -115,7 +115,7 @@ class SwingStreamUtilsTest {
             final int columns = 3;
             TableModel model = new DefaultTableModel(rows, columns);
             JTable table = new JTable(model);
-            Assertions.assertEquals(6, SwingStreamUtils.asStream(table)
+            Assertions.assertEquals(6, SwingStreamUtils.stream(table)
                     .peek(d -> Assertions.assertSame(table, d.getTable()))
                     .peek(d -> Assertions.assertFalse(d.isSelected()))
                     .peek(d -> Assertions.assertTrue(d.isEditable()))
@@ -130,7 +130,7 @@ class SwingStreamUtilsTest {
             final int columns = 3;
             TableModel model = new DefaultTableModel(rows, columns);
             JTable table = new JTable(model);
-            Assertions.assertIterableEquals(Arrays.asList(0, 0, 0, 1, 1, 1), SwingStreamUtils.asStream(table)
+            Assertions.assertIterableEquals(Arrays.asList(0, 0, 0, 1, 1, 1), SwingStreamUtils.stream(table)
                     .map(d -> d.getRow())
                     .collect(Collectors.toList()));
         });
@@ -143,7 +143,7 @@ class SwingStreamUtilsTest {
             final int columns = 3;
             TableModel model = new DefaultTableModel(rows, columns);
             JTable table = new JTable(model);
-            Assertions.assertIterableEquals(Arrays.asList(0, 1, 2, 0, 1, 2), SwingStreamUtils.asStream(table)
+            Assertions.assertIterableEquals(Arrays.asList(0, 1, 2, 0, 1, 2), SwingStreamUtils.stream(table)
                     .map(d -> d.getColumn())
                     .collect(Collectors.toList()));
         });
@@ -154,7 +154,7 @@ class SwingStreamUtilsTest {
         SwingUtilities.invokeAndWait(() -> {
             TableModel model = new DefaultTableModel(0, 0);
             JTable table = new JTable(model);
-            Assertions.assertIterableEquals(Collections.emptyList(), SwingStreamUtils.asStream(table)
+            Assertions.assertIterableEquals(Collections.emptyList(), SwingStreamUtils.stream(table)
                     .collect(Collectors.toList()));
         });
     }
@@ -523,7 +523,7 @@ class SwingStreamUtilsTest {
     void streamComboBox_1() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             JComboBox<String> combo = new JComboBox<>();
-            Assertions.assertEquals(Collections.emptyList(), SwingStreamUtils.streamComboBox(combo)
+            Assertions.assertEquals(Collections.emptyList(), SwingStreamUtils.stream(combo)
                     .collect(Collectors.toList()));
         });
     }
@@ -534,7 +534,7 @@ class SwingStreamUtilsTest {
             String[] s = {"item1", "item2", "item3"};
             ComboBoxModel<String> model = new DefaultComboBoxModel<>(s);
             JComboBox<String> combo = new JComboBox<>(model);
-            Assertions.assertEquals(Arrays.asList(s), SwingStreamUtils.streamComboBox(combo)
+            Assertions.assertEquals(Arrays.asList(s), SwingStreamUtils.stream(combo)
                     .map(ComboBoxItem::getItem)
                     .collect(Collectors.toList()));
         });
@@ -547,7 +547,7 @@ class SwingStreamUtilsTest {
             ComboBoxModel<String> model = new DefaultComboBoxModel<>(s);
             JComboBox<String> combo = new JComboBox<>(model);
             combo.setSelectedIndex(2);
-            List<ComboBoxItem<String>> items = SwingStreamUtils.streamComboBox(combo)
+            List<ComboBoxItem<String>> items = SwingStreamUtils.stream(combo)
                     .collect(Collectors.toList());
 
             Assertions.assertEquals("item2", items.get(1).getItem());
@@ -702,7 +702,7 @@ class SwingStreamUtilsTest {
             root.add(child);
         }
         DefaultTreeModel model = new DefaultTreeModel(root);
-        Assertions.assertEquals(children, SwingStreamUtils.streamTreeModel(model)
+        Assertions.assertEquals(children, SwingStreamUtils.stream(model)
                 .filter(path -> path.getPathCount() > 1)
                 .peek(path -> Assertions.assertEquals(root, path.getPathComponent(0)))
                 .map(TreePath::getLastPathComponent)
@@ -715,7 +715,7 @@ class SwingStreamUtilsTest {
             TreeNode root = new DefaultMutableTreeNode("root");
             DefaultTreeModel model = new DefaultTreeModel(root);
             JTree tree = new JTree(model);
-            Assertions.assertEquals(Collections.singletonList(new TreePath(root)), SwingStreamUtils.streamTree(tree)
+            Assertions.assertEquals(Collections.singletonList(new TreePath(root)), SwingStreamUtils.stream(tree)
                     .collect(Collectors.toList()));
         });
     }

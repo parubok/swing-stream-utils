@@ -106,13 +106,6 @@ public class SwingStreamUtils {
     }
 
     /**
-     * @see #streamTable(JTable)
-     */
-    public static <T extends JTable> Stream<TableCellData<T>> asStream(T table) {
-        return streamTable(table);
-    }
-
-    /**
      * Streams cells of {@link JTable}. The table traversal order is from left to right, from top to bottom.
      * Must be invoked on EDT.
      *
@@ -121,7 +114,7 @@ public class SwingStreamUtils {
      * @return Stream of {@link TableCellData} for the provided table.
      * @see #asIterable(JTable)
      */
-    public static <T extends JTable> Stream<TableCellData<T>> streamTable(T table) {
+    public static <T extends JTable> Stream<TableCellData<T>> stream(T table) {
         return StreamSupport.stream(asIterable(table).spliterator(), false);
     }
 
@@ -142,12 +135,12 @@ public class SwingStreamUtils {
      * Streams paths of the provided {@link JTree}.
      *
      * @param tree Tree to stream. Not null.
-     * @see #streamTreeModel(TreeModel)
+     * @see #stream(TreeModel)
      * @see TreePath
      */
-    public static Stream<TreePath> streamTree(JTree tree) {
+    public static Stream<TreePath> stream(JTree tree) {
         requireNonNull(tree, "tree");
-        return streamTreeModel(tree.getModel());
+        return stream(tree.getModel());
     }
 
     /**
@@ -157,7 +150,7 @@ public class SwingStreamUtils {
      * @see #treeModelIterable(TreeModel)
      * @see TreePath
      */
-    public static Stream<TreePath> streamTreeModel(TreeModel treeModel) {
+    public static Stream<TreePath> stream(TreeModel treeModel) {
         return StreamSupport.stream(treeModelIterable(treeModel).spliterator(), false);
     }
 
@@ -294,20 +287,20 @@ public class SwingStreamUtils {
     /**
      * Streams items of the provided {@link JComboBox}.
      *
-     * @see #streamComboBoxModel(ComboBoxModel)
+     * @see #stream(ComboBoxModel)
      * @see ComboBoxItem
      */
-    public static <E> Stream<ComboBoxItem<E>> streamComboBox(JComboBox<E> comboBox) {
-        return streamComboBoxModel(comboBox.getModel());
+    public static <E> Stream<ComboBoxItem<E>> stream(JComboBox<E> comboBox) {
+        return stream(comboBox.getModel());
     }
 
     /**
      * Streams items of the provided {@link ComboBoxModel}.
      *
-     * @see #streamComboBox(JComboBox)
+     * @see #stream(JComboBox)
      * @see ComboBoxItem
      */
-    public static <E> Stream<ComboBoxItem<E>> streamComboBoxModel(ComboBoxModel<E> model) {
+    public static <E> Stream<ComboBoxItem<E>> stream(ComboBoxModel<E> model) {
         return StreamSupport.stream(comboBoxModelIterable(model).spliterator(), false);
     }
 
