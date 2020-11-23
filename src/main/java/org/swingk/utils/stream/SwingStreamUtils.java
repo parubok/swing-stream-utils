@@ -147,11 +147,11 @@ public class SwingStreamUtils {
      * Streams paths of the provided {@link TreeModel}.
      *
      * @param treeModel Tree model to stream. Not null.
-     * @see #treeModelIterable(TreeModel)
+     * @see #asIterable(TreeModel)
      * @see TreePath
      */
     public static Stream<TreePath> stream(TreeModel treeModel) {
-        return StreamSupport.stream(treeModelIterable(treeModel).spliterator(), false);
+        return StreamSupport.stream(asIterable(treeModel).spliterator(), false);
     }
 
     /**
@@ -161,7 +161,7 @@ public class SwingStreamUtils {
      * @return Iterable to iterate over paths of the provided tree model.
      * @see TreePath
      */
-    public static Iterable<TreePath> treeModelIterable(TreeModel treeModel) {
+    public static Iterable<TreePath> asIterable(TreeModel treeModel) {
         requireNonNull(treeModel, "treeModel");
         return () -> {
             Object root = treeModel.getRoot();
@@ -238,7 +238,7 @@ public class SwingStreamUtils {
      * @return {@link Iterable} over combo box items of the provided model.
      * @see ComboBoxItem
      */
-    public static <E> Iterable<ComboBoxItem<E>> comboBoxModelIterable(ComboBoxModel<E> model) {
+    public static <E> Iterable<ComboBoxItem<E>> asIterable(ComboBoxModel<E> model) {
         requireNonNull(model);
         return () ->
         {
@@ -301,7 +301,7 @@ public class SwingStreamUtils {
      * @see ComboBoxItem
      */
     public static <E> Stream<ComboBoxItem<E>> stream(ComboBoxModel<E> model) {
-        return StreamSupport.stream(comboBoxModelIterable(model).spliterator(), false);
+        return StreamSupport.stream(asIterable(model).spliterator(), false);
     }
 
     /**
@@ -606,7 +606,7 @@ public class SwingStreamUtils {
     public static Iterable<Component> getDescendantsIterable(Component root) {
         requireNonNull(root);
         return () -> new Iterator<Component>() {
-            private final Iterator<TreePath> pathIterator = treeModelIterable(new ComponentTreeModel(root)).iterator();
+            private final Iterator<TreePath> pathIterator = asIterable(new ComponentTreeModel(root)).iterator();
 
             @Override
             public boolean hasNext() {

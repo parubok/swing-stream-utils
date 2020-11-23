@@ -567,7 +567,7 @@ class SwingStreamUtilsTest {
         SwingUtilities.invokeAndWait(() -> {
             String[] s = {"item1", "item2", "item3"};
             DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(s);
-            Iterable<ComboBoxItem<String>> iterable = SwingStreamUtils.comboBoxModelIterable(model);
+            Iterable<ComboBoxItem<String>> iterable = SwingStreamUtils.asIterable(model);
             Iterator<ComboBoxItem<String>> iterator = iterable.iterator();
             Assertions.assertTrue(iterator.hasNext());
             Assertions.assertEquals("item1", iterator.next().getItem());
@@ -581,7 +581,7 @@ class SwingStreamUtilsTest {
     void treeModelIterable_no_root() {
         // not EDT
         DefaultTreeModel model = new DefaultTreeModel(null);
-        Iterable<TreePath> iterable = SwingStreamUtils.treeModelIterable(model);
+        Iterable<TreePath> iterable = SwingStreamUtils.asIterable(model);
         Assertions.assertNotNull(iterable);
         Iterator<TreePath> iterator = iterable.iterator();
         Assertions.assertNotNull(iterator);
@@ -594,7 +594,7 @@ class SwingStreamUtilsTest {
         // not EDT
         TreeNode root = new DefaultMutableTreeNode("root");
         DefaultTreeModel model = new DefaultTreeModel(root);
-        Iterable<TreePath> iterable = SwingStreamUtils.treeModelIterable(model);
+        Iterable<TreePath> iterable = SwingStreamUtils.asIterable(model);
         Assertions.assertNotNull(iterable);
         Iterator<TreePath> iterator = iterable.iterator();
         Assertions.assertNotNull(iterator);
@@ -613,7 +613,7 @@ class SwingStreamUtilsTest {
         // not EDT
         TreeNode root = new DefaultMutableTreeNode("root");
         DefaultTreeModel model = new DefaultTreeModel(root);
-        Iterable<TreePath> iterable = SwingStreamUtils.treeModelIterable(model);
+        Iterable<TreePath> iterable = SwingStreamUtils.asIterable(model);
         Iterator<TreePath> iterator = iterable.iterator();
         TreePath path = iterator.next(); // without calling hasNext
         Assertions.assertEquals(1, path.getPathCount());
@@ -635,7 +635,7 @@ class SwingStreamUtilsTest {
         node_1.add(node_2_1);
         node_1.add(node_2_2);
         DefaultTreeModel model = new DefaultTreeModel(root);
-        Iterable<TreePath> iterable = SwingStreamUtils.treeModelIterable(model);
+        Iterable<TreePath> iterable = SwingStreamUtils.asIterable(model);
         Iterator<TreePath> iterator = iterable.iterator();
 
         Assertions.assertTrue(iterator.hasNext());
@@ -678,7 +678,7 @@ class SwingStreamUtilsTest {
             root.add(child);
         }
         DefaultTreeModel model = new DefaultTreeModel(root);
-        Iterable<TreePath> iterable = SwingStreamUtils.treeModelIterable(model);
+        Iterable<TreePath> iterable = SwingStreamUtils.asIterable(model);
         Iterator<TreePath> iterator = iterable.iterator();
         List<Object> leaves = new ArrayList<>();
         iterator.next(); // skip root path
