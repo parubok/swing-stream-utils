@@ -5,6 +5,8 @@
 Utils for working with Java Swing components via Java 8 streams.
 
 Functionality of the library is provided by the static methods of class `org.swingk.utils.stream.SwingStreamUtils`.
+The methods may be divided into two categories: those which allow to iterate (or stream) over data items of Swing components 
+(e.g. `SwingStreamUtils.streamComboBox`) and collectors which allow to create Swing components from a stream data (e.g. `SwingStreamUtils.toTable`).
 
 Example 1 (count how many times `JTable` cell value "London" appears in the selected cells of column 3):
 ```java
