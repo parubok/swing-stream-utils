@@ -36,6 +36,9 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * Java-8 stream utils for Swing components.
+ * <p>
+ * https://github.com/parubok/swing-stream-utils
+ * </p>
  */
 public class SwingStreamUtils {
 
@@ -118,19 +121,6 @@ public class SwingStreamUtils {
         return StreamSupport.stream(asIterable(table).spliterator(), false);
     }
 
-    private static final TreePath EMPTY_TREE_PATH = new TreePath() {
-    };
-
-    private static List<Object> getChildren(TreeModel model, Object parent) {
-        final int c = model.getChildCount(parent);
-        assert c > 0;
-        List<Object> children = new ArrayList<>(c);
-        for (int i = 0; i < c; i++) {
-            children.add(model.getChild(parent, i));
-        }
-        return children;
-    }
-
     /**
      * Streams paths of the provided {@link JTree}.
      *
@@ -145,8 +135,12 @@ public class SwingStreamUtils {
 
     /**
      * Streams paths of the provided {@link TreeModel}.
+     * <p>
+     * <b>Note:</b> The tree structure should not change during the streaming.
+     * </p>
      *
      * @param treeModel Tree model to stream. Not null.
+     * @return Stream of paths of the provided tree model. The traversing is performed using depth-first search.
      * @see #asIterable(TreeModel)
      * @see TreePath
      */
@@ -155,83 +149,15 @@ public class SwingStreamUtils {
     }
 
     /**
-     * Note: The tree structure should not change during the iteration.
-     *
+     * <p>
+     * <b>Note:</b> The tree structure should not change during the iteration.
+     * </p>
      * @param treeModel Tree model to iterate. Not null.
-     * @return Iterable to iterate over paths of the provided tree model.
+     * @return Iterable to iterate over paths of the provided tree model using depth-first search.
      * @see TreePath
      */
     public static Iterable<TreePath> asIterable(TreeModel treeModel) {
-        requireNonNull(treeModel, "treeModel");
-        return () -> {
-            Object root = treeModel.getRoot();
-            if (root == null) {
-                return emptyIterator();
-            }
-
-            return new Iterator<TreePath>() {
-
-                private TreePath currentPath = EMPTY_TREE_PATH;
-                private TreePath nextPath;
-                private boolean completed;
-
-                private TreePath getNextPath() {
-                    assert !completed;
-                    if (currentPath == EMPTY_TREE_PATH) {
-                        return new TreePath(root); // start iteration with the root path
-                    }
-                    // try to go down first:
-                    Object currentNode = currentPath.getLastPathComponent();
-                    if (treeModel.getChildCount(currentNode) > 0) {
-                        Object child = treeModel.getChild(currentNode, 0);
-                        return currentPath.pathByAddingChild(child);
-                    }
-                    // try to go to the right:
-                    if (currentPath.getPathCount() > 1) {
-                        int indexInPath = currentPath.getPathCount() - 2;
-                        while (indexInPath > -1) {
-                            Object parent = currentPath.getPathComponent(indexInPath);
-                            List<Object> children = getChildren(treeModel, parent);
-                            int childIndex = children.indexOf(currentPath.getPathComponent(indexInPath + 1));
-                            assert childIndex > -1;
-                            if (childIndex < (children.size() - 1)) {
-                                // take next child:
-                                List<Object> p = new ArrayList<>();
-                                for (int i = 0; i < (indexInPath + 1); i++) {
-                                    p.add(currentPath.getPathComponent(i));
-                                }
-                                p.add(children.get(childIndex + 1));
-                                return new TreePath(p.toArray());
-                            }
-                            indexInPath--; // go 1 level up
-                        }
-                    }
-                    return EMPTY_TREE_PATH; // unable to find next path - end of iteration
-                }
-
-                @Override
-                public boolean hasNext() {
-                    if (completed) {
-                        return false;
-                    }
-                    if (nextPath == null) {
-                        nextPath = getNextPath();
-                    }
-                    return nextPath != EMPTY_TREE_PATH;
-                }
-
-                @Override
-                public TreePath next() {
-                    if (completed) {
-                        throw new NoSuchElementException();
-                    }
-                    currentPath = nextPath != null ? nextPath : getNextPath();
-                    nextPath = getNextPath(); // current path has changed  - update next path
-                    completed = (nextPath == EMPTY_TREE_PATH);
-                    return currentPath;
-                }
-            };
-        };
+        return new TreeModelIterable(treeModel);
     }
 
     /**
