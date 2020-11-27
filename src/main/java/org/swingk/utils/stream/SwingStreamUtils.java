@@ -233,6 +233,7 @@ public class SwingStreamUtils {
     /**
      * @see #toTable(Supplier, Column[])
      */
+    @SafeVarargs
     public static <T> Collector<T, List<List<Object>>, JTable> toTable(Column<T>... columns) {
         return toTable(JTable::new, columns);
     }
@@ -253,6 +254,7 @@ public class SwingStreamUtils {
      * @param <T> Type of the stream elements.
      * @return The new table.
      */
+    @SafeVarargs
     public static <T, K extends JTable> Collector<T, List<List<Object>>, K> toTable(Supplier<K> tableSupplier,
                                                                                     Column<T>... columns) {
         requireNonNull(tableSupplier);
@@ -321,6 +323,7 @@ public class SwingStreamUtils {
      * @param <T> Type of the stream elements.
      * @return The new table.
      */
+    @SafeVarargs
     public static <T, K extends JTable, M extends TableModel> Collector<T, List<List<Object>>, K> toTable(Supplier<K> tableSupplier,
                                                                                                           IntFunction<M> modelSupplier,
                                                                                                           Column<T>... columns) {
@@ -375,6 +378,7 @@ public class SwingStreamUtils {
      * @param <T> Type of stream elements.
      * @return The table model.
      */
+    @SafeVarargs
     public static <T> Collector<T, List<List<Object>>, SimpleTableModel<T>> toTableModel(Column<T>... columns) {
         checkColumnsArg(columns);
         return new AbstractCollector<T, SimpleTableModel<T>>(columns) {
