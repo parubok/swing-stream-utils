@@ -231,6 +231,8 @@ public class SwingStreamUtils {
     }
 
     /**
+     * Stream collector to create {@link JTable}.
+     *
      * @see #toTable(Supplier, Column[])
      */
     @SafeVarargs
@@ -527,11 +529,11 @@ public class SwingStreamUtils {
     }
 
     /**
-     * Must be invoked on EDT. The component hierarchy should not change during the iteration.
+     * Note: Must be invoked on EDT. The component hierarchy should not change during the iteration.
      *
      * @param root Root parent component. Not null.
      * @return Iterable which iterates over all descendant components in the root component (incl. the root itself).
-     * First returned item of the iterable is the root component.
+     * First returned item of the iterable is the root component. Iteration order: depth-first search.
      */
     public static Iterable<Component> getDescendantsIterable(Component root) {
         requireNonNull(root);
@@ -551,11 +553,11 @@ public class SwingStreamUtils {
     }
 
     /**
-     * Must be invoked on EDT. The component hierarchy should not change during streaming.
+     * Note: Must be invoked on EDT. The component hierarchy should not change during streaming.
      *
      * @param parent Parent container. Not null.
      * @return Stream of all descendant components in the parent container (incl. the parent itself). First element
-     * of the stream is the root parent.
+     * of the stream is the root parent. Streaming order: depth-first search.
      * @see #getDescendantsIterable(Component)
      */
     public static Stream<Component> streamDescendants(Component parent) {
