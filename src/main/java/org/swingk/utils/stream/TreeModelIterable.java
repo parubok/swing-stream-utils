@@ -1,7 +1,6 @@
 package org.swingk.utils.stream;
 
 import javax.swing.tree.TreeModel;
-import javax.swing.tree.TreePath;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -9,11 +8,15 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 
 import static java.util.Collections.emptyIterator;
+import static java.util.Collections.singletonList;
 
-final class TreeModelIterable implements Iterable<TreePath> {
+final class TreeModelIterable implements Iterable<KTreePath> {
 
-    private static final TreePath EMPTY_TREE_PATH = new TreePath() {
-    };
+    /**
+     * Singleton object to designate empty tree path.
+     */
+    private static final KTreePath EMPTY_PATH = new KTreePath();
+
     private final TreeModel treeModel;
 
     TreeModelIterable(TreeModel treeModel) {
@@ -31,22 +34,22 @@ final class TreeModelIterable implements Iterable<TreePath> {
     }
 
     @Override
-    public Iterator<TreePath> iterator() {
+    public Iterator<KTreePath> iterator() {
         Object root = treeModel.getRoot();
         if (root == null) {
             return emptyIterator();
         }
 
-        return new Iterator<TreePath>() {
+        return new Iterator<KTreePath>() {
 
-            private TreePath currentPath = EMPTY_TREE_PATH;
-            private TreePath nextPath;
+            private KTreePath currentPath = EMPTY_PATH;
+            private KTreePath nextPath;
             private boolean completed;
 
-            private TreePath getNextPath() {
+            private KTreePath getNextPath() {
                 assert !completed;
-                if (currentPath == EMPTY_TREE_PATH) {
-                    return new TreePath(root); // start iteration with the root path
+                if (currentPath == EMPTY_PATH) {
+                    return new KTreePath(singletonList(root)); // start iteration with the root path
                 }
                 // try to go down first:
                 Object currentNode = currentPath.getLastPathComponent();
@@ -69,12 +72,12 @@ final class TreeModelIterable implements Iterable<TreePath> {
                                 p.add(currentPath.getPathComponent(i));
                             }
                             p.add(children.get(childIndex + 1));
-                            return new TreePath(p.toArray());
+                            return new KTreePath(p);
                         }
                         indexInPath--; // go 1 level up
                     }
                 }
-                return EMPTY_TREE_PATH; // unable to find next path - end of iteration
+                return EMPTY_PATH; // unable to find next path - end of iteration
             }
 
             @Override
@@ -85,17 +88,17 @@ final class TreeModelIterable implements Iterable<TreePath> {
                 if (nextPath == null) {
                     nextPath = getNextPath();
                 }
-                return nextPath != EMPTY_TREE_PATH;
+                return nextPath != EMPTY_PATH;
             }
 
             @Override
-            public TreePath next() {
+            public KTreePath next() {
                 if (completed) {
                     throw new NoSuchElementException();
                 }
                 currentPath = nextPath != null ? nextPath : getNextPath();
-                nextPath = getNextPath(); // current path has changed  - update next path
-                completed = (nextPath == EMPTY_TREE_PATH);
+                nextPath = getNextPath(); // current path has changed - update nextPath
+                completed = (nextPath == EMPTY_PATH);
                 return currentPath;
             }
         };

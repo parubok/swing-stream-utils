@@ -128,7 +128,7 @@ public class SwingStreamUtils {
      * @see #stream(TreeModel)
      * @see TreePath
      */
-    public static Stream<TreePath> stream(JTree tree) {
+    public static Stream<KTreePath> stream(JTree tree) {
         requireNonNull(tree, "tree");
         return stream(tree.getModel());
     }
@@ -144,7 +144,7 @@ public class SwingStreamUtils {
      * @see #asIterable(TreeModel)
      * @see TreePath
      */
-    public static Stream<TreePath> stream(TreeModel treeModel) {
+    public static Stream<KTreePath> stream(TreeModel treeModel) {
         return StreamSupport.stream(asIterable(treeModel).spliterator(), false);
     }
 
@@ -156,7 +156,7 @@ public class SwingStreamUtils {
      * @return Iterable to iterate over paths of the provided tree model using depth-first search.
      * @see TreePath
      */
-    public static Iterable<TreePath> asIterable(TreeModel treeModel) {
+    public static Iterable<KTreePath> asIterable(TreeModel treeModel) {
         return new TreeModelIterable(treeModel);
     }
 
@@ -538,7 +538,7 @@ public class SwingStreamUtils {
     public static Iterable<Component> getDescendantsIterable(Component root) {
         requireNonNull(root);
         return () -> new Iterator<Component>() {
-            private final Iterator<TreePath> pathIterator = asIterable(new ComponentTreeModel(root)).iterator();
+            private final Iterator<KTreePath> pathIterator = asIterable(new ComponentTreeModel(root)).iterator();
 
             @Override
             public boolean hasNext() {
