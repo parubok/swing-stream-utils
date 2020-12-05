@@ -152,12 +152,43 @@ public class SwingStreamUtils {
      * <p>
      * <b>Note:</b> The tree structure should not change during the iteration.
      * </p>
+     *
      * @param treeModel Tree model to iterate. Not null.
      * @return Iterable to iterate over paths of the provided tree model using depth-first search.
      * @see TreePath
      */
     public static Iterable<KTreePath> asIterable(TreeModel treeModel) {
-        return new TreeModelIterable(treeModel);
+        requireNonNull(treeModel);
+        return asIterable(new TreeStructure() {
+            @Override
+            public Object getRoot() {
+                return treeModel.getRoot();
+            }
+
+            @Override
+            public Object getChild(Object parent, int index) {
+                return treeModel.getChild(parent, index);
+            }
+
+            @Override
+            public int getChildCount(Object parent) {
+                return treeModel.getChildCount(parent);
+            }
+        });
+    }
+
+    /**
+     * <p>
+     * <b>Note:</b> The tree structure should not change during the iteration.
+     * </p>
+     *
+     * @param treeStructure Tree structure to iterate. Not null.
+     * @return Iterable to iterate over paths of the provided tree structure using depth-first search.
+     * @see TreePath
+     */
+    public static Iterable<KTreePath> asIterable(TreeStructure treeStructure) {
+        requireNonNull(treeStructure);
+        return new TreeStructureIterable(treeStructure);
     }
 
     /**

@@ -1,6 +1,5 @@
 package org.swingk.utils.stream;
 
-import javax.swing.tree.TreeModel;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -10,32 +9,32 @@ import java.util.Objects;
 import static java.util.Collections.emptyIterator;
 import static java.util.Collections.singletonList;
 
-final class TreeModelIterable implements Iterable<KTreePath> {
+final class TreeStructureIterable implements Iterable<KTreePath> {
 
     /**
      * Singleton object to designate empty tree path.
      */
     private static final KTreePath EMPTY_PATH = new KTreePath();
 
-    private final TreeModel treeModel;
+    private final TreeStructure treeStructure;
 
-    TreeModelIterable(TreeModel treeModel) {
-        this.treeModel = Objects.requireNonNull(treeModel, "treeModel");
+    TreeStructureIterable(TreeStructure treeStructure) {
+        this.treeStructure = Objects.requireNonNull(treeStructure);
     }
 
-    private static List<Object> getChildren(TreeModel model, Object parent) {
-        final int c = model.getChildCount(parent);
+    private static List<Object> getChildren(TreeStructure treeStructure, Object parent) {
+        final int c = treeStructure.getChildCount(parent);
         assert c > 0;
         List<Object> children = new ArrayList<>(c);
         for (int i = 0; i < c; i++) {
-            children.add(model.getChild(parent, i));
+            children.add(treeStructure.getChild(parent, i));
         }
         return children;
     }
 
     @Override
     public Iterator<KTreePath> iterator() {
-        Object root = treeModel.getRoot();
+        Object root = treeStructure.getRoot();
         if (root == null) {
             return emptyIterator();
         }
@@ -53,8 +52,8 @@ final class TreeModelIterable implements Iterable<KTreePath> {
                 }
                 // try to go down first:
                 Object currentNode = currentPath.getLastPathComponent();
-                if (treeModel.getChildCount(currentNode) > 0) {
-                    Object child = treeModel.getChild(currentNode, 0);
+                if (treeStructure.getChildCount(currentNode) > 0) {
+                    Object child = treeStructure.getChild(currentNode, 0);
                     return currentPath.pathByAddingChild(child);
                 }
                 // try to go to the right:
@@ -62,7 +61,7 @@ final class TreeModelIterable implements Iterable<KTreePath> {
                     int indexInPath = currentPath.getPathCount() - 2;
                     while (indexInPath > -1) {
                         Object parent = currentPath.getPathComponent(indexInPath);
-                        List<Object> children = getChildren(treeModel, parent);
+                        List<Object> children = getChildren(treeStructure, parent);
                         int childIndex = children.indexOf(currentPath.getPathComponent(indexInPath + 1));
                         assert childIndex > -1;
                         if (childIndex < (children.size() - 1)) {
