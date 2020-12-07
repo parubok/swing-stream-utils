@@ -13,7 +13,6 @@ import javax.swing.tree.TreePath;
 import java.awt.Component;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
@@ -32,6 +31,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import static java.util.Collections.emptyIterator;
+import static java.util.Collections.emptySet;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -487,7 +487,7 @@ public class SwingStreamUtils {
 
             @Override
             public Set<Characteristics> characteristics() {
-                return Collections.emptySet();
+                return emptySet();
             }
 
             @Override
@@ -560,7 +560,7 @@ public class SwingStreamUtils {
 
             @Override
             public Set<Characteristics> characteristics() {
-                return Collections.emptySet();
+                return emptySet();
             }
 
             @Override
