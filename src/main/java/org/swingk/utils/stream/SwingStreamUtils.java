@@ -584,7 +584,7 @@ public class SwingStreamUtils {
     public static Iterable<Component> getDescendantsIterable(Component root) {
         requireNonNull(root);
         return () -> new Iterator<Component>() {
-            private final Iterator<KTreePath> pathIterator = asIterable(new ComponentTreeModel(root)).iterator();
+            private final Iterator<KTreePath> pathIterator = asIterable(new ComponentTreeStructure(root)).iterator();
 
             @Override
             public boolean hasNext() {
