@@ -33,6 +33,10 @@ import java.util.function.Function;
 import java.util.function.ObjIntConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 
 class SwingStreamUtilsTest {
 
@@ -85,7 +89,7 @@ class SwingStreamUtilsTest {
             model.setValueAt("c0", 0, 0);
             model.setValueAt("c1", 0, 1);
             JTable table = new JTable(model);
-            Assertions.assertIterableEquals(Arrays.asList("c0", "c1"), SwingStreamUtils.stream(table)
+            Assertions.assertIterableEquals(asList("c0", "c1"), SwingStreamUtils.stream(table)
                     .map(TableCellData::getValue)
                     .collect(Collectors.toList()));
         });
@@ -130,7 +134,7 @@ class SwingStreamUtilsTest {
             final int columns = 3;
             TableModel model = new DefaultTableModel(rows, columns);
             JTable table = new JTable(model);
-            Assertions.assertIterableEquals(Arrays.asList(0, 0, 0, 1, 1, 1), SwingStreamUtils.stream(table)
+            Assertions.assertIterableEquals(asList(0, 0, 0, 1, 1, 1), SwingStreamUtils.stream(table)
                     .map(d -> d.getRow())
                     .collect(Collectors.toList()));
         });
@@ -143,7 +147,7 @@ class SwingStreamUtilsTest {
             final int columns = 3;
             TableModel model = new DefaultTableModel(rows, columns);
             JTable table = new JTable(model);
-            Assertions.assertIterableEquals(Arrays.asList(0, 1, 2, 0, 1, 2), SwingStreamUtils.stream(table)
+            Assertions.assertIterableEquals(asList(0, 1, 2, 0, 1, 2), SwingStreamUtils.stream(table)
                     .map(d -> d.getColumn())
                     .collect(Collectors.toList()));
         });
@@ -177,7 +181,7 @@ class SwingStreamUtilsTest {
     @Test
     void toJTable_1() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
-            List<String> values = Arrays.asList("valA", "valB", "valC");
+            List<String> values = asList("valA", "valB", "valC");
             JTable table = values.stream().collect(SwingStreamUtils.toTable(new Column<>("col1")));
             Assertions.assertEquals(values.size(), table.getRowCount());
             Assertions.assertEquals(1, table.getColumnCount());
@@ -191,7 +195,7 @@ class SwingStreamUtilsTest {
     @Test
     void toJTable_2() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
-            List<Rectangle> values = Arrays.asList(new Rectangle(0, 0, 2, 5), new Rectangle(1, 1, 3, 6));
+            List<Rectangle> values = asList(new Rectangle(0, 0, 2, 5), new Rectangle(1, 1, 3, 6));
             JTable table = values.stream()
                     .collect(SwingStreamUtils.toTable(new Column<>("Location", r -> r.getLocation(), 20, Point.class),
                                                         new Column<>("Size", r -> r.getSize(), 30, Dimension.class)));
@@ -211,7 +215,7 @@ class SwingStreamUtilsTest {
     @Test
     void toJTable_custom_model() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
-            List<String> values = Arrays.asList("val_1", "val2", "val_3");
+            List<String> values = asList("val_1", "val2", "val_3");
             JTable table = values.stream()
                     .collect(SwingStreamUtils.toTable(JTable::new, rowCount -> new DefaultTableModel(rowCount, 2),
                             new Column<>("C1", Function.identity(), 50, String.class),
@@ -237,11 +241,11 @@ class SwingStreamUtilsTest {
 
                 @Override
                 public void accept(String s, int value) {
-                    rowObjects.add(Arrays.asList(s, value));
+                    rowObjects.add(asList(s, value));
                 }
             }
 
-            List<String> values = Arrays.asList("val_1", "val2", "val_3");
+            List<String> values = asList("val_1", "val2", "val_3");
             JTable table = values.stream()
                     .collect(SwingStreamUtils.toTable(JTable::new, rowCount -> new MyModel(rowCount, 2),
                             new Column<>("C1", Function.identity(), 50, String.class),
@@ -254,9 +258,9 @@ class SwingStreamUtilsTest {
             Assertions.assertEquals(4, table.getValueAt(1, 1));
 
             Assertions.assertEquals(values.size(), rowObjects.size());
-            Assertions.assertEquals(Arrays.asList("val_1", 0), rowObjects.get(0));
-            Assertions.assertEquals(Arrays.asList("val2", 1), rowObjects.get(1));
-            Assertions.assertEquals(Arrays.asList("val_3", 2), rowObjects.get(2));
+            Assertions.assertEquals(asList("val_1", 0), rowObjects.get(0));
+            Assertions.assertEquals(asList("val2", 1), rowObjects.get(1));
+            Assertions.assertEquals(asList("val_3", 2), rowObjects.get(2));
         });
     }
 
@@ -330,7 +334,7 @@ class SwingStreamUtilsTest {
     @Test
     void toJTable_no_columns() {
         Assertions.assertThrows(IllegalArgumentException.class,
-                () -> Arrays.asList("value").stream().collect(SwingStreamUtils.toTable()));
+                () -> asList("value").stream().collect(SwingStreamUtils.toTable()));
     }
 
     @Test
@@ -362,7 +366,7 @@ class SwingStreamUtilsTest {
     @Test
     void toJComboBox() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
-            List<String> list = Arrays.asList("str1", "str2");
+            List<String> list = asList("str1", "str2");
             JComboBox<String> combo = list.stream().collect(SwingStreamUtils.toComboBox());
             Assertions.assertEquals(2, combo.getItemCount());
             Assertions.assertEquals("str1", combo.getItemAt(0));
@@ -408,7 +412,7 @@ class SwingStreamUtilsTest {
             JPanel panel = new JPanel();
             List<Component> list = new ArrayList<>();
             SwingStreamUtils.getDescendantsIterable(panel).forEach(list::add);
-            Assertions.assertEquals(Arrays.asList(panel), list);
+            Assertions.assertEquals(asList(panel), list);
         });
     }
 
@@ -420,7 +424,7 @@ class SwingStreamUtilsTest {
             panel.add(label);
             List<Component> list = new ArrayList<>();
             SwingStreamUtils.getDescendantsIterable(panel).forEach(list::add);
-            Assertions.assertEquals(Arrays.asList(panel, label), list);
+            Assertions.assertEquals(asList(panel, label), list);
         });
     }
 
@@ -434,7 +438,7 @@ class SwingStreamUtilsTest {
             panel.add(label2);
             List<Component> list = new ArrayList<>();
             SwingStreamUtils.getDescendantsIterable(panel).forEach(list::add);
-            Assertions.assertEquals(Arrays.asList(panel, label1, label2), list);
+            Assertions.assertEquals(asList(panel, label1, label2), list);
         });
     }
 
@@ -450,7 +454,7 @@ class SwingStreamUtilsTest {
             panel2.add(label2);
             List<Component> list = new ArrayList<>();
             SwingStreamUtils.getDescendantsIterable(panel).forEach(list::add);
-            Assertions.assertEquals(Arrays.asList(panel, label1, panel2, label2), list);
+            Assertions.assertEquals(asList(panel, label1, panel2, label2), list);
         });
     }
 
@@ -468,7 +472,7 @@ class SwingStreamUtilsTest {
             panel2.add(label3);
             List<Component> list = new ArrayList<>();
             SwingStreamUtils.getDescendantsIterable(panel).forEach(list::add);
-            Assertions.assertEquals(Arrays.asList(panel, label1, panel2, label2, label3), list);
+            Assertions.assertEquals(asList(panel, label1, panel2, label2, label3), list);
         });
     }
 
@@ -484,7 +488,7 @@ class SwingStreamUtilsTest {
             panel3.add(panel4);
             List<Component> list = new ArrayList<>();
             SwingStreamUtils.getDescendantsIterable(panel).forEach(list::add);
-            Assertions.assertEquals(Arrays.asList(panel, panel2, panel3, panel4), list);
+            Assertions.assertEquals(asList(panel, panel2, panel3, panel4), list);
         });
     }
 
@@ -514,7 +518,7 @@ class SwingStreamUtilsTest {
             panel.add(panel2);
             panel2.add(panel3);
             panel3.add(panel4);
-            Assertions.assertEquals(Arrays.asList(panel, panel2, panel3, panel4),
+            Assertions.assertEquals(asList(panel, panel2, panel3, panel4),
                     SwingStreamUtils.streamDescendants(panel).collect(Collectors.toList()));
         });
     }
@@ -534,7 +538,7 @@ class SwingStreamUtilsTest {
             String[] s = {"item1", "item2", "item3"};
             ComboBoxModel<String> model = new DefaultComboBoxModel<>(s);
             JComboBox<String> combo = new JComboBox<>(model);
-            Assertions.assertEquals(Arrays.asList(s), SwingStreamUtils.stream(combo)
+            Assertions.assertEquals(asList(s), SwingStreamUtils.stream(combo)
                     .map(ComboBoxItem::getItem)
                     .collect(Collectors.toList()));
         });
@@ -715,8 +719,65 @@ class SwingStreamUtilsTest {
             TreeNode root = new DefaultMutableTreeNode("root");
             DefaultTreeModel model = new DefaultTreeModel(root);
             JTree tree = new JTree(model);
-            Assertions.assertEquals(Collections.singletonList(new TreePath(root)), SwingStreamUtils.stream(tree)
+            Assertions.assertEquals(singletonList(new TreePath(root)), SwingStreamUtils.stream(tree)
                     .collect(Collectors.toList()));
         });
+    }
+
+    @Test
+    void streamTreeStructure_1() {
+        // not EDT
+        TreeStructure treeStructure = new TreeStructure() {
+            @Override
+            public Object getRoot() {
+                return "root";
+            }
+
+            @Override
+            public Object getChild(Object parent, int index) {
+                Assertions.fail();
+                return null;
+            }
+
+            @Override
+            public int getChildCount(Object parent) {
+                Assertions.assertEquals(getRoot(), parent);
+                return 0;
+            }
+        };
+        Stream<KTreePath> stream = SwingStreamUtils.stream(treeStructure);
+        Assertions.assertNotNull(stream);
+        Assertions.assertEquals(singletonList(new KTreePath(singletonList("root"))),
+                stream.collect(Collectors.toList()));
+    }
+
+    @Test
+    void streamTreeStructure_2() {
+        // not EDT
+        TreeStructure s = new TreeStructure() {
+            @Override
+            public Object getRoot() {
+                return "root";
+            }
+
+            @Override
+            public Object getChild(Object parent, int index) {
+                Assertions.assertEquals(getRoot(), parent);
+                Assertions.assertEquals(0, index);
+                return "child";
+            }
+
+            @Override
+            public int getChildCount(Object parent) {
+                if (parent.equals(getRoot())) {
+                    return 1;
+                } else {
+                    Assertions.assertEquals("child", parent);
+                    return 0;
+                }
+            }
+        };
+        Assertions.assertEquals(asList(new KTreePath(singletonList("root")), new KTreePath(asList("root", "child"))),
+                SwingStreamUtils.stream(s).collect(Collectors.toList()));
     }
 }

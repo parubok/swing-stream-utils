@@ -149,6 +149,21 @@ public class SwingStreamUtils {
     }
 
     /**
+     * Streams paths of the provided {@link TreeStructure}.
+     * <p>
+     * <b>Note:</b> The tree structure should not change during the streaming.
+     * </p>
+     *
+     * @param treeStructure Tree structure to stream. Not null.
+     * @return Stream of paths of the provided tree structure. The traversing is performed using depth-first search.
+     * @see #asIterable(TreeStructure)
+     * @see TreePath
+     */
+    public static Stream<KTreePath> stream(TreeStructure treeStructure) {
+        return StreamSupport.stream(asIterable(treeStructure).spliterator(), false);
+    }
+
+    /**
      * <p>
      * <b>Note:</b> The tree structure should not change during the iteration.
      * </p>
