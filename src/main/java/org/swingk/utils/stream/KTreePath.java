@@ -25,10 +25,20 @@ public class KTreePath extends TreePath {
         return new KTreePath(list);
     }
 
+    /**
+     * Constructor.
+     *
+     * @param path Non-empty collection with the path components.
+     */
     public KTreePath(Collection<?> path) {
         super(path.toArray());
     }
 
+    /**
+     * Constructor.
+     *
+     * @param path Source path. Not null.
+     */
     public KTreePath(TreePath path) {
         super(path.getPath());
     }
@@ -54,6 +64,8 @@ public class KTreePath extends TreePath {
     }
 
     /**
+     * Overloaded version of {@link TreePath#getLastPathComponent()} which allows to specify type of the component.
+     *
      * @param <E> Type of the last path component.
      * @return The last path component casted to the specified type.
      * @throws ClassCastException If the component is not an instance of the specified type.
