@@ -63,6 +63,10 @@ public class KTreePath extends TreePath {
         return list;
     }
 
+    public List<?> asList() {
+        return asList(Object.class);
+    }
+
     /**
      * Overloaded version of {@link TreePath#getLastPathComponent()} which allows to specify type of the component.
      *
