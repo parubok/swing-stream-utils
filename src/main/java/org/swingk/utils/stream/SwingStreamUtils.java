@@ -202,7 +202,7 @@ public class SwingStreamUtils {
      * @see TreePath
      */
     public static Iterable<KTreePath> asIterable(TreeStructure treeStructure) {
-        requireNonNull(treeStructure);
+        requireNonNull(treeStructure, "treeStructure");
         return new TreeStructureIterable(treeStructure);
     }
 
@@ -211,7 +211,7 @@ public class SwingStreamUtils {
      * @see ComboBoxItem
      */
     public static <E> Iterable<ComboBoxItem<E>> asIterable(ComboBoxModel<E> model) {
-        requireNonNull(model);
+        requireNonNull(model, "model");
         return () ->
         {
             final int itemCount = model.getSize();
@@ -582,7 +582,7 @@ public class SwingStreamUtils {
      * First returned item of the iterable is the root component. Iteration order: depth-first search.
      */
     public static Iterable<Component> getDescendantsIterable(Component root) {
-        requireNonNull(root);
+        requireNonNull(root, "root");
         return () -> new Iterator<Component>() {
             private final Iterator<KTreePath> pathIterator = asIterable(new ComponentTreeStructure(root)).iterator();
 
@@ -593,7 +593,7 @@ public class SwingStreamUtils {
 
             @Override
             public Component next() {
-                return (Component) pathIterator.next().getLastPathComponent();
+                return pathIterator.next().getLastPathComponent(Component.class);
             }
         };
     }

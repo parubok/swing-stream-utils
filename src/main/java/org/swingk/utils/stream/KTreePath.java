@@ -43,7 +43,8 @@ public class KTreePath extends TreePath {
     }
 
     /**
-     * @param <E> Type of the path component.
+     * @param <E> Type of the last path component.
+     * @return The last path component casted to the specified type.
      * @throws ClassCastException If the component is not an instance of the specified type.
      */
     public <E> E getLastPathComponent(Class<E> componentClass) {
