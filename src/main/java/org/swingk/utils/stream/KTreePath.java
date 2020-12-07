@@ -3,6 +3,7 @@ package org.swingk.utils.stream;
 import javax.swing.tree.TreePath;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -12,6 +13,16 @@ public class KTreePath extends TreePath {
 
     protected KTreePath() {
         super();
+    }
+
+    /**
+     * Static factory method.
+     */
+    public static KTreePath of(Object root, Object... components) {
+        List<Object> list = new ArrayList<>(1 + components.length);
+        list.add(root);
+        Collections.addAll(list, components);
+        return new KTreePath(list);
     }
 
     public KTreePath(Collection<?> path) {

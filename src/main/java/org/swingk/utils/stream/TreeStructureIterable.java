@@ -7,7 +7,6 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 
 import static java.util.Collections.emptyIterator;
-import static java.util.Collections.singletonList;
 
 final class TreeStructureIterable implements Iterable<KTreePath> {
 
@@ -48,7 +47,7 @@ final class TreeStructureIterable implements Iterable<KTreePath> {
             private KTreePath getNextPath() {
                 assert !completed;
                 if (currentPath == EMPTY_PATH) {
-                    return new KTreePath(singletonList(root)); // start iteration with the root path
+                    return KTreePath.of(root); // start iteration with the root path
                 }
                 // try to go down first:
                 Object currentNode = currentPath.getLastPathComponent();

@@ -747,8 +747,7 @@ class SwingStreamUtilsTest {
         };
         Stream<KTreePath> stream = SwingStreamUtils.stream(treeStructure);
         Assertions.assertNotNull(stream);
-        Assertions.assertEquals(singletonList(new KTreePath(singletonList("root"))),
-                stream.collect(Collectors.toList()));
+        Assertions.assertEquals(singletonList(KTreePath.of("root")), stream.collect(Collectors.toList()));
     }
 
     @Test
@@ -777,7 +776,7 @@ class SwingStreamUtilsTest {
                 }
             }
         };
-        Assertions.assertEquals(asList(new KTreePath(singletonList("root")), new KTreePath(asList("root", "child"))),
+        Assertions.assertEquals(asList(KTreePath.of("root"), KTreePath.of("root", "child")),
                 SwingStreamUtils.stream(s).collect(Collectors.toList()));
     }
 }
