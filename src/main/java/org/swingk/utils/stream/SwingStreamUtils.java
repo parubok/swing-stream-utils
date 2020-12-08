@@ -40,7 +40,7 @@ import static java.util.Objects.requireNonNull;
  * https://github.com/parubok/swing-stream-utils
  * </p>
  */
-public class SwingStreamUtils {
+public final class SwingStreamUtils {
 
     private SwingStreamUtils() {
     }

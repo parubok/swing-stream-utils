@@ -15,7 +15,7 @@ public class Column<K> {
 
     private final String name;
     private final int preferredWidth;
-    private final Function<K, ? extends Object> valueProducer;
+    private final Function<K, ?> valueProducer;
     private final Class<?> columnClass;
     private final boolean editable;
 
@@ -26,7 +26,7 @@ public class Column<K> {
      * @param columnClass Class which will be returned from {@link javax.swing.table.TableModel#getColumnClass(int)} for this column. Not null.
      * @param editable True if cells of this column should be editable.
      */
-    public Column(String name, Function<K, ? extends Object> valueProducer, int preferredWidth, Class<?> columnClass,
+    public Column(String name, Function<K, ?> valueProducer, int preferredWidth, Class<?> columnClass,
                   boolean editable) {
         this.name = Objects.requireNonNull(name);
         this.valueProducer = Objects.requireNonNull(valueProducer);
@@ -35,15 +35,15 @@ public class Column<K> {
         this.editable = editable;
     }
 
-    public Column(String name, Function<K, ? extends Object> valueProducer, int preferredWidth, Class<?> columnClass) {
+    public Column(String name, Function<K, ?> valueProducer, int preferredWidth, Class<?> columnClass) {
         this(name, valueProducer, preferredWidth, columnClass, false);
     }
 
-    public Column(String name, Function<K, ? extends Object> valueProducer, int preferredWidth) {
+    public Column(String name, Function<K, ?> valueProducer, int preferredWidth) {
         this(name, valueProducer, preferredWidth, Object.class);
     }
 
-    public Column(String name, Function<K, ? extends Object> valueProducer) {
+    public Column(String name, Function<K, ?> valueProducer) {
         this(name, valueProducer, DEFAULT_PREFERRED_WIDTH);
     }
 
@@ -59,7 +59,7 @@ public class Column<K> {
         return preferredWidth;
     }
 
-    public Function<K, ? extends Object> getValueProducer() {
+    public Function<K, ?> getValueProducer() {
         return valueProducer;
     }
 
