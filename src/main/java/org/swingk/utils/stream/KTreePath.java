@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * {@link TreePath} with convenience methods.
+ * Subclass of {@link TreePath} with convenience methods.
  */
 public class KTreePath extends TreePath {
 
@@ -63,6 +63,9 @@ public class KTreePath extends TreePath {
         return list;
     }
 
+    /**
+     * @return List with components of this path.
+     */
     public List<?> asList() {
         return asList(Object.class);
     }
