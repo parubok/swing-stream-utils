@@ -24,5 +24,6 @@ class KTreePathTest {
 
         Assertions.assertEquals(new TreePath(root), KTreePath.of(root));
         Assertions.assertEquals(new TreePath(new Object[]{root, child}), KTreePath.of(root, child));
+        Assertions.assertEquals(Arrays.asList(root, child), KTreePath.of(root, child).asList());
     }
 }
