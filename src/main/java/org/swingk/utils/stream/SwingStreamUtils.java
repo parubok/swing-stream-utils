@@ -587,8 +587,12 @@ public final class SwingStreamUtils {
                     if (indexToSelectProvider != null) {
                         int indexToSelect = indexToSelectProvider.applyAsInt(data);
                         if (indexToSelect > -1) {
-                            T itemToSelect = data.get(indexToSelect);
-                            model.setSelectedItem(itemToSelect);
+                            final int modelSize = model.getSize();
+                            if (modelSize <= indexToSelect) {
+                                throw new IndexOutOfBoundsException("Invalid selection index " + indexToSelect
+                                        + ". Model size is " + modelSize + ".");
+                            }
+                            model.setSelectedItem(model.getElementAt(indexToSelect));
                         } else {
                             model.setSelectedItem(null); // clear selection
                         }
