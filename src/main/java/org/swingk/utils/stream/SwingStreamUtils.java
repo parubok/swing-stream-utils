@@ -26,6 +26,7 @@ import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.ObjIntConsumer;
 import java.util.function.Supplier;
+import java.util.function.ToIntFunction;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -529,17 +530,32 @@ public final class SwingStreamUtils {
     }
 
     /**
+     * Stream collector to create {@link ComboBoxModel}.
+     * Passes {@code null} as a value of {@code indexToSelectProvider} parameter so the collector won't try to select
+     * an item in the resulting model.
+     *
+     * @see #toComboBoxModel(Supplier, BiConsumer, ToIntFunction)
+     */
+    public static <T, D, M extends ComboBoxModel<D>> Collector<T, List<T>, M> toComboBoxModel(Supplier<M> modelSupplier,
+                                                                                              BiConsumer<M, T> itemAdder) {
+        return toComboBoxModel(modelSupplier, itemAdder, null);
+    }
+
+    /**
      * Stream collector to create {@link ComboBoxModel}. Works on the current thread.
      *
      * @param modelSupplier Creates a concrete instance of {@link ComboBoxModel} for the collector.
      * @param itemAdder Adds item to the model.
+     * @param indexToSelectProvider If not null, provides selected item index for the new model. Accepts list of the
+     * resulting stream elements. Index -1 means no selection.
      * @param <T> Type of the stream elements.
      * @param <D> Type of the resulting combo box model items.
      * @param <M> Type of the combo box model.
      * @return The new combo box model.
      */
     public static <T, D, M extends ComboBoxModel<D>> Collector<T, List<T>, M> toComboBoxModel(Supplier<M> modelSupplier,
-                                                                                              BiConsumer<M, T> itemAdder) {
+                                                                                              BiConsumer<M, T> itemAdder,
+                                                                                              ToIntFunction<List<T>> indexToSelectProvider) {
         requireNonNull(modelSupplier);
         requireNonNull(itemAdder);
         return new Collector<T, List<T>, M>() {
@@ -568,6 +584,15 @@ public final class SwingStreamUtils {
                 return data -> {
                     final M model = requireNonNull(modelSupplier.get(), "model");
                     data.forEach(item -> itemAdder.accept(model, item));
+                    if (indexToSelectProvider != null) {
+                        int indexToSelect = indexToSelectProvider.applyAsInt(data);
+                        if (indexToSelect > -1) {
+                            T itemToSelect = data.get(indexToSelect);
+                            model.setSelectedItem(itemToSelect);
+                        } else {
+                            model.setSelectedItem(null); // clear selection
+                        }
+                    }
                     return model;
                 };
             }

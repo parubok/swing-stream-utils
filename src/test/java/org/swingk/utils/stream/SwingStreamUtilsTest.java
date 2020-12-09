@@ -407,6 +407,42 @@ class SwingStreamUtilsTest {
     }
 
     @Test
+    void toComboBoxModel_3() {
+        List<String> list = Arrays.asList("str1", "str2", "str3");
+        DefaultComboBoxModel<String> model = list.stream()
+                .collect(SwingStreamUtils.toComboBoxModel(DefaultComboBoxModel::new,
+                        DefaultComboBoxModel::addElement, items -> {
+                            Assertions.assertEquals(list, items);
+                            return 1;
+                        }));
+        Assertions.assertEquals(3, model.getSize());
+        Assertions.assertEquals("str2", model.getSelectedItem());
+    }
+
+    @Test
+    void toComboBoxModel_4() {
+        List<String> list = Arrays.asList("str1", "str2", "str3");
+        DefaultComboBoxModel<String> model = list.stream()
+                .collect(SwingStreamUtils.toComboBoxModel(DefaultComboBoxModel::new,
+                        DefaultComboBoxModel::addElement, items -> {
+                            Assertions.assertEquals(list, items);
+                            return -1;
+                        }));
+        Assertions.assertEquals(3, model.getSize());
+        Assertions.assertNull(model.getSelectedItem());
+    }
+
+    @Test
+    void toComboBoxModel_5() {
+        List<String> list = Arrays.asList("str1", "str2", "str3");
+        DefaultComboBoxModel<String> model = list.stream()
+                .collect(SwingStreamUtils.toComboBoxModel(DefaultComboBoxModel::new,
+                        DefaultComboBoxModel::addElement, null));
+        Assertions.assertEquals(3, model.getSize());
+        Assertions.assertEquals("str1", model.getSelectedItem());
+    }
+
+    @Test
     void getDescendantsIterable_1() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             JPanel panel = new JPanel();
