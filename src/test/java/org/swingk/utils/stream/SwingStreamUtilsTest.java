@@ -442,6 +442,30 @@ class SwingStreamUtilsTest {
         Assertions.assertEquals("str1", model.getSelectedItem());
     }
 
+    /**
+     * Types of stream elements and model items are different.
+     */
+    @Test
+    void toComboBoxModel_6() {
+        List<Integer> list = Arrays.asList(3, 5, 10, 15);
+        DefaultComboBoxModel<String> model = list.stream()
+                .collect(SwingStreamUtils.toComboBoxModel(DefaultComboBoxModel::new,
+                        (m, item) -> m.addElement("str" + item), items -> 2));
+        Assertions.assertEquals(4, model.getSize());
+        Assertions.assertEquals("str10", model.getSelectedItem());
+    }
+
+    /**
+     * Invalid selection index.
+     */
+    @Test
+    void toComboBoxModel_7() {
+        List<String> list = Arrays.asList("str1", "str2");
+        Assertions.assertThrows(IndexOutOfBoundsException.class, () -> list.stream()
+                .collect(SwingStreamUtils.toComboBoxModel(DefaultComboBoxModel::new,
+                        DefaultComboBoxModel::addElement, items -> 200)));
+    }
+
     @Test
     void getDescendantsIterable_1() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
