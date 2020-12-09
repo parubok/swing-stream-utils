@@ -547,7 +547,8 @@ public final class SwingStreamUtils {
      * @param modelSupplier Creates a concrete instance of {@link ComboBoxModel} for the collector.
      * @param itemAdder Adds item to the model.
      * @param indexToSelectProvider If not null, provides selected item index for the new model. Accepts list of the
-     * resulting stream elements. Index -1 means no selection.
+     * resulting stream elements. Index -1 means no selection. {@link IndexOutOfBoundsException} will be thrown if the
+     * index exceeds the model size.
      * @param <T> Type of the stream elements.
      * @param <D> Type of the resulting combo box model items.
      * @param <M> Type of the combo box model.
