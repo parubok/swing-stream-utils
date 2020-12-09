@@ -46,7 +46,7 @@ FileTable table = files.stream()
                                                 new Column<>("Size", File::length, 70, Long.class)));
 ```
 
-Example 3 (create table with specific model class):
+Example 3 (create a table with specific model class):
 ```java
 import java.io.File;
 import java.util.List;

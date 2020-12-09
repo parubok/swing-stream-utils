@@ -449,6 +449,19 @@ public final class SwingStreamUtils {
 
     /**
      * Stream collector to create {@link JComboBox}.
+     * Passes {@code null} as a value of {@code indexToSelectProvider} parameter so the collector won't try to select
+     * an item in the resulting combo box.
+     *
+     * @see #toComboBox(Supplier, Supplier, BiConsumer, ToIntFunction)
+     */
+    public static <T, D, K extends JComboBox<D>, M extends ComboBoxModel<D>> Collector<T, List<T>, K> toComboBox(Supplier<K> comboSupplier,
+                                                                                                                 Supplier<M> modelSupplier,
+                                                                                                                 BiConsumer<M, T> itemAdder) {
+        return toComboBox(comboSupplier, modelSupplier, itemAdder, null);
+    }
+
+    /**
+     * Stream collector to create {@link JComboBox}.
      * <p>
      * <b>Note:</b> The collector ensures that the combo box component is created/accessed on EDT even if the
      * streaming is performed on a different thread (e.g. parallel stream). The model supplier is called on the current
@@ -466,7 +479,8 @@ public final class SwingStreamUtils {
      */
     public static <T, D, K extends JComboBox<D>, M extends ComboBoxModel<D>> Collector<T, List<T>, K> toComboBox(Supplier<K> comboSupplier,
                                                                                                                  Supplier<M> modelSupplier,
-                                                                                                                 BiConsumer<M, T> itemAdder) {
+                                                                                                                 BiConsumer<M, T> itemAdder,
+                                                                                                                 ToIntFunction<List<T>> indexToSelectProvider) {
         requireNonNull(comboSupplier);
         requireNonNull(modelSupplier);
         requireNonNull(itemAdder);
@@ -494,8 +508,7 @@ public final class SwingStreamUtils {
             @Override
             public Function<List<T>, K> finisher() {
                 return data -> {
-                    final M model = requireNonNull(modelSupplier.get(), "model");
-                    data.forEach(item -> itemAdder.accept(model, item));
+                    final M model = createComboBoxModel(modelSupplier, itemAdder, indexToSelectProvider, data);
                     final AtomicReference<K> comboRef = new AtomicReference<>();
                     try {
                         Runnable finisherTask = () -> {
@@ -582,26 +595,31 @@ public final class SwingStreamUtils {
 
             @Override
             public Function<List<T>, M> finisher() {
-                return data -> {
-                    final M model = requireNonNull(modelSupplier.get(), "model");
-                    data.forEach(item -> itemAdder.accept(model, item));
-                    if (indexToSelectProvider != null) {
-                        int indexToSelect = indexToSelectProvider.applyAsInt(data);
-                        if (indexToSelect > -1) {
-                            final int modelSize = model.getSize();
-                            if (modelSize <= indexToSelect) {
-                                throw new IndexOutOfBoundsException("Invalid selection index " + indexToSelect
-                                        + ". Model size is " + modelSize + ".");
-                            }
-                            model.setSelectedItem(model.getElementAt(indexToSelect));
-                        } else {
-                            model.setSelectedItem(null); // clear selection
-                        }
-                    }
-                    return model;
-                };
+                return data -> createComboBoxModel(modelSupplier, itemAdder, indexToSelectProvider, data);
             }
         };
+    }
+
+    private static <T, D, M extends ComboBoxModel<D>> M createComboBoxModel(Supplier<M> modelSupplier,
+                                                                            BiConsumer<M, T> itemAdder,
+                                                                            ToIntFunction<List<T>> indexToSelectProvider,
+                                                                            List<T> data) {
+        final M model = requireNonNull(modelSupplier.get(), "model");
+        data.forEach(item -> itemAdder.accept(model, item));
+        if (indexToSelectProvider != null) {
+            int indexToSelect = indexToSelectProvider.applyAsInt(data);
+            if (indexToSelect > -1) {
+                final int modelSize = model.getSize();
+                if (modelSize <= indexToSelect) {
+                    throw new IndexOutOfBoundsException("Invalid selection index " + indexToSelect
+                            + ". Model size is " + modelSize + ".");
+                }
+                model.setSelectedItem(model.getElementAt(indexToSelect));
+            } else {
+                model.setSelectedItem(null); // clear selection
+            }
+        }
+        return model;
     }
 
     /**
