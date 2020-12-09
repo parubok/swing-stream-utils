@@ -469,11 +469,12 @@ public final class SwingStreamUtils {
      * </p>
      *
      * @param comboSupplier Creates a concrete instance of {@link JComboBox} for the collector. Called on EDT.
-     * @param modelSupplier Creates a concrete instance of {@link ComboBoxModel} for the collector. Called on the current thread.
+     * @param modelSupplier Creates a concrete instance of {@link ComboBoxModel} for the collector. Called on the
+     * current thread.
      * @param itemAdder Adds item to the model. Called on the current thread.
      * @param indexToSelectProvider If not null, provides selected item index for the combo box model. Accepts list of
      * the resulting stream elements. Index -1 means no selection. {@link IndexOutOfBoundsException} will be thrown if
-     * the index exceeds the combo box model size.
+     * the index exceeds the combo box model size. Called on the current thread.
      * @param <T> Type of the stream elements.
      * @param <D> Type of the resulting combo box items.
      * @param <K> Type of the resulting combo box.
