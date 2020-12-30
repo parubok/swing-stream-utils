@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Subclass of {@link TreePath} with convenience methods.
@@ -47,6 +48,20 @@ public class KTreePath extends TreePath {
     public KTreePath pathByAddingChild(Object child) {
         TreePath treePath = super.pathByAddingChild(child);
         return new KTreePath(treePath);
+    }
+
+    /**
+     * @param component Object to check if it is a component of the path.
+     * @return true if the specified object is a component of the path.
+     */
+    public boolean hasComponent(Object component) {
+        final int count = getPathCount();
+        for (int i = 0; i < count; i++) {
+            if (Objects.equals(getPathComponent(i), component)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

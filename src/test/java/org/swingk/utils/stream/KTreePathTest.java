@@ -26,4 +26,14 @@ class KTreePathTest {
         Assertions.assertEquals(new TreePath(new Object[]{root, child}), KTreePath.of(root, child));
         Assertions.assertEquals(Arrays.asList(root, child), KTreePath.of(root, child).asList());
     }
+
+    @Test
+    void hasComponent() {
+        KTreePath path = KTreePath.of("root", "com1", "com2");
+        Assertions.assertTrue(path.hasComponent("root"));
+        Assertions.assertFalse(path.hasComponent("root1"));
+        Assertions.assertTrue(path.hasComponent("com2"));
+        Assertions.assertFalse(path.hasComponent("com3"));
+        Assertions.assertFalse(path.hasComponent(null));
+    }
 }
