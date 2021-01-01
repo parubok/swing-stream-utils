@@ -36,4 +36,14 @@ class KTreePathTest {
         Assertions.assertFalse(path.hasComponent("com3"));
         Assertions.assertFalse(path.hasComponent(null));
     }
+
+    @Test
+    void indexOf() {
+        KTreePath path = KTreePath.of("root", "com1", "com2");
+        Assertions.assertEquals(0, path.indexOf("root"));
+        Assertions.assertEquals(-1, path.indexOf("root1"));
+        Assertions.assertEquals(2, path.indexOf("com2"));
+        Assertions.assertEquals(-1, path.indexOf("com3"));
+        Assertions.assertEquals(-1, path.indexOf(null));
+    }
 }

@@ -53,15 +53,27 @@ public class KTreePath extends TreePath {
     /**
      * @param component Object to check if it is a component of the path.
      * @return true if the specified object is a component of the path.
+     * @see #indexOf(Object)
      */
     public boolean hasComponent(Object component) {
+        return indexOf(component) > -1;
+    }
+
+    /**
+     * @return Index of the specified component in the path (0 for root, etc.) or -1 if the path doesn't contain this
+     * component.
+     * @see #hasComponent(Object)
+     */
+    public int indexOf(Object component) {
+        int index = -1;
         final int count = getPathCount();
         for (int i = 0; i < count; i++) {
             if (Objects.equals(getPathComponent(i), component)) {
-                return true;
+                index = i;
+                break;
             }
         }
-        return false;
+        return index;
     }
 
     /**
