@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Subclass of {@link TreePath} with convenience methods.
+ * Subclass of {@link TreePath} which adds some convenience methods.
  */
 public class KTreePath extends TreePath {
 
