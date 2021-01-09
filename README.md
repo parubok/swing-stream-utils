@@ -109,7 +109,6 @@ Example 7 (find first tree path with the specified node):
 ```java
 import java.util.Optional;
 import javax.swing.JTree;
-import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeNode;
 
 import org.swingk.utils.stream.KTreePath;

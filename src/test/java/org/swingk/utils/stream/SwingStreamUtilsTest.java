@@ -1,6 +1,7 @@
 package org.swingk.utils.stream;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.ComboBoxModel;
@@ -337,6 +338,7 @@ class SwingStreamUtilsTest {
                 () -> asList("value").stream().collect(SwingStreamUtils.toTable()));
     }
 
+    @Disabled("Disabled by default for performance reasons.")
     @Test
     void toJTable_performance_parallel_vs_single() {
         Assertions.assertTrue(performance_toJTable_stream(true) < performance_toJTable_stream(false),
