@@ -46,4 +46,14 @@ class KTreePathTest {
         Assertions.assertEquals(-1, path.indexOf("com3"));
         Assertions.assertEquals(-1, path.indexOf(null));
     }
+
+    @Test
+    void isLastComponent() {
+        KTreePath path = KTreePath.of("root", "com1", "com2");
+        Assertions.assertFalse(path.isLastComponent("root"));
+        Assertions.assertFalse(path.isLastComponent("root1"));
+        Assertions.assertTrue(path.isLastComponent("com2"));
+        Assertions.assertFalse(path.isLastComponent("com3"));
+        Assertions.assertFalse(path.isLastComponent(null));
+    }
 }

@@ -105,7 +105,14 @@ public class KTreePath extends TreePath {
      * @throws ClassCastException If the component is not an instance of the specified type.
      */
     public <E> E getLastPathComponent(Class<E> componentClass) {
-        Object component = getLastPathComponent();
-        return componentClass.cast(component);
+        Object lastComponent = getLastPathComponent();
+        return componentClass.cast(lastComponent);
+    }
+
+    /**
+     * @return True is the specified object is the last component of this path, false otherwise.
+     */
+    public boolean isLastComponent(Object component) {
+        return Objects.equals(getLastPathComponent(), component);
     }
 }

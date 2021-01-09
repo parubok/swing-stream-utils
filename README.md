@@ -105,19 +105,20 @@ List<String> visibleDescendants = SwingStreamUtils.stream(comboBox)
              .collect(Collectors.toList());
 ```
 
-Example 7 (find tree path which contains the specified node):
+Example 7 (find first tree path with the specified node):
 ```java
 import java.util.Optional;
 import javax.swing.JTree;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeNode;
 
+import org.swingk.utils.stream.KTreePath;
 import org.swingk.utils.stream.SwingStreamUtils;
 
 JTree tree = ...;
 TreeNode node = ...;
-Optional<TreePath> nodePath = SwingStreamUtils.stream(tree)
-             .filter(path -> path.getLastPathComponent().equals(node))
+Optional<KTreePath> nodePath = SwingStreamUtils.stream(tree)
+             .filter(path -> path.isLastComponent(node))
              .findFirst();
 ```
 
