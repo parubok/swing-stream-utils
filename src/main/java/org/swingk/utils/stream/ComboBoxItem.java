@@ -53,4 +53,14 @@ public class ComboBoxItem<E> {
     public boolean isSelected() {
         return selected;
     }
+
+    @Override
+    public String toString() {
+        return "ComboBoxItem{" +
+                "item=" + item +
+                ",index=" + index +
+                ",modelSize=" + modelSize +
+                ",selected=" + selected +
+                '}';
+    }
 }

@@ -3,7 +3,7 @@ package org.swingk.utils.stream;
 import javax.swing.JTable;
 
 /**
- * Represents a table cell and its attributes.
+ * Represents a table cell and its attributes (e.g. cell value).
  *
  * @param <T> Type of the table.
  */
@@ -47,5 +47,17 @@ public final class TableCellData<T extends JTable> {
 
     public boolean isEditable() {
         return editable;
+    }
+
+    @Override
+    public String toString() {
+        return "TableCellData{" +
+                "row=" + row +
+                ",column=" + column +
+                ",value=" + value +
+                ",selected=" + selected +
+                ",editable=" + editable +
+                ",table=" + table +
+                '}';
     }
 }
