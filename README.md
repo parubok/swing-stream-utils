@@ -98,7 +98,7 @@ String name = (String) table.getValueAt(0, FileColumn.NAME.ordinal());
 
 // translate column index to ColumnDef:
 int columnIndex = ...;
-FileColumn fileColumn = FileColumn.values()[columnIndex].get();
+ColumnDef<File> columnDef = FileTableColumn.values()[columnIndex].get();
 ```
 
 Example 4 (create combo box with file names from a list of `File` objects):
