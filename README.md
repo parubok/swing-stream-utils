@@ -62,7 +62,7 @@ FileTable table = files.stream()
                                                 new ColumnDef<>("Size", File::length, 70, Long.class)));
 ```
 
-### Using `enum` for definition of table columns
+### Tip: Using `enum` for definition of table columns
 For a table with fixed (i.e. predefined) columns, Java `enum` provides a convenient way to define and access the column 
 definitions - for example, when a column index is required after the table was created.
 
