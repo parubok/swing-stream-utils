@@ -281,10 +281,26 @@ public final class SwingStreamUtils {
      * Stream collector to create {@link JTable}.
      *
      * @see #toTable(Supplier, ColumnDef[])
+     * @see #toTable(Supplier[])
      */
     @SafeVarargs
     public static <T> Collector<T, List<List<Object>>, JTable> toTable(ColumnDef<T>... columns) {
         return toTable(JTable::new, columns);
+    }
+
+    /**
+     * Stream collector to create {@link JTable}.
+     *
+     * @see #toTable(Supplier, ColumnDef[])
+     * @see #toTable(ColumnDef[])
+     */
+    @SafeVarargs
+    public static <T> Collector<T, List<List<Object>>, JTable> toTable(Supplier<ColumnDef<T>>... columnSuppliers) {
+        ColumnDef<T>[] columns = new ColumnDef[columnSuppliers.length];
+        for (int i = 0; i < columns.length; i++) {
+            columns[i] = Objects.requireNonNull(columnSuppliers[i].get());
+        }
+        return toTable(columns);
     }
 
     /**
