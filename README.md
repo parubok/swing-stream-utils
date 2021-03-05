@@ -94,8 +94,8 @@ List<File> files = ...;
 JTable table = files.stream()
         .collect(toTable(toColumnDef(FileTableColumn.values())));
 
-// use enum ordinal() to get column index:
-String name = (String) table.getValueAt(0, FileColumn.NAME.ordinal());
+// use enum ordinal() to obtain column index:
+String name = (String) table.getValueAt(0, FileTableColumn.NAME.ordinal());
 
 // translate column index to ColumnDef:
 int columnIndex = ...;
