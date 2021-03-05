@@ -439,6 +439,23 @@ public final class SwingStreamUtils {
     }
 
     /**
+     * Stream collector to create {@link SimpleTableModel} (an element from the stream produces a single
+     * table row, the corresponding element may be retrieved via {@link SimpleTableModel#getRowObject(int)}).
+     *
+     * @param columnSuppliers Suppliers of the table column definition (column preferred width is ignored).
+     * @param <T> Type of stream elements.
+     * @return The table model.
+     */
+    @SafeVarargs
+    public static <T> Collector<T, List<List<Object>>, SimpleTableModel<T>> toTableModel(Supplier<ColumnDef<T>>... columnSuppliers) {
+        ColumnDef<T>[] columns = new ColumnDef[columnSuppliers.length];
+        for (int i = 0; i < columns.length; i++) {
+            columns[i] = columnSuppliers[i].get();
+        }
+        return toTableModel(columns);
+    }
+
+    /**
      * Stream collector to create vanilla {@link JComboBox} with {@link DefaultComboBoxModel}.
      *
      * @see #toComboBox(Supplier, Supplier, BiConsumer)
