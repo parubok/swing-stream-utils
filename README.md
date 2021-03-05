@@ -92,10 +92,13 @@ enum FileColumn implements Supplier<ColumnDef<File>> {
 
 List<File> files = ...;
 JTable table = files.stream().collect(toTable(toColumnDef(FileColumn.values())));
-String name = (String) table.getValueAt(0, FileColumn.NAME.ordinal()); // use enum ordinal() to get column index
-        
+
+// use enum ordinal() to get column index:
+String name = (String) table.getValueAt(0, FileColumn.NAME.ordinal());
+
+// translate column index to ColumnDef:
 int columnIndex = ...;
-FileColumn fileColumn = FileColumn.values()[columnIndex].get(); // translate column index to ColumnDef
+FileColumn fileColumn = FileColumn.values()[columnIndex].get();
 ```
 
 Example 4 (create combo box with file names from a list of `File` objects):
