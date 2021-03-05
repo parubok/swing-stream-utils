@@ -371,7 +371,6 @@ public final class SwingStreamUtils {
      * @param columns The table column definitions.
      * @param <T> Type of the stream elements.
      * @return The new table.
-     * @see #toTable(Supplier, IntFunction, List)
      */
     @SafeVarargs
     public static <T, K extends JTable, M extends TableModel> Collector<T, List<List<Object>>, K> toTable(Supplier<K> tableSupplier,
@@ -427,7 +426,6 @@ public final class SwingStreamUtils {
      * @param columns The table column definitions (column preferred width is ignored).
      * @param <T> Type of stream elements.
      * @return The table model.
-     * @see #toTableModel(List)
      */
     @SafeVarargs
     public static <T> Collector<T, List<List<Object>>, SimpleTableModel<T>> toTableModel(ColumnDef<T>... columns) {
