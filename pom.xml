@@ -5,7 +5,7 @@
 
   <groupId>org.swingk.utils.stream</groupId>
   <artifactId>swing-stream-utils</artifactId>
-  <version>1.24-SNAPSHOT</version>
+  <version>1.24</version>
 
   <name>swing-stream-utils</name>
   <url>https://github.com/parubok/swing-stream-utils</url>
@@ -37,7 +37,7 @@
     <connection>scm:git:git@github.com:parubok/swing-stream-utils</connection>
     <url>scm:git:git@github.com:parubok/swing-stream-utils</url>
     <developerConnection>scm:git:git@github.com:parubok/swing-stream-utils</developerConnection>
-    <tag>HEAD</tag>
+    <tag>v1.24</tag>
   </scm>
 
   <dependencies>
