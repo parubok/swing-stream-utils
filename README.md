@@ -91,7 +91,8 @@ enum FileTableColumn implements Supplier<ColumnDef<File>> {
 }
 
 List<File> files = ...;
-JTable table = files.stream().collect(toTable(toColumnDef(FileTableColumn.values())));
+JTable table = files.stream()
+        .collect(toTable(toColumnDef(FileTableColumn.values())));
 
 // use enum ordinal() to get column index:
 String name = (String) table.getValueAt(0, FileColumn.NAME.ordinal());
