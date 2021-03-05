@@ -288,16 +288,6 @@ public final class SwingStreamUtils {
     }
 
     /**
-     * Stream collector to create {@link JTable}.
-     *
-     * @see #toTable(Supplier, ColumnDef[])
-     * @see #toTable(ColumnDef[])
-     */
-    public static <T> Collector<T, List<List<Object>>, JTable> toTable(List<Supplier<ColumnDef<T>>> columnSuppliers) {
-        return toTable(toArray(columnSuppliers));
-    }
-
-    /**
      * Stream collector to create {@link JTable} (an element from the stream produces a single table row,
      * the corresponding element may be retrieved via {@link SimpleTableModel#getRowObject(int)).
      * <p>
@@ -327,27 +317,6 @@ public final class SwingStreamUtils {
                 };
             }
         };
-    }
-
-    /**
-     * Stream collector to create {@link JTable} (an element from the stream produces a single table row,
-     * the corresponding element may be retrieved via {@link SimpleTableModel#getRowObject(int)).
-     * <p>
-     * <b>Note 1:</b> The collector ensures that the table component is created/accessed on EDT even if the streaming
-     * is performed on a different thread (e.g. parallel stream).
-     * </p>
-     * <p>
-     * <b>Note 2:</b> Model of the resulting {@link JTable} is instance of {@link SimpleTableModel}.
-     * </p>
-     *
-     * @param tableSupplier Creates a concrete instance of {@link JTable} for the collector. Called on EDT.
-     * @param columnSuppliers Suppliers of the table column definitions.
-     * @param <T> Type of the stream elements.
-     * @return The new table.
-     */
-    public static <T, K extends JTable> Collector<T, List<List<Object>>, K> toTable(Supplier<K> tableSupplier,
-                                                                                    List<Supplier<ColumnDef<T>>> columnSuppliers) {
-        return toTable(tableSupplier, toArray(columnSuppliers));
     }
 
     private static <K extends JTable> K finishToTable(Supplier<K> tableSupplier, TableModel model,
@@ -439,33 +408,6 @@ public final class SwingStreamUtils {
         };
     }
 
-    /**
-     * Stream collector to create {@link JTable} (an element from the stream produces a single table row).
-     * This collector accepts a supplier to create model of the resulting table.
-     * <p>
-     * <b>Note 1:</b> The collector ensures that the table component is created/accessed on EDT even if the streaming
-     * is performed on a different thread (e.g. parallel stream).
-     * </p>
-     * <p>
-     * <b>Note 2:</b> If the supplied model implements {@link ObjIntConsumer<T>}, method
-     * {@link ObjIntConsumer#accept(T, int)} will be called for each stream element and its row index.
-     * </p>
-     *
-     * @param tableSupplier Creates a concrete instance of {@link JTable} for the collector. Called on EDT.
-     * @param modelSupplier Creates a concrete instance of {@link TableModel} for the collector. Receives number of
-     *                      rows in the model. Should produce model with the correct number of rows and columns,
-     *                      configured according to the provided column definitions. Called on the current thread.
-     * @param columnSuppliers Suppliers of the table column definitions.
-     * @param <T> Type of the stream elements.
-     * @return The new table.
-     * @see #toTable(Supplier, IntFunction, ColumnDef[])
-     */
-    public static <T, K extends JTable, M extends TableModel> Collector<T, List<List<Object>>, K> toTable(Supplier<K> tableSupplier,
-                                                                                                          IntFunction<M> modelSupplier,
-                                                                                                          List<Supplier<ColumnDef<T>>> columnSuppliers) {
-        return toTable(tableSupplier, modelSupplier, toArray(columnSuppliers));
-    }
-
     private static <T> SimpleTableModel<T> createSimpleModel(List<List<Object>> data, ColumnDef<T>[] columns) {
         List<Class<?>> columnClasses = new ArrayList<>(columns.length);
         List<String> columnNames = new ArrayList<>(columns.length);
@@ -498,23 +440,11 @@ public final class SwingStreamUtils {
         };
     }
 
-    /**
-     * Stream collector to create {@link SimpleTableModel} (an element from the stream produces a single
-     * table row, the corresponding element may be retrieved via {@link SimpleTableModel#getRowObject(int)}).
-     *
-     * @param columnSuppliers Suppliers of the table column definition (column preferred width is ignored).
-     * @param <T> Type of stream elements.
-     * @return The table model.
-     * @see #toTableModel(ColumnDef[])
-     */
-    public static <T> Collector<T, List<List<Object>>, SimpleTableModel<T>> toTableModel(List<Supplier<ColumnDef<T>>> columnSuppliers) {
-        return toTableModel(toArray(columnSuppliers));
-    }
-
-    private static <T> ColumnDef<T>[] toArray(List<Supplier<ColumnDef<T>>> columnSuppliers) {
-        ColumnDef<T>[] columns = new ColumnDef[columnSuppliers.size()];
+    @SafeVarargs
+    public static <T> ColumnDef<T>[] toColumnDef(Supplier<ColumnDef<T>>... columnSuppliers) {
+        ColumnDef<T>[] columns = new ColumnDef[columnSuppliers.length];
         for (int i = 0; i < columns.length; i++) {
-            Supplier<ColumnDef<T>> s = Objects.requireNonNull(columnSuppliers.get(i));
+            Supplier<ColumnDef<T>> s = Objects.requireNonNull(columnSuppliers[i]);
             columns[i] = Objects.requireNonNull(s.get());
         }
         return columns;

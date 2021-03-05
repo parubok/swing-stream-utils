@@ -194,16 +194,12 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void toJTable_withColumnDefSupplier() throws Exception {
+    void toColumnDef() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
-            List<String> values = asList("valA", "valB", "valC");
-            JTable table = values.stream().collect(SwingStreamUtils.toTable(asList(() -> new ColumnDef<>("col1"))));
-            Assertions.assertEquals(values.size(), table.getRowCount());
-            Assertions.assertEquals(1, table.getColumnCount());
-            Assertions.assertEquals("col1", table.getColumnName(0));
-            for (int i = 0; i < values.size(); i++) {
-                Assertions.assertEquals(values.get(i), table.getValueAt(i, 0));
-            }
+            ColumnDef<String> def = new ColumnDef<>("col1");
+            ColumnDef<String>[] defs =  SwingStreamUtils.toColumnDef(() -> def);
+            Assertions.assertEquals(1, defs.length);
+            Assertions.assertEquals(def, defs[0]);
         });
     }
 

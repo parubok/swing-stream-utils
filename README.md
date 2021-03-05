@@ -62,6 +62,42 @@ FileTable table = files.stream()
                                                 new ColumnDef<>("Size", File::length, 70, Long.class)));
 ```
 
+### Using `enum` for definition of table columns
+For a table with fixed (i.e. predefined) columns, Java `enum` provides a convenient way to define and access the column 
+definitions - for example, when a column index is required after the table was created.
+
+Example:
+```java
+import java.io.File;
+import java.util.function.Supplier;
+
+import static org.swingk.utils.stream.SwingStreamUtils.toTable;
+import static org.swingk.utils.stream.SwingStreamUtils.toColumnDef;
+
+enum FileColumn implements Supplier<ColumnDef<File>> {
+    NAME(new ColumnDef<>("Name", File::getName, 100, String.class)),
+    SIZE(new ColumnDef<>("Size", File::length, 70, Long.class));
+
+    final ColumnDef<File> columnDef;
+
+    FileColumn(ColumnDef<File> columnDef) {
+        this.columnDef = columnDef;
+    }
+
+    @Override
+    public ColumnDef<File> get() {
+        return columnDef;
+    }
+}
+
+List<File> files = ...;
+JTable table = files.stream().collect(toTable(toColumnDef(FileColumn.values())));
+String name = (String) table.getValueAt(0, FileColumn.NAME.ordinal()); // use enum ordinal() to get column index
+        
+int columnIndex = ...;
+FileColumn fileColumn = FileColumn.values()[columnIndex].get(); // translate column index to ColumnDef
+```
+
 Example 4 (create combo box with file names from a list of `File` objects):
 ```java
 import java.io.File;
