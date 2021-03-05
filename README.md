@@ -155,6 +155,4 @@ SimpleTableModel<User> tableModel = users.parallelStream()
 
 This project has no dependencies (except JUnit 5, for testing).
 
-Recommended to use together with excellent [StreamEX](https://github.com/amaembo/streamex) library.
-
 Requires Java 8 or later.
