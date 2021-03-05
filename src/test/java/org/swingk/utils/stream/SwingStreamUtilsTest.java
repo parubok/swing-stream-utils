@@ -194,6 +194,20 @@ class SwingStreamUtilsTest {
     }
 
     @Test
+    void toJTable_withColumnDefSupplier() throws Exception {
+        SwingUtilities.invokeAndWait(() -> {
+            List<String> values = asList("valA", "valB", "valC");
+            JTable table = values.stream().collect(SwingStreamUtils.toTable(asList(() -> new ColumnDef<>("col1"))));
+            Assertions.assertEquals(values.size(), table.getRowCount());
+            Assertions.assertEquals(1, table.getColumnCount());
+            Assertions.assertEquals("col1", table.getColumnName(0));
+            for (int i = 0; i < values.size(); i++) {
+                Assertions.assertEquals(values.get(i), table.getValueAt(i, 0));
+            }
+        });
+    }
+
+    @Test
     void toJTable_2() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             List<Rectangle> values = asList(new Rectangle(0, 0, 2, 5), new Rectangle(1, 1, 3, 6));
@@ -410,7 +424,7 @@ class SwingStreamUtilsTest {
 
     @Test
     void toComboBoxModel_3() {
-        List<String> list = Arrays.asList("str1", "str2", "str3");
+        List<String> list = asList("str1", "str2", "str3");
         DefaultComboBoxModel<String> model = list.stream()
                 .collect(SwingStreamUtils.toComboBoxModel(DefaultComboBoxModel::new,
                         DefaultComboBoxModel::addElement, items -> {
@@ -423,7 +437,7 @@ class SwingStreamUtilsTest {
 
     @Test
     void toComboBoxModel_4() {
-        List<String> list = Arrays.asList("str1", "str2", "str3");
+        List<String> list = asList("str1", "str2", "str3");
         DefaultComboBoxModel<String> model = list.stream()
                 .collect(SwingStreamUtils.toComboBoxModel(DefaultComboBoxModel::new,
                         DefaultComboBoxModel::addElement, items -> {
@@ -436,7 +450,7 @@ class SwingStreamUtilsTest {
 
     @Test
     void toComboBoxModel_5() {
-        List<String> list = Arrays.asList("str1", "str2", "str3");
+        List<String> list = asList("str1", "str2", "str3");
         DefaultComboBoxModel<String> model = list.stream()
                 .collect(SwingStreamUtils.toComboBoxModel(DefaultComboBoxModel::new,
                         DefaultComboBoxModel::addElement, null));
@@ -449,7 +463,7 @@ class SwingStreamUtilsTest {
      */
     @Test
     void toComboBoxModel_6() {
-        List<Integer> list = Arrays.asList(3, 5, 10, 15);
+        List<Integer> list = asList(3, 5, 10, 15);
         DefaultComboBoxModel<String> model = list.stream()
                 .collect(SwingStreamUtils.toComboBoxModel(DefaultComboBoxModel::new,
                         (m, item) -> m.addElement("str" + item), items -> 2));
@@ -462,7 +476,7 @@ class SwingStreamUtilsTest {
      */
     @Test
     void toComboBoxModel_7() {
-        List<String> list = Arrays.asList("str1", "str2");
+        List<String> list = asList("str1", "str2");
         Assertions.assertThrows(IndexOutOfBoundsException.class, () -> list.stream()
                 .collect(SwingStreamUtils.toComboBoxModel(DefaultComboBoxModel::new,
                         DefaultComboBoxModel::addElement, items -> 200)));
