@@ -74,7 +74,7 @@ import java.util.function.Supplier;
 import static org.swingk.utils.stream.SwingStreamUtils.toTable;
 import static org.swingk.utils.stream.SwingStreamUtils.toColumnDef;
 
-enum FileColumn implements Supplier<ColumnDef<File>> {
+enum FileTableColumn implements Supplier<ColumnDef<File>> {
     NAME(new ColumnDef<>("Name", File::getName, 100, String.class)),
     SIZE(new ColumnDef<>("Size", File::length, 70, Long.class));
 
@@ -91,7 +91,7 @@ enum FileColumn implements Supplier<ColumnDef<File>> {
 }
 
 List<File> files = ...;
-JTable table = files.stream().collect(toTable(toColumnDef(FileColumn.values())));
+JTable table = files.stream().collect(toTable(toColumnDef(FileTableColumn.values())));
 
 // use enum ordinal() to get column index:
 String name = (String) table.getValueAt(0, FileColumn.NAME.ordinal());
