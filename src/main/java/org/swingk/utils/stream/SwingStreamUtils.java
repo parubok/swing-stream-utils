@@ -341,7 +341,7 @@ public final class SwingStreamUtils {
      * </p>
      *
      * @param tableSupplier Creates a concrete instance of {@link JTable} for the collector. Called on EDT.
-     * @param columns Suppliers of the table column definitions.
+     * @param columnSuppliers Suppliers of the table column definitions.
      * @param <T> Type of the stream elements.
      * @return The new table.
      */
