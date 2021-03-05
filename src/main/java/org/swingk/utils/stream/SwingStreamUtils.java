@@ -281,7 +281,6 @@ public final class SwingStreamUtils {
      * Stream collector to create {@link JTable}.
      *
      * @see #toTable(Supplier, ColumnDef[])
-     * @see #toTable(Supplier[])
      */
     @SafeVarargs
     public static <T> Collector<T, List<List<Object>>, JTable> toTable(ColumnDef<T>... columns) {
@@ -294,13 +293,8 @@ public final class SwingStreamUtils {
      * @see #toTable(Supplier, ColumnDef[])
      * @see #toTable(ColumnDef[])
      */
-    @SafeVarargs
-    public static <T> Collector<T, List<List<Object>>, JTable> toTable(Supplier<ColumnDef<T>>... columnSuppliers) {
-        ColumnDef<T>[] columns = new ColumnDef[columnSuppliers.length];
-        for (int i = 0; i < columns.length; i++) {
-            columns[i] = Objects.requireNonNull(columnSuppliers[i].get());
-        }
-        return toTable(columns);
+    public static <T> Collector<T, List<List<Object>>, JTable> toTable(List<Supplier<ColumnDef<T>>> columnSuppliers) {
+        return toTable(toArray(columnSuppliers));
     }
 
     /**
@@ -351,14 +345,9 @@ public final class SwingStreamUtils {
      * @param <T> Type of the stream elements.
      * @return The new table.
      */
-    @SafeVarargs
     public static <T, K extends JTable> Collector<T, List<List<Object>>, K> toTable(Supplier<K> tableSupplier,
-                                                                                    Supplier<ColumnDef<T>>... columnSuppliers) {
-        ColumnDef<T>[] columns = new ColumnDef[columnSuppliers.length];
-        for (int i = 0; i < columns.length; i++) {
-            columns[i] = Objects.requireNonNull(columnSuppliers[i].get());
-        }
-        return toTable(tableSupplier, columns);
+                                                                                    List<Supplier<ColumnDef<T>>> columnSuppliers) {
+        return toTable(tableSupplier, toArray(columnSuppliers));
     }
 
     private static <K extends JTable> K finishToTable(Supplier<K> tableSupplier, TableModel model,
@@ -413,7 +402,7 @@ public final class SwingStreamUtils {
      * @param columns The table column definitions.
      * @param <T> Type of the stream elements.
      * @return The new table.
-     * @see #toTable(Supplier, IntFunction, Supplier[])
+     * @see #toTable(Supplier, IntFunction, List)
      */
     @SafeVarargs
     public static <T, K extends JTable, M extends TableModel> Collector<T, List<List<Object>>, K> toTable(Supplier<K> tableSupplier,
@@ -471,15 +460,10 @@ public final class SwingStreamUtils {
      * @return The new table.
      * @see #toTable(Supplier, IntFunction, ColumnDef[])
      */
-    @SafeVarargs
     public static <T, K extends JTable, M extends TableModel> Collector<T, List<List<Object>>, K> toTable(Supplier<K> tableSupplier,
                                                                                                           IntFunction<M> modelSupplier,
-                                                                                                          Supplier<ColumnDef<T>>... columnSuppliers) {
-        ColumnDef<T>[] columns = new ColumnDef[columnSuppliers.length];
-        for (int i = 0; i < columns.length; i++) {
-            columns[i] = Objects.requireNonNull(columnSuppliers[i].get());
-        }
-        return toTable(tableSupplier, modelSupplier, columns);
+                                                                                                          List<Supplier<ColumnDef<T>>> columnSuppliers) {
+        return toTable(tableSupplier, modelSupplier, toArray(columnSuppliers));
     }
 
     private static <T> SimpleTableModel<T> createSimpleModel(List<List<Object>> data, ColumnDef<T>[] columns) {
@@ -501,7 +485,7 @@ public final class SwingStreamUtils {
      * @param columns The table column definitions (column preferred width is ignored).
      * @param <T> Type of stream elements.
      * @return The table model.
-     * @see #toTableModel(Supplier[])
+     * @see #toTableModel(List)
      */
     @SafeVarargs
     public static <T> Collector<T, List<List<Object>>, SimpleTableModel<T>> toTableModel(ColumnDef<T>... columns) {
@@ -523,13 +507,17 @@ public final class SwingStreamUtils {
      * @return The table model.
      * @see #toTableModel(ColumnDef[])
      */
-    @SafeVarargs
-    public static <T> Collector<T, List<List<Object>>, SimpleTableModel<T>> toTableModel(Supplier<ColumnDef<T>>... columnSuppliers) {
-        ColumnDef<T>[] columns = new ColumnDef[columnSuppliers.length];
+    public static <T> Collector<T, List<List<Object>>, SimpleTableModel<T>> toTableModel(List<Supplier<ColumnDef<T>>> columnSuppliers) {
+        return toTableModel(toArray(columnSuppliers));
+    }
+
+    private static <T> ColumnDef<T>[] toArray(List<Supplier<ColumnDef<T>>> columnSuppliers) {
+        ColumnDef<T>[] columns = new ColumnDef[columnSuppliers.size()];
         for (int i = 0; i < columns.length; i++) {
-            columns[i] = Objects.requireNonNull(columnSuppliers[i].get());
+            Supplier<ColumnDef<T>> s = Objects.requireNonNull(columnSuppliers.get(i));
+            columns[i] = Objects.requireNonNull(s.get());
         }
-        return toTableModel(columns);
+        return columns;
     }
 
     /**
