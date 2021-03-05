@@ -51,6 +51,9 @@ public class ColumnDef<K> {
         this(name, Function.identity());
     }
 
+    /**
+     * @see javax.swing.table.TableModel#getColumnName(int)
+     */
     public String getName() {
         return name;
     }
