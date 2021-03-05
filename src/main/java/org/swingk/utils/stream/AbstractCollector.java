@@ -11,9 +11,9 @@ import java.util.stream.Collector;
 
 abstract class AbstractCollector<T, K> implements Collector<T, List<List<Object>>, K> {
 
-    private final Column<T>[] columns;
+    private final ColumnDef<T>[] columns;
 
-    AbstractCollector(Column<T>[] columns) {
+    AbstractCollector(ColumnDef<T>[] columns) {
         if (columns.length == 0) {
             throw new IllegalArgumentException("Columns must be specified.");
         }

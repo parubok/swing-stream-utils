@@ -4,12 +4,12 @@ import java.util.Objects;
 import java.util.function.Function;
 
 /**
- * Table column descriptor for {@link SwingStreamUtils#toTable} collectors.
+ * Table column definition for {@link SwingStreamUtils#toTable} collectors.
  *
  * @param <K> Type of stream elements.
  * @see javax.swing.table.TableColumn
  */
-public class Column<K> {
+public class ColumnDef<K> {
 
     public static final int DEFAULT_PREFERRED_WIDTH = 75; // pixels
 
@@ -26,8 +26,8 @@ public class Column<K> {
      * @param columnClass Class which will be returned from {@link javax.swing.table.TableModel#getColumnClass(int)} for this column. Not null.
      * @param editable True if cells of this column should be editable.
      */
-    public Column(String name, Function<K, ?> valueProducer, int preferredWidth, Class<?> columnClass,
-                  boolean editable) {
+    public ColumnDef(String name, Function<K, ?> valueProducer, int preferredWidth, Class<?> columnClass,
+                     boolean editable) {
         this.name = Objects.requireNonNull(name);
         this.valueProducer = Objects.requireNonNull(valueProducer);
         this.preferredWidth = preferredWidth;
@@ -35,19 +35,19 @@ public class Column<K> {
         this.editable = editable;
     }
 
-    public Column(String name, Function<K, ?> valueProducer, int preferredWidth, Class<?> columnClass) {
+    public ColumnDef(String name, Function<K, ?> valueProducer, int preferredWidth, Class<?> columnClass) {
         this(name, valueProducer, preferredWidth, columnClass, false);
     }
 
-    public Column(String name, Function<K, ?> valueProducer, int preferredWidth) {
+    public ColumnDef(String name, Function<K, ?> valueProducer, int preferredWidth) {
         this(name, valueProducer, preferredWidth, Object.class);
     }
 
-    public Column(String name, Function<K, ?> valueProducer) {
+    public ColumnDef(String name, Function<K, ?> valueProducer) {
         this(name, valueProducer, DEFAULT_PREFERRED_WIDTH);
     }
 
-    public Column(String name) {
+    public ColumnDef(String name) {
         this(name, Function.identity());
     }
 

@@ -35,15 +35,15 @@ Example 2 (create table with 'Name' and 'Size' columns from a list of `File` obj
 import java.io.File;
 import java.util.List;
 
-import org.swingk.utils.stream.Column;
+import org.swingk.utils.stream.ColumnDef;
 
 import static org.swingk.utils.stream.SwingStreamUtils.toTable;
 
 List<File> files = ...;
 /* FileTable is a subclass of JTable */
 FileTable table = files.stream()
-             .collect(toTable(FileTable::new, new Column<>("Name", File::getName, 100, String.class), 
-                                                new Column<>("Size", File::length, 70, Long.class)));
+             .collect(toTable(FileTable::new, new ColumnDef<>("Name", File::getName, 100, String.class), 
+                                                new ColumnDef<>("Size", File::length, 70, Long.class)));
 ```
 
 Example 3 (create a table with specific model class):
@@ -51,15 +51,15 @@ Example 3 (create a table with specific model class):
 import java.io.File;
 import java.util.List;
 
-import org.swingk.utils.stream.Column;
+import org.swingk.utils.stream.ColumnDef;
 
 import static org.swingk.utils.stream.SwingStreamUtils.toTable;
 
 List<File> files = ...;
 FileTable table = files.stream()
              .collect(toTable(() -> new FileTable(), rowCount -> new FileTableModel(rowCount), 
-                                                new Column<>("Name", File::getName, 100, String.class), 
-                                                new Column<>("Size", File::length, 70, Long.class)));
+                                                new ColumnDef<>("Name", File::getName, 100, String.class), 
+                                                new ColumnDef<>("Size", File::length, 70, Long.class)));
 ```
 
 Example 4 (create combo box with file names from a list of `File` objects):
@@ -125,32 +125,32 @@ It is worth mentioning that in most cases (check JavaDoc) the utility ensures th
 ```java
 import java.util.List;
 ...
-import org.swingk.utils.stream.Column;
+import org.swingk.utils.stream.ColumnDef;
 
 import static org.swingk.utils.stream.SwingStreamUtils.toTable;
 
 // may be not EDT (for example, Swing worker background thread)
 List<Server> servers = ...;
 JTable table = servers.parallelStream() // OK to use parallel stream!
-             .collect(toTable(new Column<>("Name", Server::getName, 100, String.class),
-                               new Column<>("Users", Server::getUserCount, 50, Integer.class),
-                               new Column<>("Status", Server::getStatus, 200, String.class));
+             .collect(toTable(new ColumnDef<>("Name", Server::getName, 100, String.class),
+                               new ColumnDef<>("Users", Server::getUserCount, 50, Integer.class),
+                               new ColumnDef<>("Status", Server::getStatus, 200, String.class));
 ```
 
 `SimpleTableModel` (extends `javax.swing.table.DefaultTableModel`) may be build from a stream as following:
 ```java
 import java.util.List;
 ...
-import org.swingk.utils.stream.Column;
+import org.swingk.utils.stream.ColumnDef;
 
 import static org.swingk.utils.stream.SwingStreamUtils.toTableModel;
 
 // may be executed on any thread
 List<User> users = ...;
 SimpleTableModel<User> tableModel = users.parallelStream()
-                            .collect(toTableModel(new Column<>("Name", User::getName, 100, String.class),
-                                                  new Column<>("ID", User::getID, 50, Long.class),
-                                                  new Column<>("Role", User::getRole, 200, String.class));
+                            .collect(toTableModel(new ColumnDef<>("Name", User::getName, 100, String.class),
+                                                  new ColumnDef<>("ID", User::getID, 50, Long.class),
+                                                  new ColumnDef<>("Role", User::getRole, 200, String.class));
 ```
 
 This project has no dependencies (except JUnit 5, for testing).

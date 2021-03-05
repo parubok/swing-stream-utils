@@ -11,7 +11,7 @@ import java.util.function.ObjIntConsumer;
  * Implements {@link IntFunction} to access row data objects and {@link ObjIntConsumer} to set row data objects.
  *
  * @param <T> Type of the source stream elements.
- * @see SwingStreamUtils#toTableModel(Column[])
+ * @see SwingStreamUtils#toTableModel(ColumnDef[])
  */
 public final class SimpleTableModel<T> extends DefaultTableModel implements IntFunction<T>, ObjIntConsumer<T> {
     /**

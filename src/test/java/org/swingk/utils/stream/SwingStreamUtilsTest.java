@@ -183,7 +183,7 @@ class SwingStreamUtilsTest {
     void toJTable_1() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             List<String> values = asList("valA", "valB", "valC");
-            JTable table = values.stream().collect(SwingStreamUtils.toTable(new Column<>("col1")));
+            JTable table = values.stream().collect(SwingStreamUtils.toTable(new ColumnDef<>("col1")));
             Assertions.assertEquals(values.size(), table.getRowCount());
             Assertions.assertEquals(1, table.getColumnCount());
             Assertions.assertEquals("col1", table.getColumnName(0));
@@ -198,8 +198,8 @@ class SwingStreamUtilsTest {
         SwingUtilities.invokeAndWait(() -> {
             List<Rectangle> values = asList(new Rectangle(0, 0, 2, 5), new Rectangle(1, 1, 3, 6));
             JTable table = values.stream()
-                    .collect(SwingStreamUtils.toTable(new Column<>("Location", r -> r.getLocation(), 20, Point.class),
-                                                        new Column<>("Size", r -> r.getSize(), 30, Dimension.class)));
+                    .collect(SwingStreamUtils.toTable(new ColumnDef<>("Location", r -> r.getLocation(), 20, Point.class),
+                                                        new ColumnDef<>("Size", r -> r.getSize(), 30, Dimension.class)));
             Assertions.assertEquals(values.size(), table.getRowCount());
             Assertions.assertEquals(2, table.getColumnCount());
             Assertions.assertEquals("Location", table.getColumnName(0));
@@ -219,8 +219,8 @@ class SwingStreamUtilsTest {
             List<String> values = asList("val_1", "val2", "val_3");
             JTable table = values.stream()
                     .collect(SwingStreamUtils.toTable(JTable::new, rowCount -> new DefaultTableModel(rowCount, 2),
-                            new Column<>("C1", Function.identity(), 50, String.class),
-                            new Column<>("C2", String::length, 30, Integer.class)));
+                            new ColumnDef<>("C1", Function.identity(), 50, String.class),
+                            new ColumnDef<>("C2", String::length, 30, Integer.class)));
             Assertions.assertEquals(values.size(), table.getRowCount());
             Assertions.assertEquals(2, table.getColumnCount());
             Assertions.assertEquals("val_1", table.getValueAt(0, 0));
@@ -249,8 +249,8 @@ class SwingStreamUtilsTest {
             List<String> values = asList("val_1", "val2", "val_3");
             JTable table = values.stream()
                     .collect(SwingStreamUtils.toTable(JTable::new, rowCount -> new MyModel(rowCount, 2),
-                            new Column<>("C1", Function.identity(), 50, String.class),
-                            new Column<>("C2", String::length, 30, Integer.class)));
+                            new ColumnDef<>("C1", Function.identity(), 50, String.class),
+                            new ColumnDef<>("C2", String::length, 30, Integer.class)));
             Assertions.assertEquals(values.size(), table.getRowCount());
             Assertions.assertEquals(2, table.getColumnCount());
             Assertions.assertEquals("val_1", table.getValueAt(0, 0));
@@ -273,9 +273,9 @@ class SwingStreamUtilsTest {
             values.add(new Point(i + 1, i + 2));
         }
         SimpleTableModel<Point> model = values.parallelStream().collect(SwingStreamUtils.toTableModel(
-                new Column<>("col1", p -> p.x, Column.DEFAULT_PREFERRED_WIDTH, Integer.class),
-                new Column<>("col2", p -> p.y, Column.DEFAULT_PREFERRED_WIDTH, Integer.class),
-                new Column<>("col3", p -> p.x * p.y, Column.DEFAULT_PREFERRED_WIDTH, Integer.class, true)));
+                new ColumnDef<>("col1", p -> p.x, ColumnDef.DEFAULT_PREFERRED_WIDTH, Integer.class),
+                new ColumnDef<>("col2", p -> p.y, ColumnDef.DEFAULT_PREFERRED_WIDTH, Integer.class),
+                new ColumnDef<>("col3", p -> p.x * p.y, ColumnDef.DEFAULT_PREFERRED_WIDTH, Integer.class, true)));
         Assertions.assertEquals(values.size(), model.getRowCount());
         Assertions.assertEquals(3, model.getColumnCount());
         Assertions.assertEquals("col1", model.getColumnName(0));
@@ -300,8 +300,8 @@ class SwingStreamUtilsTest {
             values.add("value " + i);
         }
         SimpleTableModel<String> model = values.stream().collect(SwingStreamUtils.toTableModel(
-                new Column<>("col1"),
-                new Column<>("col2")));
+                new ColumnDef<>("col1"),
+                new ColumnDef<>("col2")));
         Assertions.assertEquals("value 0", model.getRowObject(0));
         Assertions.assertEquals("value 1", model.getRowObject(1));
         List<TableModelEvent> events = new ArrayList<>();
@@ -320,7 +320,7 @@ class SwingStreamUtilsTest {
     @Test
     void toJTable_parallelStream() throws Exception {
         List<Integer> values = IntStream.range(0, 100_000).mapToObj(Integer::new).collect(Collectors.toList());
-        JTable table = values.parallelStream().collect(SwingStreamUtils.toTable(new Column<>("col1")));
+        JTable table = values.parallelStream().collect(SwingStreamUtils.toTable(new ColumnDef<>("col1")));
         SwingUtilities.invokeAndWait(() -> {
             Assertions.assertEquals(values.size(), table.getRowCount());
             Assertions.assertEquals(1, table.getColumnCount());
@@ -353,9 +353,9 @@ class SwingStreamUtilsTest {
         for (int i = 0; i < repeats; i++) {
             long t0 = System.currentTimeMillis();
             JTable table = (parallel ? values.parallelStream() : values.stream()).collect(SwingStreamUtils.toTable(
-                    new Column<>("COL1", v -> String.format("Value: %d", v)),
-                    new Column<>("COL2", v -> Integer.toHexString(Integer.parseInt(Integer.toString(v + v)))),
-                    new Column<>("COL3", v -> Arrays.toString(Integer.toString(v + v).getBytes()))));
+                    new ColumnDef<>("COL1", v -> String.format("Value: %d", v)),
+                    new ColumnDef<>("COL2", v -> Integer.toHexString(Integer.parseInt(Integer.toString(v + v)))),
+                    new ColumnDef<>("COL3", v -> Arrays.toString(Integer.toString(v + v).getBytes()))));
             long t = System.currentTimeMillis() - t0;
             totalTime += t;
             Assertions.assertEquals(c, table.getRowCount());

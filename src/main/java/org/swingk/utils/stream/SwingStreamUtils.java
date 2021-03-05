@@ -280,10 +280,10 @@ public final class SwingStreamUtils {
     /**
      * Stream collector to create {@link JTable}.
      *
-     * @see #toTable(Supplier, Column[])
+     * @see #toTable(Supplier, ColumnDef[])
      */
     @SafeVarargs
-    public static <T> Collector<T, List<List<Object>>, JTable> toTable(Column<T>... columns) {
+    public static <T> Collector<T, List<List<Object>>, JTable> toTable(ColumnDef<T>... columns) {
         return toTable(JTable::new, columns);
     }
 
@@ -299,13 +299,13 @@ public final class SwingStreamUtils {
      * </p>
      *
      * @param tableSupplier Creates a concrete instance of {@link JTable} for the collector. Called on EDT.
-     * @param columns The table column descriptors.
+     * @param columns The table column definitions.
      * @param <T> Type of the stream elements.
      * @return The new table.
      */
     @SafeVarargs
     public static <T, K extends JTable> Collector<T, List<List<Object>>, K> toTable(Supplier<K> tableSupplier,
-                                                                                    Column<T>... columns) {
+                                                                                    ColumnDef<T>... columns) {
         requireNonNull(tableSupplier);
         checkColumnsArg(columns);
         return new AbstractCollector<T, K>(columns) {
@@ -320,7 +320,7 @@ public final class SwingStreamUtils {
     }
 
     private static <K extends JTable> K finishToTable(Supplier<K> tableSupplier, TableModel model,
-                                                      Column<?>... columns) {
+                                                      ColumnDef<?>... columns) {
         final AtomicReference<K> tableRef = new AtomicReference<>();
         try {
             Runnable finisherTask = () -> {
@@ -346,7 +346,7 @@ public final class SwingStreamUtils {
         return tableRef.get();
     }
 
-    private static void checkColumnsArg(Column<?>... columns) {
+    private static void checkColumnsArg(ColumnDef<?>... columns) {
         if (columns.length == 0) {
             throw new IllegalArgumentException("Columns must be specified.");
         }
@@ -367,15 +367,15 @@ public final class SwingStreamUtils {
      * @param tableSupplier Creates a concrete instance of {@link JTable} for the collector. Called on EDT.
      * @param modelSupplier Creates a concrete instance of {@link TableModel} for the collector. Receives number of
      *                      rows in the model. Should produce model with the correct number of rows and columns,
-     *                      configured according to the provided column descriptors. Called on the current thread.
-     * @param columns The table column descriptors.
+     *                      configured according to the provided column definitions. Called on the current thread.
+     * @param columns The table column definitions.
      * @param <T> Type of the stream elements.
      * @return The new table.
      */
     @SafeVarargs
     public static <T, K extends JTable, M extends TableModel> Collector<T, List<List<Object>>, K> toTable(Supplier<K> tableSupplier,
                                                                                                           IntFunction<M> modelSupplier,
-                                                                                                          Column<T>... columns) {
+                                                                                                          ColumnDef<T>... columns) {
         requireNonNull(tableSupplier);
         requireNonNull(modelSupplier);
         checkColumnsArg(columns);
@@ -407,7 +407,7 @@ public final class SwingStreamUtils {
         };
     }
 
-    private static <T> SimpleTableModel<T> createSimpleModel(List<List<Object>> data, Column<T>[] columns) {
+    private static <T> SimpleTableModel<T> createSimpleModel(List<List<Object>> data, ColumnDef<T>[] columns) {
         List<Class<?>> columnClasses = new ArrayList<>(columns.length);
         List<String> columnNames = new ArrayList<>(columns.length);
         boolean[] editable = new boolean[columns.length];
@@ -423,12 +423,12 @@ public final class SwingStreamUtils {
      * Stream collector to create {@link SimpleTableModel} (an element from the stream produces a single
      * table row, the corresponding element may be retrieved via {@link SimpleTableModel#getRowObject(int)}).
      *
-     * @param columns The table column descriptors (column preferred width is ignored).
+     * @param columns The table column definitions (column preferred width is ignored).
      * @param <T> Type of stream elements.
      * @return The table model.
      */
     @SafeVarargs
-    public static <T> Collector<T, List<List<Object>>, SimpleTableModel<T>> toTableModel(Column<T>... columns) {
+    public static <T> Collector<T, List<List<Object>>, SimpleTableModel<T>> toTableModel(ColumnDef<T>... columns) {
         checkColumnsArg(columns);
         return new AbstractCollector<T, SimpleTableModel<T>>(columns) {
             @Override
