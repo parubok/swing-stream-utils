@@ -319,6 +319,32 @@ public final class SwingStreamUtils {
         };
     }
 
+    /**
+     * Stream collector to create {@link JTable} (an element from the stream produces a single table row,
+     * the corresponding element may be retrieved via {@link SimpleTableModel#getRowObject(int)).
+     * <p>
+     * <b>Note 1:</b> The collector ensures that the table component is created/accessed on EDT even if the streaming
+     * is performed on a different thread (e.g. parallel stream).
+     * </p>
+     * <p>
+     * <b>Note 2:</b> Model of the resulting {@link JTable} is instance of {@link SimpleTableModel}.
+     * </p>
+     *
+     * @param tableSupplier Creates a concrete instance of {@link JTable} for the collector. Called on EDT.
+     * @param columns Suppliers of the table column definitions.
+     * @param <T> Type of the stream elements.
+     * @return The new table.
+     */
+    @SafeVarargs
+    public static <T, K extends JTable> Collector<T, List<List<Object>>, K> toTable(Supplier<K> tableSupplier,
+                                                                                    Supplier<ColumnDef<T>>... columnSuppliers) {
+        ColumnDef<T>[] columns = new ColumnDef[columnSuppliers.length];
+        for (int i = 0; i < columns.length; i++) {
+            columns[i] = Objects.requireNonNull(columnSuppliers[i].get());
+        }
+        return toTable(tableSupplier, columns);
+    }
+
     private static <K extends JTable> K finishToTable(Supplier<K> tableSupplier, TableModel model,
                                                       ColumnDef<?>... columns) {
         final AtomicReference<K> tableRef = new AtomicReference<>();
