@@ -14,6 +14,12 @@ public class ColumnDef<K> {
 
     public static final int DEFAULT_PREFERRED_WIDTH = 75; // pixels
 
+    /**
+     * Extracts instances of {@link ColumnDef} from the suppliers.
+     * <p>
+     * Useful when column definitions are provided via enum, so a call to {@code Enum.values()} results in an array
+     * of {@link ColumnDef} suppliers.
+     */
     @SafeVarargs
     public static <T> ColumnDef<T>[] get(Supplier<ColumnDef<T>>... columnSuppliers) {
         ColumnDef<T>[] columns = new ColumnDef[columnSuppliers.length];
@@ -39,6 +45,9 @@ public class ColumnDef<K> {
      */
     public ColumnDef(String name, Function<K, ?> valueProducer, int preferredWidth, Class<?> columnClass,
                      boolean editable) {
+        if (preferredWidth < 1) {
+            throw new IllegalArgumentException();
+        }
         this.name = Objects.requireNonNull(name);
         this.valueProducer = Objects.requireNonNull(valueProducer);
         this.preferredWidth = preferredWidth;
@@ -63,12 +72,18 @@ public class ColumnDef<K> {
     }
 
     /**
+     * @return Name of the column.
      * @see javax.swing.table.TableModel#getColumnName(int)
      */
     public String getName() {
         return name;
     }
 
+    /**
+     * @return Preferred width of this column in pixels.
+     * @see javax.swing.table.TableColumn#setPreferredWidth(int)
+     * @see javax.swing.table.TableColumn#getPreferredWidth()
+     */
     public int getPreferredWidth() {
         return preferredWidth;
     }
