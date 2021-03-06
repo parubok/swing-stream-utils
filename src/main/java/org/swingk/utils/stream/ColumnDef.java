@@ -2,6 +2,7 @@ package org.swingk.utils.stream;
 
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Table column definition for {@link SwingStreamUtils#toTable} collectors.
@@ -12,6 +13,16 @@ import java.util.function.Function;
 public class ColumnDef<K> {
 
     public static final int DEFAULT_PREFERRED_WIDTH = 75; // pixels
+
+    @SafeVarargs
+    public static <T> ColumnDef<T>[] get(Supplier<ColumnDef<T>>... columnSuppliers) {
+        ColumnDef<T>[] columns = new ColumnDef[columnSuppliers.length];
+        for (int i = 0; i < columns.length; i++) {
+            Supplier<ColumnDef<T>> s = Objects.requireNonNull(columnSuppliers[i]);
+            columns[i] = Objects.requireNonNull(s.get());
+        }
+        return columns;
+    }
 
     private final String name;
     private final int preferredWidth;

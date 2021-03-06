@@ -194,16 +194,6 @@ public class SwingStreamUtilsTest {
     }
 
     @Test
-    public void toColumnDef() throws Exception {
-        SwingUtilities.invokeAndWait(() -> {
-            ColumnDef<String> def = new ColumnDef<>("col1");
-            ColumnDef<String>[] defs =  SwingStreamUtils.toColumnDef(() -> def);
-            Assertions.assertEquals(1, defs.length);
-            Assertions.assertEquals(def, defs[0]);
-        });
-    }
-
-    @Test
     public void toJTable_2() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             List<Rectangle> values = asList(new Rectangle(0, 0, 2, 5), new Rectangle(1, 1, 3, 6));

@@ -71,35 +71,36 @@ Example:
 import java.io.File;
 import java.util.function.Supplier;
 
-import static org.swingk.utils.stream.SwingStreamUtils.toTable;
-import static org.swingk.utils.stream.SwingStreamUtils.toColumnDef;
+import org.swingk.utils.stream.ColumnDef;
 
-enum FileTableColumn implements Supplier<ColumnDef<File>> {
+import static org.swingk.utils.stream.SwingStreamUtils.toTable;
+
+enum Column implements Supplier<ColumnDef<File>> {
     NAME(new ColumnDef<>("Name", File::getName, 100, String.class)),
     SIZE(new ColumnDef<>("Size", File::length, 70, Long.class));
 
-    final ColumnDef<File> columnDef;
+    final ColumnDef<File> def;
 
-    FileColumn(ColumnDef<File> columnDef) {
-        this.columnDef = columnDef;
+    Column(ColumnDef<File> def) {
+        this.def = def;
     }
 
     @Override
     public ColumnDef<File> get() {
-        return columnDef;
+        return def;
     }
 }
 
 List<File> files = ...;
 JTable table = files.stream()
-        .collect(toTable(toColumnDef(FileTableColumn.values())));
+        .collect(toTable(ColumnDef.get(Column.values())));
 
 // use enum ordinal() to obtain column index:
 String name = (String) table.getValueAt(0, FileTableColumn.NAME.ordinal());
 
 // translate column index to ColumnDef:
 int columnIndex = ...;
-ColumnDef<File> columnDef = FileTableColumn.values()[columnIndex].get();
+ColumnDef<File> def = FileTableColumn.values()[columnIndex].get();
 ```
 
 Example 4 (create combo box with file names from a list of `File` objects):

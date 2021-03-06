@@ -438,16 +438,6 @@ public final class SwingStreamUtils {
         };
     }
 
-    @SafeVarargs
-    public static <T> ColumnDef<T>[] toColumnDef(Supplier<ColumnDef<T>>... columnSuppliers) {
-        ColumnDef<T>[] columns = new ColumnDef[columnSuppliers.length];
-        for (int i = 0; i < columns.length; i++) {
-            Supplier<ColumnDef<T>> s = Objects.requireNonNull(columnSuppliers[i]);
-            columns[i] = Objects.requireNonNull(s.get());
-        }
-        return columns;
-    }
-
     /**
      * Stream collector to create vanilla {@link JComboBox} with {@link DefaultComboBoxModel}.
      *
