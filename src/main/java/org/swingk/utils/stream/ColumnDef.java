@@ -18,7 +18,7 @@ public class ColumnDef<K> {
      * Extracts instances of {@link ColumnDef} from the suppliers.
      * <p>
      * Useful when column definitions are provided via enum, so a call to {@code Enum.values()} results in an array
-     * of {@link ColumnDef} suppliers.
+     * of {@link ColumnDef} suppliers (see README.md).
      */
     @SafeVarargs
     public static <T> ColumnDef<T>[] get(Supplier<ColumnDef<T>>... columnSuppliers) {
