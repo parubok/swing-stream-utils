@@ -8,9 +8,9 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 
-class SimpleTableModelTest {
+public class SimpleTableModelTest {
     @Test
-    void basic_test_1() {
+    public void basic_test_1() {
         List<List<Object>> data = asList(asList(1, "A", "data1"), asList(2, "B", "data2"));
         SimpleTableModel<String> model = new SimpleTableModel<>(data, asList(Integer.class, String.class),
                 asList("col1", "col2"), new boolean[]{false, true});
@@ -33,7 +33,7 @@ class SimpleTableModelTest {
     }
 
     @Test
-    void add_remove_row_1() {
+    public void add_remove_row_1() {
         List<List<Object>> data = asList(asList(1, "A", "data1"), asList(2, "B", "data2"));
         SimpleTableModel<String> model = new SimpleTableModel<>(data, asList(Integer.class, String.class),
                 asList("col1", "col2"), new boolean[]{false, true});
@@ -48,7 +48,7 @@ class SimpleTableModelTest {
     }
 
     @Test
-    void setRowCount_1() {
+    public void setRowCount_1() {
         List<List<Object>> data = asList(asList(1, "A", "data1"), asList(2, "B", "data2"));
         SimpleTableModel<String> model = new SimpleTableModel<>(data, asList(Integer.class, String.class),
                 asList("c1", "c2"), new boolean[2]);
@@ -73,7 +73,7 @@ class SimpleTableModelTest {
     }
 
     @Test
-    void insert_row_1() {
+    public void insert_row_1() {
         List<List<Object>> data = asList(asList(1, "A", "data1"), asList(2, "B", "data2"));
         SimpleTableModel<String> model = new SimpleTableModel<>(data, asList(Integer.class, String.class),
                 asList("col1", "col2"), new boolean[]{false, true});
@@ -89,7 +89,7 @@ class SimpleTableModelTest {
     }
 
     @Test
-    void move_row_1() {
+    public void move_row_1() {
         List<List<Object>> data = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             data.add(asList(i, "V" + i, "data" + i));
@@ -114,7 +114,7 @@ class SimpleTableModelTest {
     }
 
     @Test
-    void move_row_2() {
+    public void move_row_2() {
         List<List<Object>> data = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             data.add(asList(i, "V" + i, "data" + i));
@@ -139,7 +139,7 @@ class SimpleTableModelTest {
     }
 
     @Test
-    void move_row_3() {
+    public void move_row_3() {
         List<List<Object>> data = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             data.add(asList(i, "V" + i, "data" + i));
@@ -164,7 +164,7 @@ class SimpleTableModelTest {
     }
 
     @Test
-    void move_row_4() {
+    public void move_row_4() {
         List<List<Object>> data = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             data.add(asList(i, "V" + i, "data" + i));

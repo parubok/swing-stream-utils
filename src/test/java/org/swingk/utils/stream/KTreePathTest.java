@@ -8,9 +8,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-class KTreePathTest {
+public class KTreePathTest {
     @Test
-    void basic_test_1() {
+    public void basic_test_1() {
         String root = "root";
         List<String> rootList = Collections.singletonList(root);
         KTreePath p = new KTreePath(rootList);
@@ -28,7 +28,7 @@ class KTreePathTest {
     }
 
     @Test
-    void hasComponent() {
+    public void hasComponent() {
         KTreePath path = KTreePath.of("root", "com1", "com2");
         Assertions.assertTrue(path.hasComponent("root"));
         Assertions.assertFalse(path.hasComponent("root1"));
@@ -38,7 +38,7 @@ class KTreePathTest {
     }
 
     @Test
-    void indexOf() {
+    public void indexOf() {
         KTreePath path = KTreePath.of("root", "com1", "com2");
         Assertions.assertEquals(0, path.indexOf("root"));
         Assertions.assertEquals(-1, path.indexOf("root1"));
@@ -48,7 +48,7 @@ class KTreePathTest {
     }
 
     @Test
-    void isLastComponent() {
+    public void isLastComponent() {
         KTreePath path = KTreePath.of("root", "com1", "com2");
         Assertions.assertFalse(path.isLastComponent("root"));
         Assertions.assertFalse(path.isLastComponent("root1"));

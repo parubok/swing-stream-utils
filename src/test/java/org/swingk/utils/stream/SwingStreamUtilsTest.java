@@ -39,10 +39,10 @@ import java.util.stream.Stream;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
-class SwingStreamUtilsTest {
+public class SwingStreamUtilsTest {
 
     @Test
-    void asIterable_1() throws Exception {
+    public void asIterable_1() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             TableModel model = new DefaultTableModel(1, 2);
             model.setValueAt("c0", 0, 0);
@@ -69,7 +69,7 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void asIterable_2() throws Exception {
+    public void asIterable_2() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             TableModel model = new DefaultTableModel(1, 1);
             JTable table = new JTable(model);
@@ -84,7 +84,7 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void asStream_getValue() throws Exception {
+    public void asStream_getValue() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             TableModel model = new DefaultTableModel(1, 2);
             model.setValueAt("c0", 0, 0);
@@ -97,7 +97,7 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void asStream_2() throws Exception {
+    public void asStream_2() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             final int rows = 5;
             final int columns = 3;
@@ -114,7 +114,7 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void asStream_3() throws Exception {
+    public void asStream_3() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             final int rows = 2;
             final int columns = 3;
@@ -129,7 +129,7 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void asStream_getRow() throws Exception {
+    public void asStream_getRow() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             final int rows = 2;
             final int columns = 3;
@@ -142,7 +142,7 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void asStream_getColumn() throws Exception {
+    public void asStream_getColumn() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             final int rows = 2;
             final int columns = 3;
@@ -155,7 +155,7 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void asStream_empty() throws Exception {
+    public void asStream_empty() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             TableModel model = new DefaultTableModel(0, 0);
             JTable table = new JTable(model);
@@ -165,7 +165,7 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void concurrent_modification_rows() throws Exception {
+    public void concurrent_modification_rows() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             DefaultTableModel model = new DefaultTableModel(3, 2);
             JTable table = new JTable(model);
@@ -180,7 +180,7 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void toJTable_1() throws Exception {
+    public void toJTable_1() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             List<String> values = asList("valA", "valB", "valC");
             JTable table = values.stream().collect(SwingStreamUtils.toTable(new ColumnDef<>("col1")));
@@ -194,7 +194,7 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void toColumnDef() throws Exception {
+    public void toColumnDef() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             ColumnDef<String> def = new ColumnDef<>("col1");
             ColumnDef<String>[] defs =  SwingStreamUtils.toColumnDef(() -> def);
@@ -204,7 +204,7 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void toJTable_2() throws Exception {
+    public void toJTable_2() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             List<Rectangle> values = asList(new Rectangle(0, 0, 2, 5), new Rectangle(1, 1, 3, 6));
             JTable table = values.stream()
@@ -224,7 +224,7 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void toJTable_custom_model() throws Exception {
+    public void toJTable_custom_model() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             List<String> values = asList("val_1", "val2", "val_3");
             JTable table = values.stream()
@@ -241,7 +241,7 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void toJTable_custom_model_with_row_data() throws Exception {
+    public void toJTable_custom_model_with_row_data() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
 
             List<List> rowObjects = new ArrayList<>();
@@ -276,7 +276,7 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void toTableModel_1() {
+    public void toTableModel_1() {
         int size = 100_0000;
         List<Point> values = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
@@ -304,7 +304,7 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void toTableModel_setValueAt() {
+    public void toTableModel_setValueAt() {
         List<String> values = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             values.add("value " + i);
@@ -328,7 +328,7 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void toJTable_parallelStream() throws Exception {
+    public void toJTable_parallelStream() throws Exception {
         List<Integer> values = IntStream.range(0, 100_000).mapToObj(Integer::new).collect(Collectors.toList());
         JTable table = values.parallelStream().collect(SwingStreamUtils.toTable(new ColumnDef<>("col1")));
         SwingUtilities.invokeAndWait(() -> {
@@ -343,14 +343,14 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void toJTable_no_columns() {
+    public void toJTable_no_columns() {
         Assertions.assertThrows(IllegalArgumentException.class,
                 () -> asList("value").stream().collect(SwingStreamUtils.toTable()));
     }
 
     @Disabled("Disabled by default for performance reasons.")
     @Test
-    void toJTable_performance_parallel_vs_single() {
+    public void toJTable_performance_parallel_vs_single() {
         Assertions.assertTrue(performance_toJTable_stream(true) < performance_toJTable_stream(false),
                 "Parallel stream must be faster than regular stream.");
     }
@@ -376,7 +376,7 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void toJComboBox() throws Exception {
+    public void toJComboBox() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             List<String> list = asList("str1", "str2");
             JComboBox<String> combo = list.stream().collect(SwingStreamUtils.toComboBox());
@@ -389,7 +389,7 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void toComboBoxModel() {
+    public void toComboBoxModel() {
         List<String> list = new ArrayList<>();
         final int c = 10_000;
         for (int i = 0; i < c; i++) {
@@ -403,7 +403,7 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void toComboBoxModel_2() {
+    public void toComboBoxModel_2() {
         List<Integer> list = new ArrayList<>();
         final int c = 10_000;
         for (int i = 0; i < c; i++) {
@@ -419,7 +419,7 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void toComboBoxModel_3() {
+    public void toComboBoxModel_3() {
         List<String> list = asList("str1", "str2", "str3");
         DefaultComboBoxModel<String> model = list.stream()
                 .collect(SwingStreamUtils.toComboBoxModel(DefaultComboBoxModel::new,
@@ -432,7 +432,7 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void toComboBoxModel_4() {
+    public void toComboBoxModel_4() {
         List<String> list = asList("str1", "str2", "str3");
         DefaultComboBoxModel<String> model = list.stream()
                 .collect(SwingStreamUtils.toComboBoxModel(DefaultComboBoxModel::new,
@@ -445,7 +445,7 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void toComboBoxModel_5() {
+    public void toComboBoxModel_5() {
         List<String> list = asList("str1", "str2", "str3");
         DefaultComboBoxModel<String> model = list.stream()
                 .collect(SwingStreamUtils.toComboBoxModel(DefaultComboBoxModel::new,
@@ -458,7 +458,7 @@ class SwingStreamUtilsTest {
      * Types of stream elements and model items are different.
      */
     @Test
-    void toComboBoxModel_6() {
+    public void toComboBoxModel_6() {
         List<Integer> list = asList(3, 5, 10, 15);
         DefaultComboBoxModel<String> model = list.stream()
                 .collect(SwingStreamUtils.toComboBoxModel(DefaultComboBoxModel::new,
@@ -471,7 +471,7 @@ class SwingStreamUtilsTest {
      * Invalid selection index.
      */
     @Test
-    void toComboBoxModel_7() {
+    public void toComboBoxModel_7() {
         List<String> list = asList("str1", "str2");
         Assertions.assertThrows(IndexOutOfBoundsException.class, () -> list.stream()
                 .collect(SwingStreamUtils.toComboBoxModel(DefaultComboBoxModel::new,
@@ -479,7 +479,7 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void getDescendantsIterable_1() throws Exception {
+    public void getDescendantsIterable_1() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             JPanel panel = new JPanel();
             List<Component> list = new ArrayList<>();
@@ -489,7 +489,7 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void getDescendantsIterable_2() throws Exception {
+    public void getDescendantsIterable_2() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             JPanel panel = new JPanel();
             JLabel label = new JLabel();
@@ -501,7 +501,7 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void getDescendantsIterable_3() throws Exception {
+    public void getDescendantsIterable_3() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             JPanel panel = new JPanel();
             JLabel label1 = new JLabel();
@@ -515,7 +515,7 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void getDescendantsIterable_4() throws Exception {
+    public void getDescendantsIterable_4() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             JPanel panel = new JPanel();
             JPanel panel2 = new JPanel();
@@ -531,7 +531,7 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void getDescendantsIterable_5() throws Exception {
+    public void getDescendantsIterable_5() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             JPanel panel = new JPanel();
             JPanel panel2 = new JPanel();
@@ -549,7 +549,7 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void getDescendantsIterable_6() throws Exception {
+    public void getDescendantsIterable_6() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             JPanel panel = new JPanel();
             JPanel panel2 = new JPanel();
@@ -565,7 +565,7 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void getDescendantsIterable_7() throws Exception {
+    public void getDescendantsIterable_7() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             JPanel panel = new JPanel();
             Iterator<Component> iterator = SwingStreamUtils.getDescendantsIterable(panel).iterator();
@@ -581,7 +581,7 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void streamDescendants_1() throws Exception {
+    public void streamDescendants_1() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             JPanel panel = new JPanel();
             JPanel panel2 = new JPanel();
@@ -596,7 +596,7 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void streamComboBox_1() throws Exception {
+    public void streamComboBox_1() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             JComboBox<String> combo = new JComboBox<>();
             Assertions.assertEquals(Collections.emptyList(), SwingStreamUtils.stream(combo)
@@ -605,7 +605,7 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void streamComboBox_2() throws Exception {
+    public void streamComboBox_2() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             String[] s = {"item1", "item2", "item3"};
             ComboBoxModel<String> model = new DefaultComboBoxModel<>(s);
@@ -617,7 +617,7 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void streamComboBox_3() throws Exception {
+    public void streamComboBox_3() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             String[] s = {"item1", "item2", "item3"};
             ComboBoxModel<String> model = new DefaultComboBoxModel<>(s);
@@ -639,7 +639,7 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void comboBoxModelIterable_1() throws Exception {
+    public void comboBoxModelIterable_1() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             String[] s = {"item1", "item2", "item3"};
             DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(s);
@@ -654,7 +654,7 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void treeModelIterable_no_root() {
+    public void treeModelIterable_no_root() {
         // not EDT
         DefaultTreeModel model = new DefaultTreeModel(null);
         Iterable<KTreePath> iterable = SwingStreamUtils.asIterable(model);
@@ -666,7 +666,7 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void treeModelIterable_1() {
+    public void treeModelIterable_1() {
         // not EDT
         TreeNode root = new DefaultMutableTreeNode("root");
         DefaultTreeModel model = new DefaultTreeModel(root);
@@ -685,7 +685,7 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void treeModelIterable_2() {
+    public void treeModelIterable_2() {
         // not EDT
         TreeNode root = new DefaultMutableTreeNode("root");
         DefaultTreeModel model = new DefaultTreeModel(root);
@@ -701,7 +701,7 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void treeModelIterable_3() {
+    public void treeModelIterable_3() {
         // not EDT
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
         DefaultMutableTreeNode node_1 = new DefaultMutableTreeNode("node_1");
@@ -744,7 +744,7 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void treeModelIterable_4() {
+    public void treeModelIterable_4() {
         // not EDT
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
         List<DefaultMutableTreeNode> children = new ArrayList<>();
@@ -768,7 +768,7 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void streamTreeModel_1() {
+    public void streamTreeModel_1() {
         // not EDT
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
         List<DefaultMutableTreeNode> children = new ArrayList<>();
@@ -786,7 +786,7 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void streamTree_1() throws Exception {
+    public void streamTree_1() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             TreeNode root = new DefaultMutableTreeNode("root");
             DefaultTreeModel model = new DefaultTreeModel(root);
@@ -797,7 +797,7 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void streamTreeStructure_1() {
+    public void streamTreeStructure_1() {
         // not EDT
         TreeStructure treeStructure = new TreeStructure() {
             @Override
@@ -823,7 +823,7 @@ class SwingStreamUtilsTest {
     }
 
     @Test
-    void streamTreeStructure_2() {
+    public void streamTreeStructure_2() {
         // not EDT
         TreeStructure s = new TreeStructure() {
             @Override
