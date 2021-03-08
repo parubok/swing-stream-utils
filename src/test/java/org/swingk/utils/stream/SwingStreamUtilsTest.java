@@ -783,8 +783,12 @@ public class SwingStreamUtilsTest {
         DefaultMutableTreeNode c2 = new DefaultMutableTreeNode("c2");
         DefaultMutableTreeNode c1_1 = new DefaultMutableTreeNode("c1_1");
         DefaultMutableTreeNode c1_2 = new DefaultMutableTreeNode("c1_2");
+        DefaultMutableTreeNode c2_1 = new DefaultMutableTreeNode("c2_1");
+        DefaultMutableTreeNode c2_2 = new DefaultMutableTreeNode("c2_2");
         c1.add(c1_1);
         c1.add(c1_2);
+        c2.add(c2_1);
+        c2.add(c2_2);
         root.add(c1);
         root.add(c2);
         DefaultTreeModel model = new DefaultTreeModel(root);
@@ -793,7 +797,9 @@ public class SwingStreamUtilsTest {
                 KTreePath.of(root, c1),
                 KTreePath.of(root, c1, c1_1),
                 KTreePath.of(root, c1, c1_2),
-                KTreePath.of(root, c2)),
+                KTreePath.of(root, c2),
+                KTreePath.of(root, c2, c2_1),
+                KTreePath.of(root, c2, c2_2)),
                 stream.collect(Collectors.toList()));
         Assertions.assertThrows(IllegalStateException.class, stream::count);
     }
