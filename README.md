@@ -195,6 +195,6 @@ SimpleTableModel<User> tableModel = users.parallelStream()
                                                   new ColumnDef<>("Role", User::getRole, 200, String.class));
 ```
 
-This project has no dependencies (except JUnit 5, for testing).
+This project has no external dependencies (except JUnit 5, for testing).
 
 Requires Java 8 or later.
