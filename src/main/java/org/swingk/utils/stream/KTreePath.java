@@ -50,6 +50,12 @@ public class KTreePath extends TreePath {
         return new KTreePath(treePath);
     }
 
+    @Override
+    public KTreePath getParentPath() {
+        TreePath parentPath = super.getParentPath();
+        return parentPath != null ? new KTreePath(parentPath) : null;
+    }
+
     /**
      * @param component Object to check if it is a component of the path.
      * @return true if the specified object is a component of the path.
