@@ -2,6 +2,9 @@ package org.swingk.utils.stream;
 
 import java.util.List;
 
+/**
+ * Implementation of {@link TreeTraversalType#POST_ORDER} iteration.
+ */
 final class TreeStructureIteratorPostOrder extends AbstractTreePathIterator {
 
     TreeStructureIteratorPostOrder(TreeStructure treeStructure) {

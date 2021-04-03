@@ -3,6 +3,9 @@ package org.swingk.utils.stream;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Implementation of {@link TreeTraversalType#PRE_ORDER} iteration.
+ */
 final class TreeStructureIteratorPreOrder extends AbstractTreePathIterator {
 
     TreeStructureIteratorPreOrder(TreeStructure treeStructure) {
