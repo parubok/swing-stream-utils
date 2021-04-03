@@ -876,10 +876,15 @@ public class SwingStreamUtilsTest {
         DefaultTreeModel model = new DefaultTreeModel(root);
         Iterable<KTreePath> iterable = SwingStreamUtils.asIterable(model, TreeTraversalType.POST_ORDER);
         Iterator<KTreePath> iterator = iterable.iterator();
-        Assertions.assertTrue(iterator.hasNext());
+        Assertions.assertNotNull(iterator);
+        for (int i = 0; i < 10; i++) {
+            Assertions.assertTrue(iterator.hasNext());
+        }
         Assertions.assertEquals(KTreePath.of(root), iterator.next());
-        Assertions.assertFalse(iterator.hasNext());
-        Assertions.assertThrows(NoSuchElementException.class, iterator::next);
+        for (int i = 0; i < 10; i++) {
+            Assertions.assertFalse(iterator.hasNext());
+            Assertions.assertThrows(NoSuchElementException.class, iterator::next);
+        }
     }
 
     @Test
