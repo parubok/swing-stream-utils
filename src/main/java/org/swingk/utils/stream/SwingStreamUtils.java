@@ -43,6 +43,8 @@ import static java.util.Objects.requireNonNull;
  */
 public final class SwingStreamUtils {
 
+    public static final TreeTraversalType DEFAULT_TREE_TRAVERSAL_TYPE = TreeTraversalType.PRE_ORDER;
+
     private SwingStreamUtils() {
     }
 
@@ -129,9 +131,12 @@ public final class SwingStreamUtils {
      * @see #stream(TreeModel)
      * @see TreePath
      */
+    public static Stream<KTreePath> stream(JTree tree, TreeTraversalType traversalType) {
+        return stream(tree.getModel(), traversalType);
+    }
+
     public static Stream<KTreePath> stream(JTree tree) {
-        requireNonNull(tree, "tree");
-        return stream(tree.getModel());
+        return stream(tree, DEFAULT_TREE_TRAVERSAL_TYPE);
     }
 
     /**
@@ -150,7 +155,7 @@ public final class SwingStreamUtils {
     }
 
     public static Stream<KTreePath> stream(TreeModel treeModel) {
-        return StreamSupport.stream(asIterable(treeModel).spliterator(), false);
+        return stream(treeModel, DEFAULT_TREE_TRAVERSAL_TYPE);
     }
 
     /**
@@ -169,11 +174,11 @@ public final class SwingStreamUtils {
     }
 
     public static Stream<KTreePath> stream(TreeStructure treeStructure) {
-        return StreamSupport.stream(asIterable(treeStructure).spliterator(), false);
+        return stream(treeStructure, DEFAULT_TREE_TRAVERSAL_TYPE);
     }
 
     public static Iterable<KTreePath> asIterable(TreeModel treeModel) {
-        return asIterable(treeModel, TreeTraversalType.PRE_ORDER);
+        return asIterable(treeModel, DEFAULT_TREE_TRAVERSAL_TYPE);
     }
 
     /**
@@ -206,7 +211,7 @@ public final class SwingStreamUtils {
     }
 
     public static Iterable<KTreePath> asIterable(TreeStructure treeStructure) {
-        return asIterable(treeStructure, TreeTraversalType.PRE_ORDER);
+        return asIterable(treeStructure, DEFAULT_TREE_TRAVERSAL_TYPE);
     }
 
     /**
