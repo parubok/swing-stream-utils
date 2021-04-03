@@ -4,3 +4,4 @@
 - Improve README (mention glazed lists)
 - Incl. generated JavaDoc HTML pages
 - package-info.java
+- Demo (tree iteration)
