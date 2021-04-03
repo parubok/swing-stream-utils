@@ -147,7 +147,7 @@ List<String> visibleDescendants = SwingStreamUtils.stream(comboBox)
              .collect(Collectors.toList());
 ```
 
-Example 7 (search for first tree path with the specified node):
+Example 7 (search for the first tree path with the specified node):
 ```java
 import java.util.Optional;
 import javax.swing.JTree;
