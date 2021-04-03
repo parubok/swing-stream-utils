@@ -830,6 +830,8 @@ public class SwingStreamUtilsTest {
         Assertions.assertEquals(KTreePath.of(root, c2, c2_2), iterator.next());
         Assertions.assertEquals(KTreePath.of(root, c2), iterator.next());
         Assertions.assertEquals(KTreePath.of(root), iterator.next());
+        Assertions.assertFalse(iterator.hasNext());
+        Assertions.assertThrows(NoSuchElementException.class, iterator::next);
     }
 
     @Test
