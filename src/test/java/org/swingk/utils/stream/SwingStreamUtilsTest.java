@@ -967,7 +967,10 @@ public class SwingStreamUtilsTest {
         root.add(c1);
         root.add(c2);
         DefaultTreeModel model = new DefaultTreeModel(root);
-        List<KTreePath> paths = SwingStreamUtils.stream(model, TreeTraversalType.POST_ORDER)
+        Stream<KTreePath> stream = SwingStreamUtils.stream(model, TreeTraversalType.POST_ORDER);
+        Assertions.assertNotNull(stream);
+        Assertions.assertFalse(stream.isParallel());
+        List<KTreePath> paths = stream
                 .collect(Collectors.toList());
         Assertions.assertEquals(Arrays.asList(KTreePath.of(root, c1, c1_1),
                 KTreePath.of(root, c1, c1_2, c1_2_1),
