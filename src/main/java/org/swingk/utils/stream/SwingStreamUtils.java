@@ -219,8 +219,7 @@ public final class SwingStreamUtils {
      * @see TreePath
      */
     public static Iterable<KTreePath> asIterable(TreeStructure treeStructure, TreeTraversalType traversalType) {
-        requireNonNull(treeStructure, "treeStructure");
-        return traversalType.createIterable(treeStructure);
+        return new TreeStructureIterable(treeStructure, traversalType);
     }
 
     /**
