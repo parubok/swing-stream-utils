@@ -17,7 +17,7 @@ final class TreeStructureIteratorPostOrder extends AbstractTreePathIterator {
     }
 
     @Override
-    protected KTreePath getNextPath() {
+    KTreePath getNextPath() {
         assert !completed;
 
         if (currentPath == EMPTY_PATH) {

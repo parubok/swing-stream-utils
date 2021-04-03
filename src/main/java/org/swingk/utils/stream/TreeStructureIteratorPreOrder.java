@@ -10,7 +10,7 @@ final class TreeStructureIteratorPreOrder extends AbstractTreePathIterator {
     }
 
     @Override
-    protected KTreePath getNextPath() {
+    KTreePath getNextPath() {
         assert !completed;
         Object root = treeStructure.getRoot();
         if (currentPath == EMPTY_PATH) {
