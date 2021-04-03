@@ -25,6 +25,9 @@ public abstract class AbstractTreePathIterator implements Iterator<KTreePath> {
         return children;
     }
 
+    /**
+     * @return The next tree path or {@link #EMPTY_PATH} to signal end of the iteration.
+     */
     protected abstract KTreePath getNextPath();
 
     @Override
