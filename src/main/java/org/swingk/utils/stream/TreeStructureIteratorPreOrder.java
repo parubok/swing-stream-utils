@@ -2,14 +2,11 @@ package org.swingk.utils.stream;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 final class TreeStructureIteratorPreOrder extends AbstractTreePathIterator {
 
-    private final TreeStructure treeStructure;
-
     TreeStructureIteratorPreOrder(TreeStructure treeStructure) {
-        this.treeStructure = Objects.requireNonNull(treeStructure);
+        super(treeStructure);
     }
 
     @Override

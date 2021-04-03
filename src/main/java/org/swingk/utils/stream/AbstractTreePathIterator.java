@@ -4,16 +4,23 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 public abstract class AbstractTreePathIterator implements Iterator<KTreePath> {
+
     /**
      * Singleton object to designate empty tree path.
      */
     protected static final KTreePath EMPTY_PATH = new KTreePath();
 
+    protected final TreeStructure treeStructure;
     protected KTreePath currentPath = EMPTY_PATH;
     protected KTreePath nextPath;
     protected boolean completed;
+
+    AbstractTreePathIterator(TreeStructure treeStructure) {
+        this.treeStructure = Objects.requireNonNull(treeStructure);
+    }
 
     protected static List<Object> getChildren(TreeStructure treeStructure, Object parent) {
         final int c = treeStructure.getChildCount(parent);

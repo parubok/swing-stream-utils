@@ -135,6 +135,9 @@ public final class SwingStreamUtils {
         return stream(tree.getModel(), traversalType);
     }
 
+    /**
+     * @see #stream(JTree, TreeTraversalType)
+     */
     public static Stream<KTreePath> stream(JTree tree) {
         return stream(tree, DEFAULT_TREE_TRAVERSAL_TYPE);
     }
@@ -154,6 +157,9 @@ public final class SwingStreamUtils {
         return StreamSupport.stream(asIterable(treeModel, traversalType).spliterator(), false);
     }
 
+    /**
+     * @see #stream(TreeModel, TreeTraversalType)
+     */
     public static Stream<KTreePath> stream(TreeModel treeModel) {
         return stream(treeModel, DEFAULT_TREE_TRAVERSAL_TYPE);
     }
@@ -173,10 +179,16 @@ public final class SwingStreamUtils {
         return StreamSupport.stream(asIterable(treeStructure, traversalType).spliterator(), false);
     }
 
+    /**
+     * @see #stream(TreeStructure, TreeTraversalType)
+     */
     public static Stream<KTreePath> stream(TreeStructure treeStructure) {
         return stream(treeStructure, DEFAULT_TREE_TRAVERSAL_TYPE);
     }
 
+    /**
+     * @see #asIterable(TreeModel, TreeTraversalType)
+     */
     public static Iterable<KTreePath> asIterable(TreeModel treeModel) {
         return asIterable(treeModel, DEFAULT_TREE_TRAVERSAL_TYPE);
     }

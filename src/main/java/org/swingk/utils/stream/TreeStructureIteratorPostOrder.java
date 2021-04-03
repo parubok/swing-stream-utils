@@ -1,14 +1,11 @@
 package org.swingk.utils.stream;
 
 import java.util.List;
-import java.util.Objects;
 
 final class TreeStructureIteratorPostOrder extends AbstractTreePathIterator {
 
-    private final TreeStructure treeStructure;
-
     TreeStructureIteratorPostOrder(TreeStructure treeStructure) {
-        this.treeStructure = Objects.requireNonNull(treeStructure);
+        super(treeStructure);
     }
 
     private KTreePath getLeafPath(KTreePath path) {
