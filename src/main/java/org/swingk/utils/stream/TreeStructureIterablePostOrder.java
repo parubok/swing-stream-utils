@@ -1,10 +1,8 @@
 package org.swingk.utils.stream;
 
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
@@ -41,37 +39,37 @@ final class TreeStructureIterablePostOrder extends TreeStructureIterable {
         }
 
         return new Iterator<KTreePath>() {
-            private Map.Entry<KTreePath, Integer> currentPath = new AbstractMap.SimpleEntry<>(EMPTY_PATH, -1);
-            private Map.Entry<KTreePath, Integer> nextPath;
+            private KTreePath currentPath = EMPTY_PATH;
+            private KTreePath nextPath;
             private boolean completed;
 
-            private Map.Entry<KTreePath, Integer> getNextPath() {
+            private KTreePath getNextPath() {
                 assert !completed;
 
-                int index = currentPath.getValue();
+                KTreePath p2 = currentPath;
 
-                KTreePath p2 = currentPath.getKey();
                 if (p2 == EMPTY_PATH) {
+                    // start of iteration
                     p2 = KTreePath.of(root);
                     while (treeStructure.getChildCount(p2.getLastPathComponent()) > 0) {
                         Object child = treeStructure.getChild(p2.getLastPathComponent(), 0);
                         p2 = p2.pathByAddingChild(child);
                     }
-                    index = p2.getPathCount() - 1;
+                    return p2;
                 }
 
-                if (index < 0) {
-                    return new AbstractMap.SimpleEntry<>(EMPTY_PATH, -1); // end of iteration
+                if (p2.getPathCount() == 1) {
+                    return EMPTY_PATH; // end of iteration
                 }
 
+                int index = p2.getPathCount() - 2;
                 Object indexNode = p2.getPathComponent(index);
                 if (treeStructure.getChildCount(indexNode) < 2) {
                     List<Object> p3 = new ArrayList<>();
                     for (int i = 0; i <= index; i++) {
                         p3.add(p2.getPathComponent(i));
                     }
-                    index--;
-                    return new AbstractMap.SimpleEntry<>(new KTreePath(p3), index);
+                    return new KTreePath(p3);
                 }
 
                 // try to go right and down:
@@ -90,19 +88,14 @@ final class TreeStructureIterablePostOrder extends TreeStructureIterable {
                         Object child = treeStructure.getChild(currentP.getLastPathComponent(), 0);
                         currentP = currentP.pathByAddingChild(child);
                     }
-                    index = currentP.getPathCount() - 2;
-                    return new AbstractMap.SimpleEntry<>(currentP, index);
+                    return currentP;
                 } else {
                     List<Object> p = new ArrayList<>();
                     for (int i = 0; i <= index; i++) {
                         p.add(currentP.getPathComponent(i));
                     }
 
-                    currentP = new KTreePath(p);
-
-                    index--;
-
-                    return new AbstractMap.SimpleEntry<>(currentP, index);
+                    return new KTreePath(p);
                 }
             }
 
@@ -114,7 +107,7 @@ final class TreeStructureIterablePostOrder extends TreeStructureIterable {
                 if (nextPath == null) {
                     nextPath = getNextPath();
                 }
-                return nextPath.getKey() != EMPTY_PATH;
+                return nextPath != EMPTY_PATH;
             }
 
             @Override
@@ -127,8 +120,8 @@ final class TreeStructureIterablePostOrder extends TreeStructureIterable {
                 }
                 currentPath = nextPath;
                 nextPath = getNextPath(); // current path has changed - update nextPath
-                completed = (nextPath.getKey() == EMPTY_PATH);
-                return currentPath.getKey();
+                completed = (nextPath == EMPTY_PATH);
+                return currentPath;
             }
         };
     }
