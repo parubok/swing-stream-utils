@@ -943,7 +943,7 @@ public class SwingStreamUtilsTest {
     }
 
     @Test
-    public void stream_treeModel_postOrder_4() {
+    public void stream_treeModel_postOrder() {
         // not EDT
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
         DefaultMutableTreeNode c1 = new DefaultMutableTreeNode("c1");
