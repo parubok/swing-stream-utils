@@ -128,6 +128,7 @@ public final class SwingStreamUtils {
      * Streams paths of the provided {@link JTree}.
      *
      * @param tree Tree to stream. Not null.
+     * @param traversalType Specifies order of the tree traversal. Not null.
      * @see #stream(TreeModel)
      * @see TreePath
      */
@@ -149,6 +150,7 @@ public final class SwingStreamUtils {
      * </p>
      *
      * @param treeModel Tree model to stream. Not null.
+     * @param traversalType Specifies order of the tree traversal. Not null.
      * @return Stream of paths of the provided tree model. The traversing is performed using depth-first search.
      * @see #asIterable(TreeModel)
      * @see TreePath
@@ -171,6 +173,7 @@ public final class SwingStreamUtils {
      * </p>
      *
      * @param treeStructure Tree structure to stream. Not null.
+     * @param traversalType Specifies order of the tree traversal. Not null.
      * @return Stream of paths of the provided tree structure. The traversing is performed using depth-first search.
      * @see #asIterable(TreeStructure)
      * @see TreePath
@@ -199,6 +202,7 @@ public final class SwingStreamUtils {
      * </p>
      *
      * @param treeModel Tree model to iterate. Not null.
+     * @param traversalType Specifies order of the tree traversal. Not null.
      * @return Iterable to iterate over paths of the provided tree model using depth-first search.
      * @see TreePath
      */
@@ -232,6 +236,7 @@ public final class SwingStreamUtils {
      * </p>
      *
      * @param treeStructure Tree structure to iterate. Not null.
+     * @param traversalType Specifies order of the tree traversal. Not null.
      * @return Iterable to iterate over paths of the provided tree structure using depth-first search.
      * @see TreePath
      */
