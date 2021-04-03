@@ -1,6 +1,5 @@
 package org.swingk.utils.stream;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -12,60 +11,42 @@ final class TreeStructureIteratorPostOrder extends AbstractTreePathIterator {
         this.treeStructure = Objects.requireNonNull(treeStructure);
     }
 
+    private KTreePath getLeafPath(KTreePath path) {
+        while (treeStructure.getChildCount(path.getLastPathComponent()) > 0) {
+            Object child = treeStructure.getChild(path.getLastPathComponent(), 0);
+            path = path.pathByAddingChild(child);
+        }
+        return path;
+    }
+
     @Override
     protected KTreePath getNextPath() {
         assert !completed;
-        Object root = treeStructure.getRoot();
-        KTreePath p2 = currentPath;
 
-        if (p2 == EMPTY_PATH) {
-            // start of iteration
-            p2 = KTreePath.of(root);
-            while (treeStructure.getChildCount(p2.getLastPathComponent()) > 0) {
-                Object child = treeStructure.getChild(p2.getLastPathComponent(), 0);
-                p2 = p2.pathByAddingChild(child);
-            }
-            return p2;
+        if (currentPath == EMPTY_PATH) {
+            // start of iteration - return initial path:
+            return getLeafPath(KTreePath.of(treeStructure.getRoot()));
         }
 
-        if (p2.getPathCount() == 1) {
-            return EMPTY_PATH; // end of iteration
+        if (currentPath.getPathCount() == 1) {
+            return EMPTY_PATH; // root-only path - end of iteration
         }
 
-        int index = p2.getPathCount() - 2;
-        Object indexNode = p2.getPathComponent(index);
-        if (treeStructure.getChildCount(indexNode) < 2) {
-            List<Object> p3 = new ArrayList<>();
-            for (int i = 0; i <= index; i++) {
-                p3.add(p2.getPathComponent(i));
-            }
-            return new KTreePath(p3);
+        KTreePath parentPath = currentPath.getParentPath();
+        Object parentNode = parentPath.getLastPathComponent();
+
+        if (treeStructure.getChildCount(parentNode) == 1) {
+            return parentPath;
         }
 
-        // try to go right and down:
-        List<Object> children = getChildren(treeStructure, indexNode);
-        KTreePath currentP = p2;
-        int childIndex = children.indexOf(currentP.getPathComponent(index + 1));
+        // try to go right and down, if not possible - return parent path:
+        List<Object> children = getChildren(treeStructure, parentNode);
+        int childIndex = children.indexOf(currentPath.getLastPathComponent());
+        assert childIndex > -1;
         if (childIndex < (children.size() - 1)) {
-            // take next child:
-            List<Object> p = new ArrayList<>();
-            for (int i = 0; i <= index; i++) {
-                p.add(currentP.getPathComponent(i));
-            }
-            p.add(children.get(childIndex + 1));
-            currentP = new KTreePath(p);
-            while (treeStructure.getChildCount(currentP.getLastPathComponent()) > 0) {
-                Object child = treeStructure.getChild(currentP.getLastPathComponent(), 0);
-                currentP = currentP.pathByAddingChild(child);
-            }
-            return currentP;
+            return getLeafPath(parentPath.pathByAddingChild(children.get(childIndex + 1)));
         } else {
-            List<Object> p = new ArrayList<>();
-            for (int i = 0; i <= index; i++) {
-                p.add(currentP.getPathComponent(i));
-            }
-
-            return new KTreePath(p);
+            return parentPath;
         }
     }
 }
