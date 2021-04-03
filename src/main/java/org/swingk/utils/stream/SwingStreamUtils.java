@@ -145,6 +145,10 @@ public final class SwingStreamUtils {
      * @see #asIterable(TreeModel)
      * @see TreePath
      */
+    public static Stream<KTreePath> stream(TreeModel treeModel, TreeTraversalType traversalType) {
+        return StreamSupport.stream(asIterable(treeModel, traversalType).spliterator(), false);
+    }
+
     public static Stream<KTreePath> stream(TreeModel treeModel) {
         return StreamSupport.stream(asIterable(treeModel).spliterator(), false);
     }
@@ -160,8 +164,16 @@ public final class SwingStreamUtils {
      * @see #asIterable(TreeStructure)
      * @see TreePath
      */
+    public static Stream<KTreePath> stream(TreeStructure treeStructure, TreeTraversalType traversalType) {
+        return StreamSupport.stream(asIterable(treeStructure, traversalType).spliterator(), false);
+    }
+
     public static Stream<KTreePath> stream(TreeStructure treeStructure) {
         return StreamSupport.stream(asIterable(treeStructure).spliterator(), false);
+    }
+
+    public static Iterable<KTreePath> asIterable(TreeModel treeModel) {
+        return asIterable(treeModel, TreeTraversalType.PRE_ORDER);
     }
 
     /**
@@ -173,7 +185,7 @@ public final class SwingStreamUtils {
      * @return Iterable to iterate over paths of the provided tree model using depth-first search.
      * @see TreePath
      */
-    public static Iterable<KTreePath> asIterable(TreeModel treeModel) {
+    public static Iterable<KTreePath> asIterable(TreeModel treeModel, TreeTraversalType traversalType) {
         requireNonNull(treeModel);
         return asIterable(new TreeStructure() {
             @Override
@@ -190,7 +202,11 @@ public final class SwingStreamUtils {
             public int getChildCount(Object parent) {
                 return treeModel.getChildCount(parent);
             }
-        });
+        }, traversalType);
+    }
+
+    public static Iterable<KTreePath> asIterable(TreeStructure treeStructure) {
+        return asIterable(treeStructure, TreeTraversalType.PRE_ORDER);
     }
 
     /**
@@ -202,9 +218,9 @@ public final class SwingStreamUtils {
      * @return Iterable to iterate over paths of the provided tree structure using depth-first search.
      * @see TreePath
      */
-    public static Iterable<KTreePath> asIterable(TreeStructure treeStructure) {
+    public static Iterable<KTreePath> asIterable(TreeStructure treeStructure, TreeTraversalType traversalType) {
         requireNonNull(treeStructure, "treeStructure");
-        return new TreeStructureIterable(treeStructure);
+        return traversalType.createIterable(treeStructure);
     }
 
     /**

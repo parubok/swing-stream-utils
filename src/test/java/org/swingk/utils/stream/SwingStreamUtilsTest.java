@@ -805,6 +805,137 @@ public class SwingStreamUtilsTest {
     }
 
     @Test
+    public void asIterable_treeModel_postOrder() {
+        // not EDT
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
+        DefaultMutableTreeNode c1 = new DefaultMutableTreeNode("c1");
+        DefaultMutableTreeNode c2 = new DefaultMutableTreeNode("c2");
+        DefaultMutableTreeNode c1_1 = new DefaultMutableTreeNode("c1_1");
+        DefaultMutableTreeNode c1_2 = new DefaultMutableTreeNode("c1_2");
+        DefaultMutableTreeNode c2_1 = new DefaultMutableTreeNode("c2_1");
+        DefaultMutableTreeNode c2_2 = new DefaultMutableTreeNode("c2_2");
+        c1.add(c1_1);
+        c1.add(c1_2);
+        c2.add(c2_1);
+        c2.add(c2_2);
+        root.add(c1);
+        root.add(c2);
+        DefaultTreeModel model = new DefaultTreeModel(root);
+        Iterable<KTreePath> iterable = SwingStreamUtils.asIterable(model, TreeTraversalType.POST_ORDER);
+        Iterator<KTreePath> iterator = iterable.iterator();
+        Assertions.assertEquals(KTreePath.of(root, c1, c1_1), iterator.next());
+        Assertions.assertEquals(KTreePath.of(root, c1, c1_2), iterator.next());
+        Assertions.assertEquals(KTreePath.of(root, c1), iterator.next());
+        Assertions.assertEquals(KTreePath.of(root, c2, c2_1), iterator.next());
+        Assertions.assertEquals(KTreePath.of(root, c2, c2_2), iterator.next());
+        Assertions.assertEquals(KTreePath.of(root, c2), iterator.next());
+        Assertions.assertEquals(KTreePath.of(root), iterator.next());
+    }
+
+    @Test
+    public void asIterable_treeModel_postOrder_2() {
+        // not EDT
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
+        DefaultMutableTreeNode c1 = new DefaultMutableTreeNode("c1");
+        DefaultMutableTreeNode c2 = new DefaultMutableTreeNode("c2");
+        DefaultMutableTreeNode c1_1 = new DefaultMutableTreeNode("c1_1");
+        DefaultMutableTreeNode c1_2 = new DefaultMutableTreeNode("c1_2");
+        DefaultMutableTreeNode c2_1 = new DefaultMutableTreeNode("c2_1");
+        DefaultMutableTreeNode c2_2 = new DefaultMutableTreeNode("c2_2");
+        c1.add(c1_1);
+        c1.add(c1_2);
+        c2.add(c2_1);
+        c2.add(c2_2);
+        root.add(c1);
+        root.add(c2);
+        DefaultTreeModel model = new DefaultTreeModel(root);
+        Iterable<KTreePath> iterable = SwingStreamUtils.asIterable(model, TreeTraversalType.POST_ORDER);
+        Iterator<KTreePath> iterator = iterable.iterator();
+        Assertions.assertTrue(iterator.hasNext());
+        Assertions.assertEquals(KTreePath.of(root, c1, c1_1), iterator.next());
+        Assertions.assertTrue(iterator.hasNext());
+        Assertions.assertEquals(KTreePath.of(root, c1, c1_2), iterator.next());
+        Assertions.assertTrue(iterator.hasNext());
+        Assertions.assertEquals(KTreePath.of(root, c1), iterator.next());
+        Assertions.assertTrue(iterator.hasNext());
+        Assertions.assertEquals(KTreePath.of(root, c2, c2_1), iterator.next());
+        Assertions.assertTrue(iterator.hasNext());
+        Assertions.assertEquals(KTreePath.of(root, c2, c2_2), iterator.next());
+        Assertions.assertTrue(iterator.hasNext());
+        Assertions.assertEquals(KTreePath.of(root, c2), iterator.next());
+        Assertions.assertTrue(iterator.hasNext());
+        Assertions.assertEquals(KTreePath.of(root), iterator.next());
+        Assertions.assertFalse(iterator.hasNext());
+        Assertions.assertThrows(NoSuchElementException.class, iterator::next);
+    }
+
+    @Test
+    public void asIterable_treeModel_postOrder_3() {
+        // not EDT
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
+        DefaultTreeModel model = new DefaultTreeModel(root);
+        Iterable<KTreePath> iterable = SwingStreamUtils.asIterable(model, TreeTraversalType.POST_ORDER);
+        Iterator<KTreePath> iterator = iterable.iterator();
+        Assertions.assertTrue(iterator.hasNext());
+        Assertions.assertEquals(KTreePath.of(root), iterator.next());
+        Assertions.assertFalse(iterator.hasNext());
+        Assertions.assertThrows(NoSuchElementException.class, iterator::next);
+    }
+
+    @Test
+    public void asIterable_treeModel_postOrder_4() {
+        // not EDT
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
+        DefaultMutableTreeNode c1 = new DefaultMutableTreeNode("c1");
+        DefaultMutableTreeNode c2 = new DefaultMutableTreeNode("c2");
+        DefaultMutableTreeNode c1_1 = new DefaultMutableTreeNode("c1_1");
+        DefaultMutableTreeNode c1_2 = new DefaultMutableTreeNode("c1_2");
+        DefaultMutableTreeNode c1_2_1 = new DefaultMutableTreeNode("c1_2_1");
+        DefaultMutableTreeNode c2_1 = new DefaultMutableTreeNode("c2_1");
+        DefaultMutableTreeNode c2_2 = new DefaultMutableTreeNode("c2_2");
+        DefaultMutableTreeNode c2_2_1 = new DefaultMutableTreeNode("c2_2_1");
+        DefaultMutableTreeNode c2_2_1_1 = new DefaultMutableTreeNode("c2_2_1_1");
+        DefaultMutableTreeNode c2_3 = new DefaultMutableTreeNode("c2_3");
+        c1.add(c1_1);
+        c1.add(c1_2);
+        c1_2.add(c1_2_1);
+        c2.add(c2_1);
+        c2.add(c2_2);
+        c2_2.add(c2_2_1);
+        c2_2_1.add(c2_2_1_1);
+        c2.add(c2_3);
+        root.add(c1);
+        root.add(c2);
+        DefaultTreeModel model = new DefaultTreeModel(root);
+        Iterable<KTreePath> iterable = SwingStreamUtils.asIterable(model, TreeTraversalType.POST_ORDER);
+        Iterator<KTreePath> iterator = iterable.iterator();
+        Assertions.assertTrue(iterator.hasNext());
+        Assertions.assertEquals(KTreePath.of(root, c1, c1_1), iterator.next());
+        Assertions.assertTrue(iterator.hasNext());
+        Assertions.assertEquals(KTreePath.of(root, c1, c1_2, c1_2_1), iterator.next());
+        Assertions.assertTrue(iterator.hasNext());
+        Assertions.assertEquals(KTreePath.of(root, c1, c1_2), iterator.next());
+        Assertions.assertTrue(iterator.hasNext());
+        Assertions.assertEquals(KTreePath.of(root, c1), iterator.next());
+        Assertions.assertTrue(iterator.hasNext());
+        Assertions.assertEquals(KTreePath.of(root, c2, c2_1), iterator.next());
+        Assertions.assertTrue(iterator.hasNext());
+        Assertions.assertEquals(KTreePath.of(root, c2, c2_2, c2_2_1, c2_2_1_1), iterator.next());
+        Assertions.assertTrue(iterator.hasNext());
+        Assertions.assertEquals(KTreePath.of(root, c2, c2_2, c2_2_1), iterator.next());
+        Assertions.assertTrue(iterator.hasNext());
+        Assertions.assertEquals(KTreePath.of(root, c2, c2_2), iterator.next());
+        Assertions.assertTrue(iterator.hasNext());
+        Assertions.assertEquals(KTreePath.of(root, c2, c2_3), iterator.next());
+        Assertions.assertTrue(iterator.hasNext());
+        Assertions.assertEquals(KTreePath.of(root, c2), iterator.next());
+        Assertions.assertTrue(iterator.hasNext());
+        Assertions.assertEquals(KTreePath.of(root), iterator.next());
+        Assertions.assertFalse(iterator.hasNext());
+        Assertions.assertThrows(NoSuchElementException.class, iterator::next);
+    }
+
+    @Test
     public void streamTree_1() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             TreeNode root = new DefaultMutableTreeNode("root");
