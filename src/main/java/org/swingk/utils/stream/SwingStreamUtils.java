@@ -226,6 +226,9 @@ public final class SwingStreamUtils {
         }, traversalType);
     }
 
+    /**
+     * @see #asIterable(TreeStructure, TreeTraversalType)
+     */
     public static Iterable<KTreePath> asIterable(TreeStructure treeStructure) {
         return asIterable(treeStructure, DEFAULT_TREE_TRAVERSAL_TYPE);
     }
