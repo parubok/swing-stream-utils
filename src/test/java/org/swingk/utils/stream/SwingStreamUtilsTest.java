@@ -943,6 +943,27 @@ public class SwingStreamUtilsTest {
     }
 
     @Test
+    public void asIterable_treeModel_postOrder_5() {
+        // not EDT
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
+        final int c = 100;
+        for (int i = 0; i < c; i++) {
+            root.add(new DefaultMutableTreeNode("c" + i));
+        }
+        DefaultTreeModel model = new DefaultTreeModel(root);
+        Iterable<KTreePath> iterable = SwingStreamUtils.asIterable(model, TreeTraversalType.POST_ORDER);
+        List<KTreePath> list = new ArrayList<>();
+        for (KTreePath p : iterable) {
+            list.add(p);
+        }
+        Assertions.assertEquals(101, list.size());
+        for (int i = 0; i < c; i++) {
+            Assertions.assertEquals(KTreePath.of(root, root.getChildAt(i)), list.get(i));
+        }
+        Assertions.assertEquals(KTreePath.of(root), list.get(list.size() - 1));
+    }
+
+    @Test
     public void stream_treeModel_postOrder() {
         // not EDT
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
