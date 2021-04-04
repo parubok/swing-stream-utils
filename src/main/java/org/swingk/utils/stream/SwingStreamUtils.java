@@ -121,7 +121,11 @@ public final class SwingStreamUtils {
      * @see #asIterable(JTable)
      */
     public static <T extends JTable> Stream<TableCellData<T>> stream(T table) {
-        return StreamSupport.stream(asIterable(table).spliterator(), false);
+        return iterable2stream(asIterable(table));
+    }
+
+    private static <K> Stream<K> iterable2stream(Iterable<K> iterable) {
+        return StreamSupport.stream(iterable.spliterator(), false);
     }
 
     /**
@@ -156,7 +160,7 @@ public final class SwingStreamUtils {
      * @see TreePath
      */
     public static Stream<KTreePath> stream(TreeModel treeModel, TreeTraversalType traversalType) {
-        return StreamSupport.stream(asIterable(treeModel, traversalType).spliterator(), false);
+        return iterable2stream(asIterable(treeModel, traversalType));
     }
 
     /**
@@ -179,7 +183,7 @@ public final class SwingStreamUtils {
      * @see TreePath
      */
     public static Stream<KTreePath> stream(TreeStructure treeStructure, TreeTraversalType traversalType) {
-        return StreamSupport.stream(asIterable(treeStructure, traversalType).spliterator(), false);
+        return iterable2stream(asIterable(treeStructure, traversalType));
     }
 
     /**
@@ -314,7 +318,7 @@ public final class SwingStreamUtils {
      * @see ComboBoxItem
      */
     public static <E> Stream<ComboBoxItem<E>> stream(ComboBoxModel<E> model) {
-        return StreamSupport.stream(asIterable(model).spliterator(), false);
+        return iterable2stream(asIterable(model));
     }
 
     /**
@@ -699,6 +703,6 @@ public final class SwingStreamUtils {
      * @see #getDescendantsIterable(Component)
      */
     public static Stream<Component> streamDescendants(Component parent) {
-        return StreamSupport.stream(getDescendantsIterable(parent).spliterator(), false);
+        return iterable2stream(getDescendantsIterable(parent));
     }
 }
