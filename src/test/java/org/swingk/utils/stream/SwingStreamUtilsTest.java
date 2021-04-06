@@ -872,7 +872,7 @@ public class SwingStreamUtilsTest {
     }
 
     @Test
-    public void asIterable_treeModel_postOrder_3() {
+    public void asIterable_treeModel_postOrder_rootOnly() {
         // not EDT
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
         DefaultTreeModel model = new DefaultTreeModel(root);
@@ -887,6 +887,19 @@ public class SwingStreamUtilsTest {
             Assertions.assertFalse(iterator.hasNext());
             Assertions.assertThrows(NoSuchElementException.class, iterator::next);
         }
+    }
+
+    @Test
+    public void asIterable_treeModel_postOrder_rootOnly_2() {
+        // not EDT
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
+        DefaultTreeModel model = new DefaultTreeModel(root);
+        Iterable<KTreePath> iterable = SwingStreamUtils.asIterable(model, TreeTraversalType.POST_ORDER);
+        Iterator<KTreePath> iterator = iterable.iterator();
+        Assertions.assertNotNull(iterator);
+        Assertions.assertEquals(KTreePath.of(root), iterator.next());
+        Assertions.assertFalse(iterator.hasNext());
+        Assertions.assertThrows(NoSuchElementException.class, iterator::next);
     }
 
     @Test
