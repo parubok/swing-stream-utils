@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
-abstract class AbstractTreePathIterator implements Iterator<KTreePath> {
+abstract class AbstractTreeStructureIterator implements Iterator<KTreePath> {
 
     /**
      * Singleton object to designate empty tree path.
@@ -18,7 +18,7 @@ abstract class AbstractTreePathIterator implements Iterator<KTreePath> {
     KTreePath nextPath;
     boolean completed;
 
-    AbstractTreePathIterator(TreeStructure treeStructure) {
+    AbstractTreeStructureIterator(TreeStructure treeStructure) {
         this.treeStructure = Objects.requireNonNull(treeStructure);
     }
 

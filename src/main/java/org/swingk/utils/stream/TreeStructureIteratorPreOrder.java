@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Implementation of {@link TreeTraversalType#PRE_ORDER} iteration.
  */
-final class TreeStructureIteratorPreOrder extends AbstractTreePathIterator {
+final class TreeStructureIteratorPreOrder extends AbstractTreeStructureIterator {
 
     TreeStructureIteratorPreOrder(TreeStructure treeStructure) {
         super(treeStructure);

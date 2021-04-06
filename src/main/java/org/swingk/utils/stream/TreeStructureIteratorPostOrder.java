@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Implementation of {@link TreeTraversalType#POST_ORDER} iteration.
  */
-final class TreeStructureIteratorPostOrder extends AbstractTreePathIterator {
+final class TreeStructureIteratorPostOrder extends AbstractTreeStructureIterator {
 
     TreeStructureIteratorPostOrder(TreeStructure treeStructure) {
         super(treeStructure);
