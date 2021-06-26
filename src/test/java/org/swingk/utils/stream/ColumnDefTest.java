@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import javax.swing.SwingUtilities;
 
 public class ColumnDefTest {
-
     @Test
     public void get() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
