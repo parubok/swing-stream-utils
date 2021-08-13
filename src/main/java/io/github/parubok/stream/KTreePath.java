@@ -1,4 +1,4 @@
-package io.github.swingk.stream;
+package io.github.parubok.stream;
 
 import javax.swing.tree.TreePath;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package io.github.swingk.stream;
+package io.github.parubok.stream;
 
 import java.util.AbstractList;
 import java.util.List;

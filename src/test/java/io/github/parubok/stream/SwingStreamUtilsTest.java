@@ -1,4 +1,4 @@
-package io.github.swingk.stream;
+package io.github.parubok.stream;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;

@@ -4,14 +4,14 @@
 # swing-stream-utils
 Utils for working with Java Swing components via Java 8 streams.
 
-Functionality of the library is provided by the static methods of class `io.github.swingk.stream.SwingStreamUtils`.
+Functionality of the library is provided by the static methods of class `io.github.parubok.stream.SwingStreamUtils`.
 The methods may be divided into two categories: those which allow to iterate (or stream) over data items of Swing components 
 (e.g. `SwingStreamUtils.stream`) and collectors which allow to create Swing components from a stream data (e.g. `SwingStreamUtils.toTable`).
 
 Example 1 (count how many times `JTable` cell value "London" appears in the selected cells of column 3):
 ```java
-import io.github.swingk.stream.SwingStreamUtils;
-import io.github.swingk.stream.TableCellData;
+import io.github.parubok.stream.SwingStreamUtils;
+import io.github.parubok.stream.TableCellData;
 
 JTable table = ...;
 long count = SwingStreamUtils.stream(table)
@@ -35,9 +35,9 @@ Example 2 (create table with 'Name' and 'Size' columns from a list of `File` obj
 import java.io.File;
 import java.util.List;
 
-import io.github.swingk.stream.ColumnDef;
+import io.github.parubok.stream.ColumnDef;
 
-import static io.github.swingk.stream.SwingStreamUtils.toTable;
+import static io.github.parubok.stream.SwingStreamUtils.toTable;
 
 List<File> files = ...;
 /* FileTable is a subclass of JTable */
@@ -51,9 +51,9 @@ Example 3 (create a table with specific model class):
 import java.io.File;
 import java.util.List;
 
-import io.github.swingk.stream.ColumnDef;
+import io.github.parubok.stream.ColumnDef;
 
-import static io.github.swingk.stream.SwingStreamUtils.toTable;
+import static io.github.parubok.stream.SwingStreamUtils.toTable;
 
 List<File> files = ...;
 FileTable table = files.stream()
@@ -71,9 +71,9 @@ Example:
 import java.io.File;
 import java.util.function.Supplier;
 
-import io.github.swingk.stream.ColumnDef;
+import io.github.parubok.stream.ColumnDef;
 
-import static io.github.swingk.stream.SwingStreamUtils.toTable;
+import static io.github.parubok.stream.SwingStreamUtils.toTable;
 
 enum Column implements Supplier<ColumnDef<File>> {
     NAME(new ColumnDef<>("Name", File::getName, 100, String.class)),
@@ -110,7 +110,7 @@ import java.io.File;
 import java.util.List;
 import javax.swing.JComboBox;
 
-import static io.github.swingk.stream.SwingStreamUtils.toComboBox;
+import static io.github.parubok.stream.SwingStreamUtils.toComboBox;
 
 List<File> files = ...;
 JComboBox<String> = files.stream()
@@ -125,7 +125,7 @@ import java.util.stream.Collectors;
 import java.awt.Component;
 import java.awt.Container;
 
-import static io.github.swingk.stream.SwingStreamUtils.streamDescendants;
+import static io.github.parubok.stream.SwingStreamUtils.streamDescendants;
 
 Container container = ...;
 List<Component> visibleDescendants = streamDescendants(container)
@@ -138,7 +138,7 @@ Example 6 (find all unselected combo box items which start with a letter "z"):
 ```java
 
 
-import io.github.swingk.stream.SwingStreamUtils;
+import io.github.parubok.stream.SwingStreamUtils;
 
 JComboBox<String> comboBox = ...;
 List<String> visibleDescendants = SwingStreamUtils.stream(comboBox)
@@ -153,9 +153,9 @@ import java.util.Optional;
 import javax.swing.JTree;
 import javax.swing.tree.TreeNode;
 
-import io.github.swingk.stream.KTreePath;
-import io.github.swingk.stream.SwingStreamUtils;
-import io.github.swingk.stream.TreeTraversalType;
+import io.github.parubok.stream.KTreePath;
+import io.github.parubok.stream.SwingStreamUtils;
+import io.github.parubok.stream.TreeTraversalType;
 
 JTree tree = ...;
 TreeNode node = ...;
@@ -168,9 +168,9 @@ It is worth mentioning that in most cases (check JavaDoc) the utility ensures th
 ```java
 import java.util.List;
 ...
-import io.github.swingk.stream.ColumnDef;
+import io.github.parubok.stream.ColumnDef;
 
-import static io.github.swingk.stream.SwingStreamUtils.toTable;
+import static io.github.parubok.stream.SwingStreamUtils.toTable;
 
 // may be not EDT (for example, Swing worker background thread)
 List<Server> servers = ...;
@@ -184,9 +184,9 @@ JTable table = servers.parallelStream() // OK to use parallel stream!
 ```java
 import java.util.List;
 ...
-import io.github.swingk.stream.ColumnDef;
+import io.github.parubok.stream.ColumnDef;
 
-import static io.github.swingk.stream.SwingStreamUtils.toTableModel;
+import static io.github.parubok.stream.SwingStreamUtils.toTableModel;
 
 // may be executed on any thread
 List<User> users = ...;
