@@ -1,4 +1,4 @@
-package org.swingk.utils.stream;
+package io.github.swingk.stream;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;

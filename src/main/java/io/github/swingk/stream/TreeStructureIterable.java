@@ -1,4 +1,4 @@
-package org.swingk.utils.stream;
+package io.github.swingk.stream;
 
 import java.util.Iterator;
 import java.util.Objects;
