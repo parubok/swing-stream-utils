@@ -8,7 +8,16 @@
   <version>1.31-SNAPSHOT</version>
 
   <name>swing-stream-utils</name>
+  <description>Utils for working with Java Swing components via Java 8 streams</description>
   <url>https://github.com/parubok/swing-stream-utils</url>
+
+  <developers>
+    <developer>
+      <id>parubok</id>
+      <name>Eli Rosenblum</name>
+      <email>eliahu.rosenblum@gmail.com</email>
+    </developer>
+  </developers>
 
   <licenses>
     <license>
