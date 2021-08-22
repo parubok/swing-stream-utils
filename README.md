@@ -199,3 +199,31 @@ SimpleTableModel<User> tableModel = users.parallelStream()
 This project has no external dependencies (except JUnit 5, for testing).
 
 Requires Java 8 or later.
+
+### License
+
+This project is licensed under [Apache License, version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
+### Installation
+
+Releases are available in [Maven Central](https://repo1.maven.org/maven2/io/github/parubok/swing-stream-utils/)
+
+#### Maven
+
+Add this snippet to the pom.xml `dependencies` section:
+
+```xml
+<dependency>
+    <groupId>io.github.parubok</groupId>
+    <artifactId>swing-stream-utils</artifactId>
+    <version>1.34</version>
+</dependency>
+```
+
+#### Gradle
+
+Add this snippet to the build.gradle `dependencies` section:
+
+```groovy
+implementation 'io.github.parubok:swing-stream-utils:1.34'
+```
