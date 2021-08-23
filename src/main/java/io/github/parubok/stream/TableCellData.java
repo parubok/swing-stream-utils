@@ -16,13 +16,13 @@ public final class TableCellData<T extends JTable> {
     private final boolean selected;
     private final boolean editable;
 
-    public TableCellData(int row, int column, Object value, T table) {
+    public TableCellData(int row, int column, Object value, T table, boolean selected, boolean editable) {
         this.row = row;
         this.column = column;
         this.value = value;
         this.table = table;
-        this.selected = table.isCellSelected(row, column);
-        this.editable = table.isCellEditable(row, column);
+        this.selected = selected;
+        this.editable = editable;
     }
 
     public int getRow() {

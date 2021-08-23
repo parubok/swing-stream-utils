@@ -7,6 +7,7 @@ import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
@@ -49,25 +50,36 @@ public final class SwingStreamUtils {
     }
 
     /**
-     * Note: The iteration order is from left to right, from top to bottom.
-     *
+     * @implNote The iteration order is from left to right, from top to bottom.
      * @param table Table which cells to iterate. Not null.
-     * @param <T>   Type of the table.
+     * @param <T> Type of the table.
      * @return Cell iterator for the provided table.
      */
     public static <T extends JTable> Iterable<TableCellData<T>> asIterable(T table) {
+        return asIterable(table, false);
+    }
+
+    /**
+     * @implNote The iteration order is from left to right, from top to bottom.
+     * @param table Table which cells to iterate. Not null.
+     * @param inclHeader If {@code true}, the iterable will include header values as row with index -1.
+     * See {@link TableColumn#getHeaderValue()}.
+     * @param <T> Type of the table.
+     * @return Cell iterator for the provided table.
+     */
+    public static <T extends JTable> Iterable<TableCellData<T>> asIterable(T table, boolean inclHeader) {
         requireNonNull(table, "table");
         return () -> {
             final int lastRow = table.getRowCount() - 1;
             final int lastColumn = table.getColumnCount() - 1;
 
-            if (lastRow < 0 || lastColumn < 0) {
+            if ((lastRow < 0 && !inclHeader) || lastColumn < 0) {
                 return emptyIterator();
             }
 
             return new Iterator<TableCellData<T>>() {
 
-                private int row = 0;
+                private int row = inclHeader ? -1 : 0;
                 private int column = 0;
                 private boolean hasMoreCells = true;
 
@@ -89,14 +101,43 @@ public final class SwingStreamUtils {
                     return hasMoreCells;
                 }
 
+                private TableCellData<T> nextHeader() {
+                    TableColumnModel columnModel = table.getColumnModel();
+                    boolean selected = false;
+                    if (columnModel.getColumnSelectionAllowed()) {
+                        for (int selColumn : columnModel.getSelectedColumns()) {
+                            if (selColumn == column) {
+                                selected = true;
+                                break;
+                            }
+                        }
+                    }
+                    Object headerValue = columnModel.getColumn(column).getHeaderValue();
+                    TableCellData<T> cellData = new TableCellData<>(row, column, headerValue, table, selected, false);
+                    if (column == lastColumn) {
+                        row = 0;
+                        column = 0;
+                        if (lastRow == -1) {
+                            hasMoreCells = false;
+                        }
+                    } else {
+                        column++;
+                    }
+                    return cellData;
+                }
+
                 @Override
                 public TableCellData<T> next() {
                     checkForConcurrentModification();
                     if (!hasMoreCells) {
                         throw new NoSuchElementException();
                     }
+                    if (row == -1) {
+                        return nextHeader();
+                    }
                     Object value = table.getValueAt(row, column);
-                    TableCellData<T> cellData = new TableCellData<>(row, column, value, table);
+                    TableCellData<T> cellData = new TableCellData<>(row, column, value, table,
+                            table.isCellSelected(row, column), table.isCellEditable(row, column));
                     if (column < lastColumn) {
                         column++;
                     } else if (row < lastRow) {

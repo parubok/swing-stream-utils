@@ -30,6 +30,7 @@ import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Vector;
 import java.util.function.Function;
 import java.util.function.ObjIntConsumer;
 import java.util.stream.Collectors;
@@ -42,7 +43,7 @@ import static java.util.Collections.singletonList;
 public class SwingStreamUtilsTest {
 
     @Test
-    public void asIterable_1() throws Exception {
+    public void asIterable_JTable() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             TableModel model = new DefaultTableModel(1, 2);
             model.setValueAt("c0", 0, 0);
@@ -69,7 +70,66 @@ public class SwingStreamUtilsTest {
     }
 
     @Test
-    public void asIterable_2() throws Exception {
+    public void asIterable_JTable_with_header_0_rows() throws Exception {
+        SwingUtilities.invokeAndWait(() -> {
+            DefaultTableModel model = new DefaultTableModel(0, 2);
+            model.setColumnIdentifiers(new Vector<>(asList("h1", "h2")));
+            JTable table = new JTable(model);
+            Iterable<TableCellData<JTable>> iterable = SwingStreamUtils.asIterable(table, true);
+            Iterator<TableCellData<JTable>> iterator = iterable.iterator();
+            Assertions.assertTrue(iterator.hasNext());
+            TableCellData<JTable> h1 = iterator.next();
+            Assertions.assertEquals(-1, h1.getRow());
+            Assertions.assertEquals(0, h1.getColumn());
+            Assertions.assertFalse(h1.isSelected());
+            Assertions.assertFalse(h1.isEditable());
+            Assertions.assertEquals("h1", h1.getValue());
+            Assertions.assertTrue(iterator.hasNext());
+            TableCellData<JTable> h2 = iterator.next();
+            Assertions.assertEquals(-1, h2.getRow());
+            Assertions.assertEquals(1, h2.getColumn());
+            Assertions.assertFalse(h2.isSelected());
+            Assertions.assertFalse(h2.isEditable());
+            Assertions.assertEquals("h2", h2.getValue());
+            Assertions.assertFalse(iterator.hasNext());
+            Assertions.assertThrows(NoSuchElementException.class, iterator::next);
+        });
+    }
+
+    @Test
+    public void asIterable_JTable_empty_table() throws Exception {
+        SwingUtilities.invokeAndWait(() -> {
+            DefaultTableModel model = new DefaultTableModel(0, 0);
+            Iterable<TableCellData<JTable>> iterable = SwingStreamUtils.asIterable(new JTable(model));
+            Iterator<TableCellData<JTable>> iterator = iterable.iterator();
+            Assertions.assertFalse(iterator.hasNext());
+            Assertions.assertThrows(NoSuchElementException.class, iterator::next);
+        });
+    }
+
+    @Test
+    public void asIterable_JTable_with_header_1_row() throws Exception {
+        SwingUtilities.invokeAndWait(() -> {
+            DefaultTableModel model = new DefaultTableModel(1, 2);
+            model.setColumnIdentifiers(new Vector<>(asList("h1", "h2")));
+            model.setValueAt("c1", 0, 0);
+            model.setValueAt("c2", 0, 1);
+            JTable table = new JTable(model);
+            Iterable<TableCellData<JTable>> iterable = SwingStreamUtils.asIterable(table, true);
+            List<String> values = new ArrayList<>();
+            iterable.forEach(c -> values.add((String) c.getValue()));
+            Assertions.assertEquals(asList("h1", "h2", "c1", "c2"), values);
+            List<Integer> rows = new ArrayList<>();
+            iterable.forEach(c -> rows.add(c.getRow()));
+            Assertions.assertEquals(asList(-1, -1, 0, 0), rows);
+            List<Integer> columns = new ArrayList<>();
+            iterable.forEach(c -> columns.add(c.getColumn()));
+            Assertions.assertEquals(asList(0, 1, 0, 1), columns);
+        });
+    }
+
+    @Test
+    public void asIterable_JTable_single_cell() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
             TableModel model = new DefaultTableModel(1, 1);
             JTable table = new JTable(model);
