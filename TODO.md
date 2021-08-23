@@ -1,4 +1,3 @@
-- Allow to incl. JTable header in the stream
 - JList/ListModel - collector/stream.
 - Table index data converter for stream elements (to allow them to be different).
 - Improve README (mention glazed lists)
