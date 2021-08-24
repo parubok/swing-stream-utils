@@ -87,7 +87,7 @@
         <configuration>
           <archive>
             <manifestEntries>
-              <Automatic-Module-Name>org.swingk.utils.stream</Automatic-Module-Name>
+              <Automatic-Module-Name>io.github.parubok.stream</Automatic-Module-Name>
             </manifestEntries>
           </archive>
         </configuration>
