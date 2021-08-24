@@ -4,7 +4,7 @@ import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
 
 /**
- * Represents a single combo box item and its attributes (e.g. index).
+ * Represents a single combo box item and its attributes (for example, index).
  *
  * @param <E> Type of the combo box item.
  */

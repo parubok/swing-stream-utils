@@ -1,7 +1,5 @@
 - Maven Central badge
 - JList/ListModel - collector/stream.
 - Table index data converter for stream elements (to allow them to be different).
-- Improve README (mention glazed lists)
-- Incl. generated JavaDoc HTML pages
 - package-info.java
 - Demo (tree iteration)

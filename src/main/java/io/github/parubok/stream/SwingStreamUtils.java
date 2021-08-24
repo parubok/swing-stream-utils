@@ -393,7 +393,7 @@ public final class SwingStreamUtils {
      * the corresponding element may be retrieved via {@link SimpleTableModel#getRowObject(int)}).
      * <p>
      * <b>Note 1:</b> The collector ensures that the table component is created/accessed on EDT even if the streaming
-     * is performed on a different thread (e.g. parallel stream).
+     * is performed on a different thread (for example, parallel streams).
      * </p>
      * <p>
      * <b>Note 2:</b> Model of the resulting {@link JTable} is instance of {@link SimpleTableModel}.
@@ -458,7 +458,7 @@ public final class SwingStreamUtils {
      * This collector accepts a supplier to create model of the resulting table.
      * <p>
      * <b>Note 1:</b> The collector ensures that the table component is created/accessed on EDT even if the streaming
-     * is performed on a different thread (e.g. parallel stream).
+     * is performed on a different thread (for example, parallel streams).
      * </p>
      * <p>
      * <b>Note 2:</b> If the supplied model implements {@link ObjIntConsumer<T>}, method
@@ -565,8 +565,8 @@ public final class SwingStreamUtils {
      * Stream collector to create {@link JComboBox}.
      * <p>
      * <b>Note:</b> The collector ensures that the combo box component is created/accessed on EDT even if the
-     * streaming is performed on a different thread (e.g. parallel stream). The model supplier is called on the current
-     * thread.
+     * streaming is performed on a different thread (for example, parallel streams). The model supplier is called on
+     * the current thread.
      * </p>
      *
      * @param comboSupplier Creates a concrete instance of {@link JComboBox} for the collector. Called on EDT.

@@ -38,9 +38,11 @@ public class ColumnDef<K> {
 
     /**
      * @param name Name of the column. Not null.
-     * @param valueProducer Producer of values for the column. May be called on non-EDT thread (e.g. with parallel stream).
+     * @param valueProducer Producer of values for the column. May be called on non-EDT thread (for example, with
+     * parallel stream).
      * @param preferredWidth Preferred width of the column in pixels. See {@link #DEFAULT_PREFERRED_WIDTH}.
-     * @param columnClass Class which will be returned from {@link javax.swing.table.TableModel#getColumnClass(int)} for this column. Not null.
+     * @param columnClass Class which will be returned from {@link javax.swing.table.TableModel#getColumnClass(int)}
+     * for this column. Not null.
      * @param editable True if cells of this column should be editable.
      */
     public ColumnDef(String name, Function<K, ?> valueProducer, int preferredWidth, Class<?> columnClass,

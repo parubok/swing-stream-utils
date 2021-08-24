@@ -68,7 +68,7 @@ public final class SimpleTableModel<T> extends DefaultTableModel implements IntF
     }
 
     /**
-     * @return Data object (e.g. stream element) associated with this row.
+     * @return Data object associated with this row.
      */
     public T getRowObject(int rowIndex) {
         return (T) rowObjects.getValueAt(rowIndex, 0);
@@ -76,7 +76,7 @@ public final class SimpleTableModel<T> extends DefaultTableModel implements IntF
 
     /**
      * @param rowIndex Row index.
-     * @param rowObject Data object (e.g. stream element) associated with this row.
+     * @param rowObject Data object associated with this row.
      */
     public void setRowObject(int rowIndex, T rowObject) {
         rowObjects.setValueAt(rowObject, rowIndex, 0);

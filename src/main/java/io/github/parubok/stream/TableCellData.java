@@ -3,7 +3,7 @@ package io.github.parubok.stream;
 import javax.swing.JTable;
 
 /**
- * Represents a table cell and its attributes (e.g. cell value).
+ * Represents a table cell and its attributes (for example, cell value).
  *
  * @param <T> Type of the table.
  */
