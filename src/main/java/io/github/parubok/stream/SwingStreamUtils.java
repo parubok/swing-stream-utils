@@ -50,22 +50,26 @@ public final class SwingStreamUtils {
     }
 
     /**
+     * Must be invoked on EDT.
+     *
      * @implNote The iteration order is from left to right, from top to bottom.
      * @param table Table which cells to iterate. Not null.
      * @param <T> Type of the table.
-     * @return Cell iterator for the provided table.
+     * @return Iterator for the provided table.
      */
     public static <T extends JTable> Iterable<TableCellData<T>> asIterable(T table) {
         return asIterable(table, false);
     }
 
     /**
+     * Must be invoked on EDT.
+     *
      * @implNote The iteration order is from left to right, from top to bottom.
      * @param table Table which cells to iterate. Not null.
-     * @param inclHeader If {@code true}, the iterable will include header values as row with index -1.
+     * @param inclHeader If {@code true}, the iterable will include the table header values as row with index -1.
      * See {@link TableColumn#getHeaderValue()}.
      * @param <T> Type of the table.
-     * @return Cell iterator for the provided table.
+     * @return Iterator for the provided table.
      */
     public static <T extends JTable> Iterable<TableCellData<T>> asIterable(T table, boolean inclHeader) {
         requireNonNull(table, "table");
@@ -157,12 +161,27 @@ public final class SwingStreamUtils {
      * Must be invoked on EDT.
      *
      * @param table Table which cells will be streamed. Not null.
-     * @param <T>   Type of the table.
+     * @param <T> Type of the table.
      * @return Stream of {@link TableCellData} for the provided table.
      * @see #asIterable(JTable)
      */
     public static <T extends JTable> Stream<TableCellData<T>> stream(T table) {
-        return iterable2stream(asIterable(table));
+        return stream(table, false);
+    }
+
+    /**
+     * Streams cells of {@link JTable}. The table traversal order is from left to right, from top to bottom.
+     * Must be invoked on EDT.
+     *
+     * @param table Table which cells will be streamed. Not null.
+     * @param inclHeader If {@code true}, the stream will include the table header values as row with index -1.
+     * See {@link TableColumn#getHeaderValue()}.
+     * @param <T> Type of the table.
+     * @return Stream of {@link TableCellData} for the provided table.
+     * @see #asIterable(JTable)
+     */
+    public static <T extends JTable> Stream<TableCellData<T>> stream(T table, boolean inclHeader) {
+        return iterable2stream(asIterable(table, inclHeader));
     }
 
     private static <K> Stream<K> iterable2stream(Iterable<K> iterable) {
