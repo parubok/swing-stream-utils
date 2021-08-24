@@ -157,12 +157,9 @@ public final class SwingStreamUtils {
     }
 
     /**
-     * Streams cells of {@link JTable}. The table traversal order is from left to right, from top to bottom.
-     * Must be invoked on EDT.
+     * Invokes {@link #stream(JTable, boolean)} with {@code inclHeader} parameter {@code false}.
      *
-     * @param table Table which cells will be streamed. Not null.
-     * @param <T> Type of the table.
-     * @return Stream of {@link TableCellData} for the provided table.
+     * @see #stream(JTable, boolean)
      * @see #asIterable(JTable)
      */
     public static <T extends JTable> Stream<TableCellData<T>> stream(T table) {
@@ -178,7 +175,7 @@ public final class SwingStreamUtils {
      * See {@link TableColumn#getHeaderValue()}.
      * @param <T> Type of the table.
      * @return Stream of {@link TableCellData} for the provided table.
-     * @see #asIterable(JTable)
+     * @see #asIterable(JTable, boolean)
      */
     public static <T extends JTable> Stream<TableCellData<T>> stream(T table, boolean inclHeader) {
         return iterable2stream(asIterable(table, inclHeader));

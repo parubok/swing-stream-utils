@@ -10,6 +10,8 @@ The methods may be divided into two categories: those which allow to iterate (or
 
 Example 1 (count how many times `JTable` cell value "London" appears in the selected cells of column 3):
 ```java
+import javax.swing.JTable;
+
 import io.github.parubok.stream.SwingStreamUtils;
 import io.github.parubok.stream.TableCellData;
 
