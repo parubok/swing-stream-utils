@@ -229,3 +229,7 @@ Add this snippet to the build.gradle `dependencies` section:
 ```groovy
 implementation 'io.github.parubok:swing-stream-utils:1.34'
 ```
+
+### See Also
+
+http://www.glazedlists.com/
