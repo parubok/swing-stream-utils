@@ -1,5 +1,6 @@
 ![Java CI with Maven](https://github.com/parubok/table-stream-utils/workflows/Java%20CI%20with%20Maven/badge.svg)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/parubok/table-stream-utils/blob/master/LICENSE)
+[![Latest Version](https://img.shields.io/maven-central/v/io.github.parubok/swing-stream-utils)](https://search.maven.org/search?q=a:swing-stream-utils)
 
 # swing-stream-utils
 Utils for working with Java Swing components via Java 8 streams.
