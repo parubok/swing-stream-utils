@@ -6,7 +6,7 @@
 # swing-stream-utils
 Utils for working with Java Swing components via Java 8 streams.
 
-Functionality of the library is provided by the static methods of class `io.github.parubok.stream.SwingStreamUtils`.
+Functionality of the library is provided by the static methods of class [`SwingStreamUtils`](https://javadoc.io/doc/io.github.parubok/swing-stream-utils/latest/io/github/parubok/stream/SwingStreamUtils.html).
 The methods may be divided into two categories: those which allow to iterate (or stream) over data items of Swing components 
 (e.g. `SwingStreamUtils.stream`) and collectors which allow to create Swing components from a stream data (e.g. `SwingStreamUtils.toTable`).
 
