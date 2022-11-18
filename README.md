@@ -10,7 +10,7 @@ Functionality of the library is provided by the static methods of class [`SwingS
 The methods may be divided into two categories: those which allow to iterate (or stream) over data items of Swing components 
 (e.g. `SwingStreamUtils.stream`) and collectors which allow to create Swing components from a stream data (e.g. `SwingStreamUtils.toTable`).
 
-Example 1 (count how many times `JTable` cell value `"London"` appears in the selected cells of column `"City"`):
+Example 1 (for `JTable`, count how many times value `"London"` appears in the selected cells of column `"City"`):
 ```java
 import javax.swing.JTable;
 
