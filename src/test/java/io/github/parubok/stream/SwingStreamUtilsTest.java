@@ -45,7 +45,8 @@ public class SwingStreamUtilsTest {
     @Test
     public void asIterable_JTable() throws Exception {
         SwingUtilities.invokeAndWait(() -> {
-            TableModel model = new DefaultTableModel(1, 2);
+            DefaultTableModel model = new DefaultTableModel(1, 2);
+            model.setColumnIdentifiers(new String[]{"col1", "col2"});
             model.setValueAt("c0", 0, 0);
             model.setValueAt("c1", 0, 1);
             JTable table = new JTable(model);
@@ -55,12 +56,14 @@ public class SwingStreamUtilsTest {
             Assertions.assertNotNull(iterator);
             Assertions.assertTrue(iterator.hasNext());
             TableCellData<JTable> cell_0 = iterator.next();
+            Assertions.assertEquals("col1", cell_0.getColumnName());
             Assertions.assertEquals("c0", cell_0.getValue());
             Assertions.assertEquals(0, cell_0.getRow());
             Assertions.assertEquals(0, cell_0.getColumn());
             Assertions.assertEquals(table, cell_0.getTable());
             Assertions.assertTrue(iterator.hasNext());
             TableCellData<JTable> cell_1 = iterator.next();
+            Assertions.assertEquals("col2", cell_1.getColumnName());
             Assertions.assertEquals("c1", cell_1.getValue());
             Assertions.assertEquals(0, cell_1.getRow());
             Assertions.assertEquals(1, cell_1.getColumn());

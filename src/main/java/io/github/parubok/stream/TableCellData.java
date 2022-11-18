@@ -3,7 +3,7 @@ package io.github.parubok.stream;
 import javax.swing.JTable;
 
 /**
- * Represents a table cell and its attributes (for example, cell value).
+ * Represents a table cell and its attributes.
  *
  * @param <T> Type of the table.
  */
@@ -11,14 +11,17 @@ public final class TableCellData<T extends JTable> {
 
     private final int row;
     private final int column;
+    private final String columnName;
     private final Object value;
     private final T table;
     private final boolean selected;
     private final boolean editable;
 
-    public TableCellData(int row, int column, Object value, T table, boolean selected, boolean editable) {
+    public TableCellData(int row, int column, String columnName, Object value, T table, boolean selected,
+                         boolean editable) {
         this.row = row;
         this.column = column;
+        this.columnName = columnName;
         this.value = value;
         this.table = table;
         this.selected = selected;
@@ -31,6 +34,13 @@ public final class TableCellData<T extends JTable> {
 
     public int getColumn() {
         return column;
+    }
+
+    /**
+     * @see JTable#getColumnName(int)
+     */
+    public String getColumnName() {
+        return columnName;
     }
 
     public Object getValue() {

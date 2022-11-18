@@ -117,7 +117,9 @@ public final class SwingStreamUtils {
                         }
                     }
                     Object headerValue = columnModel.getColumn(column).getHeaderValue();
-                    TableCellData<T> cellData = new TableCellData<>(row, column, headerValue, table, selected, false);
+                    String columnName = table.getColumnName(column);
+                    TableCellData<T> cellData = new TableCellData<>(row, column, columnName, headerValue, table,
+                            selected, false);
                     if (column == lastColumn) {
                         row = 0;
                         column = 0;
@@ -140,8 +142,8 @@ public final class SwingStreamUtils {
                         return nextHeader();
                     }
                     Object value = table.getValueAt(row, column);
-                    TableCellData<T> cellData = new TableCellData<>(row, column, value, table,
-                            table.isCellSelected(row, column), table.isCellEditable(row, column));
+                    TableCellData<T> cellData = new TableCellData<>(row, column, table.getColumnName(column), value,
+                            table, table.isCellSelected(row, column), table.isCellEditable(row, column));
                     if (column < lastColumn) {
                         column++;
                     } else if (row < lastRow) {
