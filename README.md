@@ -25,10 +25,10 @@ long count = SwingStreamUtils.stream(table)
   .filter("London"::equals)
   .count();
   
-// or with foreach loop:
+// or with for-each loop:
 count = 0;
 for (TableCellData<JTable> cellData: SwingStreamUtils.asIterable(table)) {
-  if (cellData.isSelected() && cellData.getColumn() == 3 && "London".equals(cellData.getValue())) {
+  if (cellData.isSelected() && cellData.getColumnName().equals("City") && "London".equals(cellData.getValue())) {
     count++;
   }
 }
