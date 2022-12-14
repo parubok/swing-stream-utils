@@ -264,29 +264,21 @@ public final class SwingStreamUtils {
      * <b>Note:</b> The tree structure should not change during the iteration.
      * </p>
      *
+     * @implNote Adds {@link javax.swing.event.TreeModelListener} to check for modifications during the iteration.
+     * The listener is removed after the iteration finishes or when modification is detected.
      * @param treeModel Tree model to iterate. Not null.
      * @param traversalType Specifies order of the tree traversal. Not null.
      * @return Iterable to iterate over paths of the provided tree model using depth-first search.
      * @see TreePath
      */
     public static Iterable<KTreePath> asIterable(TreeModel treeModel, TreeTraversalType traversalType) {
+        return asIterable(treeModel, traversalType, true);
+    }
+
+    public static Iterable<KTreePath> asIterable(TreeModel treeModel, TreeTraversalType traversalType,
+                                                 boolean failOnModification) {
         requireNonNull(treeModel);
-        return asIterable(new TreeStructure() {
-            @Override
-            public Object getRoot() {
-                return treeModel.getRoot();
-            }
-
-            @Override
-            public Object getChild(Object parent, int index) {
-                return treeModel.getChild(parent, index);
-            }
-
-            @Override
-            public int getChildCount(Object parent) {
-                return treeModel.getChildCount(parent);
-            }
-        }, traversalType);
+        return asIterable(new TreeModelTreeStructure(treeModel, failOnModification), traversalType);
     }
 
     /**

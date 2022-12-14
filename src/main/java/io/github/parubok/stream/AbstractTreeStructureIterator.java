@@ -1,6 +1,7 @@
 package io.github.parubok.stream;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -20,6 +21,7 @@ abstract class AbstractTreeStructureIterator implements Iterator<KTreePath> {
 
     AbstractTreeStructureIterator(TreeStructure treeStructure) {
         this.treeStructure = Objects.requireNonNull(treeStructure);
+        treeStructure.startListeningForChanges();
     }
 
     static List<Object> getChildren(TreeStructure treeStructure, Object parent) {
@@ -37,11 +39,18 @@ abstract class AbstractTreeStructureIterator implements Iterator<KTreePath> {
      */
     abstract KTreePath getNextPath();
 
+    private void checkForModification() throws ConcurrentModificationException {
+        if (treeStructure.isChangeDetected()) {
+            throw new ConcurrentModificationException("Tree structure has been modified during iteration.");
+        }
+    }
+
     @Override
     public boolean hasNext() {
         if (completed) {
             return false;
         }
+        checkForModification();
         if (nextPath == null) {
             nextPath = getNextPath();
         }
@@ -53,9 +62,13 @@ abstract class AbstractTreeStructureIterator implements Iterator<KTreePath> {
         if (completed) {
             throw new NoSuchElementException();
         }
+        checkForModification();
         currentPath = nextPath != null ? nextPath : getNextPath();
         nextPath = getNextPath(); // current path has changed - update nextPath
         completed = (nextPath == EMPTY_PATH);
+        if (completed) {
+            treeStructure.stopListeningForChanges();
+        }
         return currentPath;
     }
 }

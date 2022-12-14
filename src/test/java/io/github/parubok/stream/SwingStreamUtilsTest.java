@@ -235,7 +235,7 @@ public class SwingStreamUtilsTest {
             Iterable<TableCellData<JTable>> iterable = SwingStreamUtils.asIterable(table);
             Iterator<TableCellData<JTable>> iterator = iterable.iterator();
             iterator.next();
-            model.addRow(new Object[] { "d1", "d2" });
+            model.addRow(new Object[]{"d1", "d2"});
             ConcurrentModificationException ex = Assertions.assertThrows(ConcurrentModificationException.class,
                     () -> iterator.next());
             Assertions.assertEquals("Expected row count: 3, actual row count: 4.", ex.getMessage());
@@ -262,7 +262,7 @@ public class SwingStreamUtilsTest {
             List<Rectangle> values = asList(new Rectangle(0, 0, 2, 5), new Rectangle(1, 1, 3, 6));
             JTable table = values.stream()
                     .collect(SwingStreamUtils.toTable(new ColumnDef<>("Location", r -> r.getLocation(), 20, Point.class),
-                                                        new ColumnDef<>("Size", r -> r.getSize(), 30, Dimension.class)));
+                            new ColumnDef<>("Size", r -> r.getSize(), 30, Dimension.class)));
             Assertions.assertEquals(values.size(), table.getRowCount());
             Assertions.assertEquals(2, table.getColumnCount());
             Assertions.assertEquals("Location", table.getColumnName(0));
@@ -857,12 +857,12 @@ public class SwingStreamUtilsTest {
         DefaultTreeModel model = new DefaultTreeModel(root);
         Stream<KTreePath> stream = SwingStreamUtils.stream(model);
         Assertions.assertEquals(Arrays.asList(KTreePath.of(root),
-                KTreePath.of(root, c1),
-                KTreePath.of(root, c1, c1_1),
-                KTreePath.of(root, c1, c1_2),
-                KTreePath.of(root, c2),
-                KTreePath.of(root, c2, c2_1),
-                KTreePath.of(root, c2, c2_2)),
+                        KTreePath.of(root, c1),
+                        KTreePath.of(root, c1, c1_1),
+                        KTreePath.of(root, c1, c1_2),
+                        KTreePath.of(root, c2),
+                        KTreePath.of(root, c2, c2_1),
+                        KTreePath.of(root, c2, c2_2)),
                 stream.collect(Collectors.toList()));
         Assertions.assertThrows(IllegalStateException.class, stream::count);
     }
@@ -1205,5 +1205,27 @@ public class SwingStreamUtilsTest {
         };
         Assertions.assertEquals(asList(KTreePath.of("root"), KTreePath.of("root", "child")),
                 SwingStreamUtils.stream(s).collect(Collectors.toList()));
+    }
+
+    @Test
+    public void modifyingTreeModelDuringIterationShouldResultInConcurrentModificationException() throws Exception {
+        SwingUtilities.invokeAndWait(() -> {
+            DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
+            DefaultTreeModel model = new DefaultTreeModel(root);
+            Iterator<KTreePath> iterator = SwingStreamUtils.asIterable(model).iterator();
+            model.insertNodeInto(new DefaultMutableTreeNode("child"), root, 0);
+            // now the iterator is unusable:
+            Assertions.assertThrows(ConcurrentModificationException.class, iterator::hasNext);
+            Assertions.assertThrows(ConcurrentModificationException.class, iterator::next);
+
+            // a new iterator will work just fine:
+            iterator = SwingStreamUtils.asIterable(model).iterator();
+            Assertions.assertTrue(iterator.hasNext());
+            Assertions.assertEquals(KTreePath.of(root), iterator.next());
+            // until we modify the model:
+            model.insertNodeInto(new DefaultMutableTreeNode("child2"), root, 1);
+            Assertions.assertThrows(ConcurrentModificationException.class, iterator::hasNext);
+            Assertions.assertThrows(ConcurrentModificationException.class, iterator::next);
+        });
     }
 }
