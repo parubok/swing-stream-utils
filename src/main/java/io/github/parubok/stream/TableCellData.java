@@ -7,7 +7,7 @@ import javax.swing.JTable;
  *
  * @param <T> Type of the table.
  */
-public final class TableCellData<T extends JTable> {
+public class TableCellData<T extends JTable> {
 
     private final int row;
     private final int column;
