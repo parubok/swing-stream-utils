@@ -13,6 +13,7 @@ import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
+import javax.swing.event.TreeModelListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -1226,6 +1227,48 @@ public class SwingStreamUtilsTest {
             model.insertNodeInto(new DefaultMutableTreeNode("child2"), root, 1);
             Assertions.assertThrows(ConcurrentModificationException.class, iterator::hasNext);
             Assertions.assertThrows(ConcurrentModificationException.class, iterator::next);
+        });
+    }
+
+    @Test
+    public void modifyingTreeModelAfterIteration() throws Exception {
+        SwingUtilities.invokeAndWait(() -> {
+            DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
+            DefaultTreeModel model = new DefaultTreeModel(root);
+            Iterator<KTreePath> iterator = SwingStreamUtils.asIterable(model).iterator();
+            while (iterator.hasNext()) {
+                iterator.next();
+            }
+            model.insertNodeInto(new DefaultMutableTreeNode("child"), root, 0);
+            Assertions.assertFalse(iterator.hasNext());
+        });
+    }
+
+    @Test
+    public void treeModelListeners() throws Exception {
+        SwingUtilities.invokeAndWait(() -> {
+            List<TreeModelListener> listeners = new ArrayList<>();
+            DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
+            DefaultTreeModel model = new DefaultTreeModel(root) {
+                @Override
+                public void addTreeModelListener(TreeModelListener l) {
+                    listeners.add(l);
+                    super.addTreeModelListener(l);
+                }
+
+                @Override
+                public void removeTreeModelListener(TreeModelListener l) {
+                    listeners.remove(l);
+                    super.removeTreeModelListener(l);
+                }
+            };
+            Assertions.assertEquals(0, listeners.size());
+            Iterator<KTreePath> iterator = SwingStreamUtils.asIterable(model).iterator();
+            Assertions.assertEquals(1, listeners.size());
+            while (iterator.hasNext()) {
+                iterator.next();
+            }
+            Assertions.assertEquals(0, listeners.size());
         });
     }
 }
