@@ -276,7 +276,8 @@ public final class SwingStreamUtils {
     }
 
     /**
-     * @return Iterator which does not check for the tree model modifications during the iteration.
+     * @param failOnModification If {@code false}, the iterator does not check for the tree model modifications during
+     * iteration. Should be {@code true} in most cases.
      */
     public static Iterable<KTreePath> asIterable(TreeModel treeModel, TreeTraversalType traversalType,
                                                  boolean failOnModification) {
