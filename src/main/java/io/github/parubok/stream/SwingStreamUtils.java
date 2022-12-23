@@ -275,6 +275,9 @@ public final class SwingStreamUtils {
         return asIterable(treeModel, traversalType, true);
     }
 
+    /**
+     * @return Iterator which does not check for the tree model modifications during the iteration.
+     */
     public static Iterable<KTreePath> asIterable(TreeModel treeModel, TreeTraversalType traversalType,
                                                  boolean failOnModification) {
         requireNonNull(treeModel);

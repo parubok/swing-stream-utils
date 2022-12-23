@@ -1264,10 +1264,14 @@ public class SwingStreamUtilsTest {
             };
             Assertions.assertEquals(0, listeners.size());
             Iterator<KTreePath> iterator = SwingStreamUtils.asIterable(model).iterator();
-            Assertions.assertEquals(1, listeners.size());
+            Assertions.assertEquals(1, listeners.size()); // must be removed after iteration
             while (iterator.hasNext()) {
                 iterator.next();
             }
+            Assertions.assertEquals(0, listeners.size());
+
+            // without modification check - no listener is added
+            iterator = SwingStreamUtils.asIterable(model, SwingStreamUtils.DEFAULT_TREE_TRAVERSAL_TYPE, false).iterator();
             Assertions.assertEquals(0, listeners.size());
         });
     }
