@@ -220,7 +220,7 @@ Add this snippet to the pom.xml `dependencies` section:
 <dependency>
     <groupId>io.github.parubok</groupId>
     <artifactId>swing-stream-utils</artifactId>
-    <version>1.34</version>
+    <version>1.35</version>
 </dependency>
 ```
 
@@ -229,7 +229,7 @@ Add this snippet to the pom.xml `dependencies` section:
 Add this snippet to the build.gradle `dependencies` section:
 
 ```groovy
-implementation 'io.github.parubok:swing-stream-utils:1.34'
+implementation 'io.github.parubok:swing-stream-utils:1.35'
 ```
 
 ### See Also
