@@ -36,6 +36,10 @@ public class TableCellData<T extends JTable> {
         return column;
     }
 
+    public TableCell getCell() {
+        return new TableCell(row, column);
+    }
+
     /**
      * @see JTable#getColumnName(int)
      */

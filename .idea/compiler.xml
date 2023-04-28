@@ -10,7 +10,6 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="swing-stream-utils" target="1.8" />
       <module name="table-stream-utils" target="1.8" />
     </bytecodeTargetLevel>
   </component>
