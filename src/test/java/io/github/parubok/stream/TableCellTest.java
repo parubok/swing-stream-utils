@@ -224,4 +224,13 @@ public class TableCellTest
         Assertions.assertEquals(10, c.get(TableCell.ROW));
         Assertions.assertEquals(2, c.get(TableCell.COLUMN));
     }
+
+    @Test
+    public void hashCode_() {
+        for (int i = 0; i < 100; i++) {
+            Assertions.assertEquals(new TableCell(i, i).hashCode(), new TableCell(i, i).hashCode());
+            Assertions.assertEquals(new TableCell(0, i).hashCode(), new TableCell(0, i).hashCode());
+            Assertions.assertEquals(new TableCell(i, 0).hashCode(), new TableCell(i, 0).hashCode());
+        }
+    }
 }

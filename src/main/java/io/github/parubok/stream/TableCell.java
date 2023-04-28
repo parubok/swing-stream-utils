@@ -66,10 +66,7 @@ public class TableCell implements Comparable<TableCell> {
 
     @Override
     public int hashCode() {
-        int result = 17;
-        result = 37 * result + row;
-        result = 37 * result + col;
-        return result;
+        return Integer.hashCode(row + col);
     }
 
     @Override
