@@ -23,10 +23,33 @@ public class TableCell implements Comparable<TableCell> {
                 .max();
     }
 
-    public static OptionalInt getMaxCol(Collection<TableCell> cells) {
+    public static OptionalInt getMaxColumn(Collection<TableCell> cells) {
         return cells.stream()
                 .mapToInt(TableCell::getColumn)
                 .max();
+    }
+
+    /**
+     * @return true if the specified cells form a continuous selection rectangle.
+     * @implNote Returns true for empty set.
+     */
+    public static boolean isContinuousSelection(Set<TableCell> cells) {
+        int[] d = getDimensions(cells);
+        return (d[0] * d[1]) == cells.size();
+    }
+
+    /**
+     * @return int[] { row count, column count}
+     */
+    public static int[] getDimensions(Set<TableCell> cells) {
+        if (cells.isEmpty()) {
+            return new int[]{0, 0};
+        }
+        TableCell leftUpper = Collections.min(cells);
+        TableCell rightLower = Collections.max(cells);
+        int rowCount = rightLower.getRow() - leftUpper.getRow() + 1;
+        int colCount = rightLower.getColumn() - leftUpper.getColumn() + 1;
+        return new int[]{rowCount, colCount};
     }
 
     private final int row;
@@ -81,29 +104,6 @@ public class TableCell implements Comparable<TableCell> {
     @Override
     public String toString() {
         return "TableCell{row=" + row + ",column=" + col + "}";
-    }
-
-    /**
-     * @return true if the specified cells form a continuous selection rectangle.
-     * @implNote Returns true for empty set.
-     */
-    public static boolean isContinuousSelection(Set<TableCell> cells) {
-        int[] d = getDimensions(cells);
-        return (d[0] * d[1]) == cells.size();
-    }
-
-    /**
-     * @return int[] { row count, column count}
-     */
-    public static int[] getDimensions(Set<TableCell> cells) {
-        if (cells.isEmpty()) {
-            return new int[]{0, 0};
-        }
-        TableCell leftUpper = Collections.min(cells);
-        TableCell rightLower = Collections.max(cells);
-        int rowCount = rightLower.getRow() - leftUpper.getRow() + 1;
-        int colCount = rightLower.getColumn() - leftUpper.getColumn() + 1;
-        return new int[]{rowCount, colCount};
     }
 
     /**

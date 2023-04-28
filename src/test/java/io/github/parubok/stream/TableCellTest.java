@@ -25,9 +25,9 @@ public class TableCellTest
     @Test
     public void getMaxCol()
     {
-        Assertions.assertEquals(OptionalInt.empty(), TableCell.getMaxCol(Collections.emptyList()));
-        Assertions.assertEquals(OptionalInt.of(12), TableCell.getMaxCol(Arrays.asList(new TableCell(10, 12))));
-        Assertions.assertEquals(OptionalInt.of(13), TableCell.getMaxCol(Arrays.asList(new TableCell(10, 12),
+        Assertions.assertEquals(OptionalInt.empty(), TableCell.getMaxColumn(Collections.emptyList()));
+        Assertions.assertEquals(OptionalInt.of(12), TableCell.getMaxColumn(Arrays.asList(new TableCell(10, 12))));
+        Assertions.assertEquals(OptionalInt.of(13), TableCell.getMaxColumn(Arrays.asList(new TableCell(10, 12),
                 new TableCell(11, 13))));
     }
 
