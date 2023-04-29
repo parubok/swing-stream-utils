@@ -113,7 +113,6 @@ public class TableCellTest
     {
         TableCell c = new TableCell(2, 3);
         TableCell c2 = new TableCell(c, -1, 1);
-
         Assertions.assertEquals(1, c2.getRow());
         Assertions.assertEquals(4, c2.getColumn());
     }
@@ -232,5 +231,13 @@ public class TableCellTest
             Assertions.assertEquals(new TableCell(0, i).hashCode(), new TableCell(0, i).hashCode());
             Assertions.assertEquals(new TableCell(i, 0).hashCode(), new TableCell(i, 0).hashCode());
         }
+    }
+
+    @Test
+    public void isValid() {
+        Assertions.assertTrue(new TableCell(0, 0).isValid());
+        Assertions.assertFalse(new TableCell(-1, 0).isValid());
+        Assertions.assertFalse(new TableCell(0, -1).isValid());
+        Assertions.assertFalse(new TableCell(2, -2).isValid());
     }
 }

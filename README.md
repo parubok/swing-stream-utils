@@ -220,7 +220,7 @@ Add this snippet to the pom.xml `dependencies` section:
 <dependency>
     <groupId>io.github.parubok</groupId>
     <artifactId>swing-stream-utils</artifactId>
-    <version>1.36</version>
+    <version>1.37</version>
 </dependency>
 ```
 

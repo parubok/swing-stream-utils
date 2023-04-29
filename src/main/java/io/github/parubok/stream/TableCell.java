@@ -1,10 +1,10 @@
 package io.github.parubok.stream;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.OptionalInt;
-import java.util.Set;
 
 /**
  * Table cell with row and column indexes.
@@ -13,16 +13,26 @@ import java.util.Set;
  * <p>
  * Implements {@link Comparable}. The comparison is performed by row and then by column.
  * <p>
- * Also contains some utility methods.
+ * This class also contains some utility methods, e.g. {@link #isContinuousSelection(Collection)}.
+ *
+ * @see TableCellData
  */
-public class TableCell implements Comparable<TableCell> {
+public class TableCell implements Serializable, Comparable<TableCell> {
 
+    private static final long serialVersionUID = 4323439204440927581L;
+
+    /**
+     * @return Maximum row index of the provided cells.
+     */
     public static OptionalInt getMaxRow(Collection<TableCell> cells) {
         return cells.stream()
                 .mapToInt(TableCell::getRow)
                 .max();
     }
 
+    /**
+     * @return Maximum column index of the provided cells.
+     */
     public static OptionalInt getMaxColumn(Collection<TableCell> cells) {
         return cells.stream()
                 .mapToInt(TableCell::getColumn)
@@ -33,7 +43,7 @@ public class TableCell implements Comparable<TableCell> {
      * @return true if the specified cells form a continuous selection rectangle.
      * @implNote Returns true for empty set.
      */
-    public static boolean isContinuousSelection(Set<TableCell> cells) {
+    public static boolean isContinuousSelection(Collection<TableCell> cells) {
         int[] d = getDimensions(cells);
         return (d[0] * d[1]) == cells.size();
     }
@@ -41,7 +51,7 @@ public class TableCell implements Comparable<TableCell> {
     /**
      * @return int[] { row count, column count}
      */
-    public static int[] getDimensions(Set<TableCell> cells) {
+    public static int[] getDimensions(Collection<TableCell> cells) {
         if (cells.isEmpty()) {
             return new int[]{0, 0};
         }
@@ -71,16 +81,22 @@ public class TableCell implements Comparable<TableCell> {
         this(source.getRow() + rowDelta, source.getColumn() + columnDelta);
     }
 
+    /**
+     * @return Column index.
+     */
     public int getColumn() {
         return col;
     }
 
+    /**
+     * @return Row index.
+     */
     public int getRow() {
         return row;
     }
 
     /**
-     * @param field TableCell.ROW or TableCell.COL.
+     * @param field {@link TableCell#ROW} or {@link TableCell#COLUMN}. Not null.
      * @return Value of the field for this cell.
      */
     public int get(Field field) {
